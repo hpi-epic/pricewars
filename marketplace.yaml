@@ -2,8 +2,8 @@
 # as a demonstration of an API spec in YAML
 swagger: '2.0'
 info:
-  title: Price Wars
-  description: Fight for the right price
+  title: Price Wars - Marketplace API
+  description: API for the marketplace
   version: "1.0.0"
 # the domain of the service
 host: api.mp_pricewars.com
@@ -44,6 +44,10 @@ paths:
           schema:
             $ref: '#/definitions/Offer'
       responses:
+        200:
+          description: the offer ID of the newly created offer
+          schema:
+            type: integer
         default:
           description: Unexpected error
           schema:
@@ -94,7 +98,6 @@ paths:
       responses:
         200:
           description: OK
-    
   /offers/{id}/buy:
     post:
       summary: as a customer, I buy products
@@ -125,7 +128,64 @@ paths:
         default:
           description: Unexpected error
           schema:
+            $ref: '#/definitions/Error'#
+            
+  /merchants:
+    get:
+      summary: All merchants currently registered with the marketplace
+      responses:
+        200:
+          description: An array of registered merchants
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MerchantRegistration'
+        default:
+          description: Unexpected error
+          schema:
             $ref: '#/definitions/Error'
+    post:
+        summary: as a merchant, register as a merchant at the marketplace
+        parameters:
+          - name: body
+            description: api-endpoint url
+            in: body
+            required: false
+            schema:
+              $ref: '#/definitions/MerchantRegistration'
+        responses:
+          200:
+            description: the merchant ID
+            schema:
+              type: string
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+  /merchant/{id}:
+    parameters:
+        - name: id
+          description: the id the merchant is registered with at the marketplace 
+          in: path
+          required: true
+          type: string
+    get:
+      summary: returns a specifi, registered merchant
+      responses:
+        200:
+          description: a registered merchant
+          schema:
+            $ref: '#/definitions/MerchantRegistration'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: as a merchant, I want to de-register myself from the marketplace
+      responses:
+        200:
+          description: OK
+    
 definitions:
   Offer:
     type: object
@@ -153,6 +213,18 @@ definitions:
       prime:
         type: boolean
         description: is true, if offer is available on prime
+  MerchantRegistration:
+    type: object
+    properties: 
+      api_endpoint_url:
+        type: string
+        description: the url to the merchant's api 
+      merchant_name:
+        type: string
+        description: the name of the merchant
+      algorithm_name:
+        type: string
+        description: the name of the algorithm this merchant uses
   Error:
     type: object
     properties:
