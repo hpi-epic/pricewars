@@ -1,0 +1,165 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Price Wars
+  description: Fight for the right price
+  version: "1.0.0"
+# the domain of the service
+host: api.mp_pricewars.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /api
+produces:
+  - application/json
+paths:
+  /offers:
+    get:
+      summary: All offers for products on the marketplace
+      parameters:
+        - name: product
+          in: query
+          description: filter for products
+          type: string
+      responses:
+        200:
+          description: An array of offers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Offer'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: as a merchant, add a new offer
+      parameters:
+        - name: body
+          description: offer object to be added
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/Offer'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /offers/{id}:
+    parameters:
+      - name: id
+        description: offer id for the offer to fetch
+        in: path
+        required: true
+        type: integer
+    get:
+      summary: returns a specific offer for a product on the marketplace
+      responses:
+        200:
+          description: An offer
+          schema:
+            $ref: '#/definitions/Offer'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: as a merchant, update an offer
+      parameters:
+        - name: body
+          description: object attributes to be updated
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/Offer'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: offer updated
+        405:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: as a merchant, delete your offer
+      description: as a merchant, delete your offer
+      responses:
+        200:
+          description: OK
+    
+  /offers/{id}/buy:
+    post:
+      summary: as a customer, I buy products
+      parameters:
+        - name: id
+          description: offer id
+          in: path
+          required: true
+          type: integer
+        - name: price
+          description: specifies the price for the product (to check for changes)
+          in: formData
+          type: number
+          required: true
+        - name: quantity
+          description: specifies the amount of products to buy
+          in: formData
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: item successfully bought
+        409:
+          description: offer changed (new version)
+        410:
+          description: out of stock
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Offer:
+    type: object
+    properties:
+      offer_id:
+        type: integer
+        description: unique identifier for an offer
+      product_id:
+        type: string
+        description: the product this offer is about
+      seller_id:
+        type: string
+        description: the merchant selling the product for this price
+      amount:
+        type: integer
+        format: int32
+        description: the amount of products offered for this price
+      price:
+        type: number
+        description: price of one product (item/piece)
+      shipping_time:
+        type: integer
+        format: int32
+        description: time until consumer receives the products
+      prime:
+        type: boolean
+        description: is true, if offer is available on prime
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
