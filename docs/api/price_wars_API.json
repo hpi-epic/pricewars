@@ -1,0 +1,648 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Price Wars API",
+        "description": "API for Price Wars Master Project",
+        "version": "1.0.0"
+    },
+    "host": "api.mp_pricewars.com",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/api",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/offers": {
+            "get": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "All offers for products on the marketplace",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "query",
+                        "description": "filter for products",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of offers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Offer"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, add a new offer",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "offer object to be added",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Offer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the offer ID of the newly created offer",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "offer id for the offer to fetch",
+                    "in": "path",
+                    "required": true,
+                    "type": "integer"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "returns a specific offer for a product on the marketplace",
+                "responses": {
+                    "200": {
+                        "description": "An offer",
+                        "schema": {
+                            "$ref": "#/definitions/Offer"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, update an offer",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "object attributes to be updated",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Offer"
+                        }
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "offer updated"
+                    },
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, delete your offer",
+                "description": "as a merchant, delete your offer",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/offers/{id}/buy": {
+            "post": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a customer, I buy products",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "offer id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "price",
+                        "description": "specifies the price for the product (to check for changes)",
+                        "in": "formData",
+                        "type": "number",
+                        "required": true
+                    },
+                    {
+                        "name": "quantity",
+                        "description": "specifies the amount of products to buy",
+                        "in": "formData",
+                        "type": "integer",
+                        "format": "int32",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "item successfully bought"
+                    },
+                    "409": {
+                        "description": "offer changed (new version)"
+                    },
+                    "410": {
+                        "description": "out of stock"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchants": {
+            "get": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "All merchants currently registered with the marketplace",
+                "responses": {
+                    "200": {
+                        "description": "An array of registered merchants",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MerchantRegistration"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, register as a merchant at the marketplace",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "api-endpoint url",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/MerchantRegistration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the merchant ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchants/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "the id the merchant is registered with at the marketplace",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "returns a specifi, registered merchant",
+                "responses": {
+                    "200": {
+                        "description": "a registered merchant",
+                        "schema": {
+                            "$ref": "#/definitions/MerchantRegistration"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, I want to de-register myself from the marketplace",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sold": {
+            "post": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "as marketplace, I want to tell the merchant when his product got sold",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "specifications of the sold product",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/SoldOffer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message delivered"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/behavior": {
+            "get": {
+                "tags": [
+                    "consumer"
+                ],
+                "summary": "All implemented behaviors of consumer",
+                "responses": {
+                    "200": {
+                        "description": "An array of behaviors",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Behavior"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/setting": {
+            "post": {
+                "tags": [
+                    "consumer"
+                ],
+                "summary": "as a marketplace I want to set and execute the consumer",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "defines body of post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Setting"
+                        }
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "behavior updated"
+                    },
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "consumer"
+                ],
+                "summary": "as a marketplace I want to disable the consumer",
+                "description": "as a marketplace, delete the consumer",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/buyers": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "all merchants currently registered at the producer",
+                "responses": {
+                    "200": {
+                        "description": "an array of merchant (merchantIDs)",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "as a merchant, I want to register at the producer to be able to buy products",
+                "parameters": [
+                    {
+                        "name": "merchantID",
+                        "description": "the merchant ID",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successfully registered"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "as a merchant, I want to de-register from the producer",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/products/buy": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "as a merchant, I want to buy a product from the producer",
+                "parameters": [
+                    {
+                        "name": "merchantID",
+                        "in": "query",
+                        "description": "the ID of the merchant wanting to buy a product",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "a product",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Offer": {
+            "type": "object",
+            "properties": {
+                "offer_id": {
+                    "type": "integer",
+                    "description": "unique identifier for an offer"
+                },
+                "product_id": {
+                    "type": "string",
+                    "description": "the product this offer is about"
+                },
+                "seller_id": {
+                    "type": "string",
+                    "description": "the merchant selling the product for this price"
+                },
+                "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "the amount of products offered for this price"
+                },
+                "price": {
+                    "type": "number",
+                    "description": "price of one product (item/piece)"
+                },
+                "shipping_time": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "time until consumer receives the products"
+                },
+                "prime": {
+                    "type": "boolean",
+                    "description": "is true, if offer is available on prime"
+                }
+            }
+        },
+        "MerchantRegistration": {
+            "type": "object",
+            "properties": {
+                "api_endpoint_url": {
+                    "type": "string",
+                    "description": "the url to the merchant's api"
+                },
+                "merchant_name": {
+                    "type": "string",
+                    "description": "the name of the merchant"
+                },
+                "algorithm_name": {
+                    "type": "string",
+                    "description": "the name of the algorithm this merchant uses"
+                }
+            }
+        },
+        "SoldOffer": {
+            "type": "object",
+            "properties": {
+                "offer_id": {
+                    "type": "integer",
+                    "description": "the offer ID of the sold offer in the marketplace"
+                },
+                "amount": {
+                    "type": "integer",
+                    "description": "how often was the offer sold"
+                },
+                "consumer_id": {
+                    "type": "string",
+                    "description": "the ID of the consumer who bought the offer"
+                }
+            }
+        },
+        "Behavior": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "the name of the behavior"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "describing the logic of this behavior"
+                }
+            }
+        },
+        "Setting": {
+            "type": "object",
+            "properties": {
+                "tick": {
+                    "type": "integer",
+                    "description": "tick represents the time speed; increase in case of fast forward"
+                },
+                "marketplace_url": {
+                    "type": "string",
+                    "description": "defines api endpoint url of marketplace"
+                },
+                "amount_of_consumers": {
+                    "type": "integer",
+                    "description": "defines the amount of consumers"
+                },
+                "behaviors": {
+                    "type": "array",
+                    "description": "defines the behaviors with their probability of occurrence",
+                    "items": {
+                        "$ref": "#/definitions/Behavior"
+                    }
+                }
+            }
+        },
+        "Product": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "string",
+                    "description": "the product ID used to identify the product category (products with the same product ID have the same attributes)"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "the name of the product"
+                },
+                "condition": {
+                    "type": "integer",
+                    "description": "the condition of the product (from 1 - 5, 1 being best and 5 being worst)"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
