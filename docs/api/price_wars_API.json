@@ -487,6 +487,17 @@
                     "producer"
                 ],
                 "summary": "as a merchant, I want to de-register from the producer",
+                "parameters": [
+                    {
+                        "name": "merchantID",
+                        "in": "body",
+                        "description": "the ID of the merchant that should be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -503,7 +514,7 @@
                 "parameters": [
                     {
                         "name": "merchantID",
-                        "in": "formData",
+                        "in": "query",
                         "type": "string",
                         "description": "the ID of the merchant wanting to buy a product",
                         "required": true
@@ -839,7 +850,7 @@
                 "fields": {
                     "type": "string",
                     "readOnly": true,
-                    "example": "Constraints viloated for property <name>."
+                    "example": "Constraints violated for property <name>."
                 }
             },
             "required": [
