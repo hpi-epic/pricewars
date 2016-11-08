@@ -6,9 +6,6 @@ services:
       - "3000:3000"
     volumes:
       - ./pricewars-producer:/producer
-    links:
-      - marketplace
-      - merchant
   
   marketplace:
     build: ./pricewars-marketplace
@@ -16,9 +13,6 @@ services:
       - "8080:8080"
     volumes:
       - ./pricewars-marketplace:/marketplace
-    links:
-      - producer
-      - merchant
 
   merchant:
     build: ./pricewars-merchant/sample_logic
