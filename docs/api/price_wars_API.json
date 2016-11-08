@@ -34,7 +34,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Offer"
+                                "$ref": "#/definitions/OfferResponse"
                             }
                         }
                     },
@@ -58,15 +58,21 @@
                         "in": "body",
                         "required": false,
                         "schema": {
-                            "$ref": "#/definitions/Offer"
+                            "$ref": "#/definitions/OfferRequest"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "the offer ID of the newly created offer",
+                    "201": {
+                        "description": "The created offer including the ID",
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/OfferResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -95,9 +101,15 @@
                 "summary": "returns a specific offer for a product on the marketplace",
                 "responses": {
                     "200": {
-                        "description": "An offer",
+                        "description": "All details about the requested offer",
                         "schema": {
-                            "$ref": "#/definitions/Offer"
+                            "$ref": "#/definitions/OfferResponse"
+                        }
+                    },
+                    "410": {
+                        "description": "Offer no longer available (out of stock)",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     },
                     "default": {
@@ -116,11 +128,11 @@
                 "parameters": [
                     {
                         "name": "body",
-                        "description": "object attributes to be updated",
+                        "description": "Object attributes to be updated",
                         "in": "body",
                         "required": false,
                         "schema": {
-                            "$ref": "#/definitions/Offer"
+                            "$ref": "#/definitions/OfferRequest"
                         }
                     }
                 ],
@@ -132,10 +144,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "offer updated"
+                        "description": "The updated offer",
+                        "schema": {
+                            "$ref": "#/definitions/OfferResponse"
+                        }
                     },
-                    "405": {
-                        "description": "Invalid input"
+                    "422": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -152,8 +170,14 @@
                 "summary": "as a merchant, delete your offer",
                 "description": "as a merchant, delete your offer",
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "204": {
+                        "description": "Deleted"
+                    },
+                    "422": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -173,20 +197,17 @@
                         "type": "integer"
                     },
                     {
-                        "name": "price",
-                        "description": "specifies the price for the product (to check for changes)",
-                        "in": "formData",
-                        "type": "number",
-                        "required": true
-                    },
-                    {
-                        "name": "quantity",
-                        "description": "specifies the amount of products to buy",
-                        "in": "formData",
-                        "type": "integer",
-                        "format": "int32",
-                        "required": true
+                        "name": "body",
+                        "description": "Object attributes to be updated",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/BuyRequest"
+                        }
                     }
+                ],
+                "consumes": [
+                    "application/json"
                 ],
                 "responses": {
                     "200": {
@@ -219,7 +240,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/MerchantRegistration"
+                                "$ref": "#/definitions/MerchantResponse"
                             }
                         }
                     },
@@ -243,15 +264,15 @@
                         "in": "body",
                         "required": false,
                         "schema": {
-                            "$ref": "#/definitions/MerchantRegistration"
+                            "$ref": "#/definitions/MerchantRequest"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "the merchant ID",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/MerchantResponse"
                         }
                     },
                     "default": {
@@ -282,7 +303,7 @@
                     "200": {
                         "description": "a registered merchant",
                         "schema": {
-                            "$ref": "#/definitions/MerchantRegistration"
+                            "$ref": "#/definitions/MerchantResponse"
                         }
                     },
                     "default": {
@@ -299,8 +320,8 @@
                 ],
                 "summary": "as a merchant, I want to de-register myself from the marketplace",
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "204": {
+                        "description": "Deleted"
                     }
                 }
             }
@@ -423,7 +444,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "#/definitions/RegisteredMerchant"
                             }
                         }
                     },
@@ -444,9 +465,9 @@
                     {
                         "name": "merchantID",
                         "description": "the merchant ID",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
+                        "in": "formData",
+                        "type": "string",
+                        "required": false
                     }
                 ],
                 "responses": {
@@ -482,10 +503,10 @@
                 "parameters": [
                     {
                         "name": "merchantID",
-                        "in": "query",
+                        "in": "formData",
+                        "type": "string",
                         "description": "the ID of the merchant wanting to buy a product",
-                        "required": true,
-                        "type": "string"
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -506,57 +527,209 @@
         }
     },
     "definitions": {
-        "Offer": {
+        "OfferRequest": {
             "type": "object",
             "properties": {
-                "offer_id": {
-                    "type": "integer",
-                    "description": "unique identifier for an offer"
-                },
                 "product_id": {
                     "type": "string",
+                    "example": "HANA",
                     "description": "the product this offer is about"
                 },
-                "seller_id": {
+                "merchant_id": {
                     "type": "string",
+                    "example": "SAP",
                     "description": "the merchant selling the product for this price"
                 },
                 "amount": {
                     "type": "integer",
                     "format": "int32",
+                    "example": 5,
                     "description": "the amount of products offered for this price"
                 },
                 "price": {
                     "type": "number",
+                    "format": "float",
+                    "example": 123.45,
                     "description": "price of one product (item/piece)"
                 },
                 "shipping_time": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "time until consumer receives the products"
+                    "type": "object",
+                    "description": "time until consumer receives the products",
+                    "properties": {
+                        "standard": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 10,
+                            "description": "standard shipping"
+                        },
+                        "prime": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 3,
+                            "description": "shipping with prime"
+                        }
+                    },
+                    "required": [
+                        "standard"
+                    ]
                 },
                 "prime": {
                     "type": "boolean",
+                    "example": true,
                     "description": "is true, if offer is available on prime"
                 }
-            }
+            },
+            "required": [
+                "product_id",
+                "merchant_id",
+                "amount",
+                "price",
+                "shipping_time"
+            ]
         },
-        "MerchantRegistration": {
+        "OfferResponse": {
+            "type": "object",
+            "properties": {
+                "offer_id": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "unique identifier for an offer",
+                    "readOnly": true
+                },
+                "product_id": {
+                    "type": "string",
+                    "example": "HANA",
+                    "description": "the product this offer is about"
+                },
+                "merchant_id": {
+                    "type": "string",
+                    "example": "SAP",
+                    "description": "the merchant selling the product for this price"
+                },
+                "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 5,
+                    "description": "the amount of products offered for this price"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 123.45,
+                    "description": "price of one product (item/piece)"
+                },
+                "shipping_time": {
+                    "type": "object",
+                    "description": "time until consumer receives the products",
+                    "properties": {
+                        "standard": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 10,
+                            "description": "standard shipping"
+                        },
+                        "prime": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 5,
+                            "description": "shipping with prime"
+                        }
+                    },
+                    "required": [
+                        "standard"
+                    ]
+                },
+                "prime": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "is true, if offer is available on prime"
+                }
+            },
+            "required": [
+                "offer_id",
+                "product_id",
+                "merchant_id",
+                "amount",
+                "price",
+                "shipping_time"
+            ]
+        },
+        "MerchantRequest": {
             "type": "object",
             "properties": {
                 "api_endpoint_url": {
                     "type": "string",
+                    "example": "http://pricewar-merchant-vm:8000/",
                     "description": "the url to the merchant's api"
                 },
                 "merchant_name": {
                     "type": "string",
+                    "example": "PriceWar Winners",
                     "description": "the name of the merchant"
                 },
                 "algorithm_name": {
                     "type": "string",
+                    "example": "CheapestPrice",
                     "description": "the name of the algorithm this merchant uses"
                 }
-            }
+            },
+            "required": [
+                "api_endpoint_url",
+                "merchant_name",
+                "algorithm_name"
+            ]
+        },
+        "MerchantResponse": {
+            "type": "object",
+            "properties": {
+                "api_endpoint_url": {
+                    "type": "string",
+                    "example": "http://pricewar-merchant-vm:8000/",
+                    "description": "the url to the merchant's api"
+                },
+                "merchant_name": {
+                    "type": "string",
+                    "example": "PriceWar Winners",
+                    "description": "the name of the merchant"
+                },
+                "algorithm_name": {
+                    "type": "string",
+                    "example": "CheapestPrice",
+                    "description": "the name of the algorithm this merchant uses"
+                },
+                "merchant_id": {
+                    "type": "string",
+                    "example": "3",
+                    "description": "unique identifier for a merchant",
+                    "readOnly": true
+                }
+            },
+            "required": [
+                "api_endpoint_url",
+                "merchant_name",
+                "merchant_id",
+                "algorithm_name"
+            ]
+        },
+        "BuyRequest": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number",
+                    "example": 123.45,
+                    "description": "specifies the price for the product (to check for changes)"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 5,
+                    "description": "specifies the amount of products to buy"
+                }
+            },
+            "required": [
+                "price",
+                "quantity"
+            ]
         },
         "SoldOffer": {
             "type": "object",
@@ -623,9 +796,29 @@
                     "type": "string",
                     "description": "the name of the product"
                 },
-                "condition": {
+                "price": {
                     "type": "integer",
-                    "description": "the condition of the product (from 1 - 5, 1 being best and 5 being worst)"
+                    "description": "the price of the item"
+                },
+                "genre": {
+                    "type": "string",
+                    "description": "the genre the product belongs to worst)"
+                }
+            }
+        },
+        "RegisteredMerchant": {
+            "type": "object",
+            "properties": {
+                "merchant_id": {
+                    "type": "string",
+                    "description": "the merchantID"
+                },
+                "products": {
+                    "type": "array",
+                    "description": "the list of products this merchant can buy from the producer",
+                    "items": {
+                        "$ref": "#/definitions/Product"
+                    }
                 }
             }
         },
@@ -634,15 +827,24 @@
             "properties": {
                 "code": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "example": 406,
+                    "readOnly": true
                 },
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Not Acceptable",
+                    "readOnly": true
                 },
                 "fields": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true,
+                    "example": "Constraints viloated for property <name>."
                 }
-            }
+            },
+            "required": [
+                "message"
+            ]
         }
     }
 }
