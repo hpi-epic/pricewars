@@ -1,0 +1,34 @@
+version: '2'
+services:
+  producer:
+    build: ./pricewars-producer
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./pricewars-producer:/producer
+    links:
+      - marketplace
+      - merchant
+  
+  marketplace:
+    build: ./pricewars-marketplace
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./pricewars-marketplace:/marketplace
+    links:
+      - producer
+      - merchant
+
+  merchant:
+    build: ./pricewars-merchant/sample_logic
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./pricewars-merchant/sample_logic:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
