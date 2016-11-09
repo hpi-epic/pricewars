@@ -356,6 +356,66 @@
                 }
             }
         },
+        "/settings": {
+            "get": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "returns the default settings for the service/logic",
+                "responses": {
+                    "200": {
+                        "description": "returns a setting json object with fields defined by the service. The Management UI can then generate a form",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "updates the settings",
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+        "/settings/execution": {
+            "post": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "alter the execution of the service logic (start/stop)",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "specifications of the sold product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "nextState": {
+                                    "type": "string",
+                                    "example": "start"
+                                }
+                            },
+                            "required": [
+                                "nextState"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
         "/behavior": {
             "get": {
                 "tags": [
