@@ -22,10 +22,11 @@
                 "summary": "All offers for products on the marketplace",
                 "parameters": [
                     {
-                        "name": "product",
+                        "name": "product_id",
                         "in": "query",
                         "description": "filter for products",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -200,7 +201,7 @@
                         "name": "body",
                         "description": "Object attributes to be updated",
                         "in": "body",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/BuyRequest"
                         }
@@ -210,8 +211,11 @@
                     "application/json"
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "item successfully bought"
+                    },
+                    "404": {
+                        "description": "item not found"
                     },
                     "409": {
                         "description": "offer changed (new version)"
@@ -224,6 +228,46 @@
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
+                    }
+                }
+            }
+        },
+        "/offers/{id}/restock": {
+            "patch": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a merchant, add or remove a specified amount from your stock",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "offer id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "body",
+                        "description": "Amount to update",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RestockRequest"
+                        }
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "offer sucessfully restocked"
+                    },
+                    "404": {
+                        "description": "offer not found"
+                    },
+                    "417": {
+                        "description": "offer could not be updated, because the resulting amount is invalid (e.g. 10 items are left in stock and you requested to remove 15. The remaining amount must be positive)"
                     }
                 }
             }
@@ -291,7 +335,8 @@
                     "description": "the id the merchant is registered with at the marketplace",
                     "in": "path",
                     "required": true,
-                    "type": "string"
+                    "type": "integer",
+                    "format": "int64"
                 }
             ],
             "get": {
@@ -503,7 +548,8 @@
                         "name": "merchant_id",
                         "description": "filters list for only one specific merchant",
                         "in": "query",
-                        "type": "string",
+                        "type": "integer",
+                        "format": "int64",
                         "required": false
                     }
                 ],
@@ -539,7 +585,8 @@
                         "description": "the merchant_id",
                         "in": "body",
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "format": "int64"
                         },
                         "required": true
                     }
@@ -574,7 +621,8 @@
                         "description": "the ID of the merchant that should be deleted",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "format": "int64"
                         }
                     }
                 ],
@@ -608,7 +656,8 @@
                         "name": "product_id",
                         "description": "filters list for only one specific product",
                         "in": "query",
-                        "type": "string",
+                        "type": "integer",
+                        "format": "int64",
                         "required": false
                     }
                 ],
@@ -644,14 +693,16 @@
                     {
                         "name": "merchant_id",
                         "in": "query",
-                        "type": "string",
+                        "type": "integer",
+                        "format": "int64",
                         "description": "the ID of the merchant wanting to buy a product (if only this parameter is specified, a random product with amount one is returned)",
                         "required": true
                     },
                     {
                         "name": "product_id",
                         "in": "query",
-                        "type": "string",
+                        "type": "integer",
+                        "format": "int64",
                         "description": "the ID of the specific product the merchant wants to buy",
                         "required": false
                     },
@@ -697,13 +748,15 @@
             "type": "object",
             "properties": {
                 "product_id": {
-                    "type": "string",
-                    "example": "HANA",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2,
                     "description": "the product this offer is about"
                 },
                 "merchant_id": {
-                    "type": "string",
-                    "example": "SAP",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1,
                     "description": "the merchant selling the product for this price"
                 },
                 "amount": {
@@ -763,13 +816,15 @@
                     "readOnly": true
                 },
                 "product_id": {
-                    "type": "string",
-                    "example": "HANA",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2,
                     "description": "the product this offer is about"
                 },
                 "merchant_id": {
-                    "type": "string",
-                    "example": "SAP",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1,
                     "description": "the merchant selling the product for this price"
                 },
                 "amount": {
@@ -820,6 +875,20 @@
                 "shipping_time"
             ]
         },
+        "RestockRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": -5,
+                    "description": "specifies the amount to add (positive integer, no sign required) or remove (negative integer) from the stock"
+                }
+            },
+            "required": [
+                "amount"
+            ]
+        },
         "MerchantRequest": {
             "type": "object",
             "properties": {
@@ -864,8 +933,9 @@
                     "description": "the name of the algorithm this merchant uses"
                 },
                 "merchant_id": {
-                    "type": "string",
-                    "example": "3",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 3,
                     "description": "unique identifier for a merchant",
                     "readOnly": true
                 }
@@ -902,17 +972,32 @@
             "properties": {
                 "offer_id": {
                     "type": "integer",
+                    "format": "int64",
                     "description": "the offer ID of the sold offer in the marketplace"
                 },
                 "amount": {
                     "type": "integer",
+                    "format": "int32",
                     "description": "how often was the offer sold"
                 },
                 "consumer_id": {
                     "type": "string",
                     "description": "the ID of the consumer who bought the offer"
+                },
+                "price": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "the price sent by the customer (might be higher [but not lower] than the current price)"
+                },
+                "prime": {
+                    "type": "boolean",
+                    "description": "specifies whether the customer bought the product with prime"
                 }
-            }
+            },
+            "required": [
+                "offer_id",
+                "amount"
+            ]
         },
         "Behavior": {
             "type": "object",
@@ -992,7 +1077,8 @@
             "type": "object",
             "properties": {
                 "merchant_id": {
-                    "type": "string",
+                    "type": "integer",
+                    "format": "int64",
                     "description": "the merchant_id used to identify the merchant",
                     "example": "1"
                 },
@@ -1021,17 +1107,20 @@
                     "type": "integer",
                     "format": "int32",
                     "example": 406,
-                    "readOnly": true
+                    "readOnly": true,
+                    "description": "currently equivalent to the HTTP status code"
                 },
                 "message": {
                     "type": "string",
                     "example": "Not Acceptable",
-                    "readOnly": true
+                    "readOnly": true,
+                    "description": "a more detailled message about the error"
                 },
                 "fields": {
                     "type": "string",
                     "readOnly": true,
-                    "example": "Constraints violated for property <name>."
+                    "example": "Constraints violated for property <name>.",
+                    "description": "Additional information, optional"
                 }
             },
             "required": [
