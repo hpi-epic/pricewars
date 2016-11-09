@@ -955,9 +955,10 @@
             "type": "object",
             "properties": {
                 "product_id": {
-                    "type": "string",
+                    "type": "integer",
+                    "format": "int64",
                     "description": "the product ID used to identify the product category (products with the same product ID have the same attributes)",
-                    "example": "1"
+                    "example": 1
                 },
                 "name": {
                     "type": "string",
