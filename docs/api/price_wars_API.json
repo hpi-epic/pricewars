@@ -1027,6 +1027,10 @@
                     "type": "integer",
                     "description": "defines the amount of consumers"
                 },
+                "probability_of_sell": {
+                    "type": "integer",
+                    "description": "defines the probability to sell an item to a consumer"
+                },
                 "behaviors": {
                     "type": "array",
                     "description": "defines the behaviors with their probability of occurrence",
