@@ -638,16 +638,6 @@
                     "producer"
                 ],
                 "summary": "all merchants currently registered at the producer",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "description": "filters list for only one specific merchant",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int64",
-                        "required": false
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "an array of merchants and their products",
@@ -658,9 +648,6 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "this merchant_id is not known to the producer"
-                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -668,7 +655,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/buyers/register": {
             "post": {
                 "tags": [
                     "producer"
@@ -688,13 +677,59 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "successfully registered"
+                        "description": "successfully registered and responds with first stock for merchant",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
                     },
                     "400": {
                         "description": "no merchant_id provided"
                     },
+                    "406": {
+                        "description": "the merchant_id is not a number"
+                    },
                     "409": {
                         "description": "this merchant_id is already registered at the producer"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyers/{merchant_id}": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "a specific merchant currently registered at the producer",
+                "parameters": [
+                    {
+                        "name": "merchant_id",
+                        "description": "merchant id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "an array with one specific merchant and their product",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/RegisteredMerchant"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "this merchant_id is not known to the producer"
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -712,13 +747,10 @@
                 "parameters": [
                     {
                         "name": "merchant_id",
-                        "in": "body",
+                        "in": "path",
                         "description": "the ID of the merchant that should be deleted",
                         "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
+                        "type": "integer"
                     }
                 ],
                 "responses": {
@@ -746,19 +778,81 @@
                     "producer"
                 ],
                 "summary": "all products available from this producer",
+                "responses": {
+                    "200": {
+                        "description": "an array of products (without an amount)",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/buy": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "as a merchant, I want to buy a random product from the producer",
                 "parameters": [
                     {
-                        "name": "product_id",
-                        "description": "filters list for only one specific product",
+                        "name": "merchant_id",
                         "in": "query",
                         "type": "integer",
                         "format": "int64",
-                        "required": false
+                        "description": "the ID of the merchant wanting to buy a product (if only this parameter is specified, a random product with amount '1' is returned)",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "an array of products (without an amount)",
+                        "description": "a random product of amount 1",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    },
+                    "400": {
+                        "description": "no merchant_id provided"
+                    },
+                    "401": {
+                        "description": "the merchant is not known to the producer"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{product_id}": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "a specific product of the producer",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "description": "product id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "an array with one specific product + information",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -778,13 +872,20 @@
                 }
             }
         },
-        "/products/buy": {
+        "/products/{product_id}/buy": {
             "get": {
                 "tags": [
                     "producer"
                 ],
-                "summary": "as a merchant, I want to buy a product from the producer",
+                "summary": "as a merchant, I want to buy a specific product from the producer",
                 "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "the ID of the specific product the merchant wants to buy",
+                        "required": true
+                    },
                     {
                         "name": "merchant_id",
                         "in": "query",
@@ -792,14 +893,6 @@
                         "format": "int64",
                         "description": "the ID of the merchant wanting to buy a product (if only this parameter is specified, a random product with amount one is returned)",
                         "required": true
-                    },
-                    {
-                        "name": "product_id",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "the ID of the specific product the merchant wants to buy",
-                        "required": false
                     },
                     {
                         "name": "amount",
