@@ -272,6 +272,62 @@
                 }
             }
         },
+        "/consumers": {
+            "get": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "All consumers currently registered with the marketplace",
+                "responses": {
+                    "200": {
+                        "description": "An array of registered consumers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ConsumerRegisterResponse"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a cnsumer, register as a consumer at the marketplace",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "api-endpoint url",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/ConsumerRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "the merchant ID",
+                        "schema": {
+                            "$ref": "#/definitions/ConsumerRegisterResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/merchants": {
             "get": {
                 "tags": [
@@ -476,6 +532,45 @@
                                 "$ref": "#/definitions/Behavior"
                             }
                         }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "consumer"
+                ],
+                "summary": "as a consumer I want to register the consuemr to the marketplace",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "defines body of post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ConsumerRegister"
+                        }
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "behavior updated"
+                    },
+                    "405": {
+                        "description": "Invalid input"
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -945,6 +1040,64 @@
                 "merchant_name",
                 "merchant_id",
                 "algorithm_name"
+            ]
+        },
+        "ConsumerRegister": {
+            "type": "object",
+            "properties": {
+                "consumer_url": {
+                    "type": "string",
+                    "example": "http://pricewar-consumer-vm:8000/",
+                    "description": "the url to the consumer's api"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "PriceWar Consumer",
+                    "description": "the name of the consumer"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "CheapestPrice",
+                    "description": "the name of the algorithm this consumer uses"
+                }
+            },
+            "required": [
+                "consumer_url",
+                "name",
+                "description"
+            ]
+        },
+        "ConsumerRegisterResponse": {
+            "type": "object",
+            "properties": {
+                "consumer_url": {
+                    "type": "string",
+                    "example": "http://pricewar-consumer-vm:8000/",
+                    "description": "the url to the consumer's api"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "PriceWar Consumer",
+                    "description": "the name of the consumer"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "CheapestPrice",
+                    "description": "the name of the algorithm this consumer uses"
+                },
+                "consumer_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 3,
+                    "description": "unique identifier for a consumer",
+                    "readOnly": true
+                }
+            },
+            "required": [
+                "consumer_url",
+                "name",
+                "description",
+                "consumer_id"
             ]
         },
         "BuyRequest": {
