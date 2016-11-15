@@ -1113,11 +1113,23 @@
                     "format": "int32",
                     "example": 5,
                     "description": "specifies the amount of products to buy"
+                },
+                "consumer_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 5,
+                    "description": "specifies the amount of products to buy"
+                },
+                "prime": {
+                    "type": "boolean",
+                    "description": "specifies whether the customer bought the product with prime"
                 }
             },
             "required": [
                 "price",
-                "quantity"
+                "quantity",
+                "consumer_id",
+                "prime"
             ]
         },
         "SoldOffer": {
