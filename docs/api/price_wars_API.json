@@ -655,41 +655,6 @@
                         }
                     }
                 }
-            },
-            "delete": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "as a merchant, I want to de-register from the producer",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "in": "body",
-                        "description": "the ID of the merchant that should be deleted",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "merchant successfully deleted"
-                    },
-                    "400": {
-                        "description": "no merchant_id provided"
-                    },
-                    "409": {
-                        "description": "this merchant_id is not known to the producer"
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
             }
         },
         "/buyers/register": {
@@ -773,6 +738,38 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "as a merchant, I want to de-register from the producer",
+                "parameters": [
+                    {
+                        "name": "merchant_id",
+                        "in": "path",
+                        "description": "the ID of the merchant that should be deleted",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "merchant successfully deleted"
+                    },
+                    "400": {
+                        "description": "no merchant_id provided"
+                    },
+                    "409": {
+                        "description": "this merchant_id is not known to the producer"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
             }
         },
         "/products": {
@@ -790,43 +787,6 @@
                                 "$ref": "#/definitions/Product"
                             }
                         }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/{product_id}": {
-            "get": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "a specific product of the producer",
-                "parameters": [
-                    {
-                        "name": "product_id",
-                        "description": "product id",
-                        "in": "path",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "an array with one specific product + information",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "this product_id is not known to the producer"
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -865,6 +825,43 @@
                     },
                     "401": {
                         "description": "the merchant is not known to the producer"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{product_id}": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "a specific product of the producer",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "description": "product id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "an array with one specific product + information",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "this product_id is not known to the producer"
                     },
                     "default": {
                         "description": "Unexpected error",
