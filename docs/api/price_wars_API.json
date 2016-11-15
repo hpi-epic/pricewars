@@ -875,7 +875,7 @@
                 }
             }
         },
-        "/products/buy/{product_id}": {
+        "/products/{product_id}/buy": {
             "get": {
                 "tags": [
                     "producer"
