@@ -712,10 +712,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "successfully registered"
+                        "description": "successfully registered and responds with first stock for merchant",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
                     },
                     "400": {
                         "description": "no merchant_id provided"
+                    },
+                    "406": {
+                        "description": "the merchant_id is not a number"
                     },
                     "409": {
                         "description": "this merchant_id is already registered at the producer"
