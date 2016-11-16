@@ -797,44 +797,6 @@
                 }
             }
         },
-        "/products/buy": {
-            "get": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "as a merchant, I want to buy a random product from the producer",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "the ID of the merchant wanting to buy a product (if only this parameter is specified, a random product with amount '1' is returned)",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "a random product of amount 1",
-                        "schema": {
-                            "$ref": "#/definitions/Product"
-                        }
-                    },
-                    "400": {
-                        "description": "no merchant_id provided"
-                    },
-                    "401": {
-                        "description": "the merchant is not known to the producer"
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
         "/products/{product_id}": {
             "get": {
                 "tags": [
@@ -872,39 +834,25 @@
                 }
             }
         },
-        "/products/{product_id}/buy": {
+        "/buy": {
             "get": {
                 "tags": [
                     "producer"
                 ],
-                "summary": "as a merchant, I want to buy a specific product from the producer",
+                "summary": "as a merchant, I want to buy a random product from the producer",
                 "parameters": [
-                    {
-                        "name": "product_id",
-                        "in": "path",
-                        "type": "integer",
-                        "description": "the ID of the specific product the merchant wants to buy",
-                        "required": true
-                    },
                     {
                         "name": "merchant_id",
                         "in": "query",
                         "type": "integer",
                         "format": "int64",
-                        "description": "the ID of the merchant wanting to buy a product (if only this parameter is specified, a random product with amount one is returned)",
+                        "description": "the ID of the merchant wanting to buy a product ",
                         "required": true
-                    },
-                    {
-                        "name": "amount",
-                        "in": "query",
-                        "type": "integer",
-                        "description": "the amount of the specific product the merchant wants to buy (only relevant if product is specified - if buying random, you always only get an amount of one)",
-                        "required": false
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "a product (either random or specific, depending on parameters)",
+                        "description": "a random product of amount 1",
                         "schema": {
                             "$ref": "#/definitions/Product"
                         }
@@ -915,11 +863,27 @@
                     "401": {
                         "description": "the merchant is not known to the producer"
                     },
-                    "403": {
-                        "description": "the merchant with this merchant_id does not have permission to buy this specific product"
-                    },
-                    "406": {
-                        "description": "the specified amount is not a number"
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/public_key": {
+            "get": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "As marketplace, I want to know the public_key used by the producer to encrypt products sold to the merchant so I can check whether a merchant is allowed to sell a specific product ",
+                "responses": {
+                    "200": {
+                        "description": "the public key",
+                        "schema": {
+                            "$ref": "#/definitions/PublicKey"
+                        }
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -1301,10 +1265,16 @@
         "Product": {
             "type": "object",
             "properties": {
+                "uid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "A unique identifier for this product. Multiple products with the same UID all have the same product_id AND the same quality.",
+                    "example": 15
+                },
                 "product_id": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "the product ID used to identify the product category (products with the same product ID have the same attributes)",
+                    "description": "the product ID used to identify the product category (products with the same product ID have the same attributes BUT not necessarily the same quality)",
                     "example": 1
                 },
                 "name": {
@@ -1317,22 +1287,29 @@
                     "description": "the price of the item",
                     "example": 15.4
                 },
-                "genre": {
-                    "type": "string",
-                    "description": "the genre the product belongs to (current placeholder for a later set of distinguishing attributes of a product that define its product_id)",
-                    "example": "Rock"
+                "quality": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The quality of the product. The better the quality the higher the number and the higher the price.",
+                    "example": 2
                 },
                 "amount": {
                     "type": "integer",
                     "description": "the amount of this product (only specified when product is bought)",
                     "example": 5
+                },
+                "hash": {
+                    "type": "string",
+                    "description": "The encrypted hash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
+                    "example": "100563ac9965fe07dfd770866bf56d06e583"
                 }
             },
             "required": [
+                "uid",
                 "product_id",
                 "name",
                 "price",
-                "genre"
+                "quality"
             ]
         },
         "RegisteredMerchant": {
@@ -1361,6 +1338,16 @@
                 "merchant_id",
                 "products"
             ]
+        },
+        "PublicKey": {
+            "type": "object",
+            "properties": {
+                "public_key": {
+                    "type": "string",
+                    "description": "the public_key used to encrypt the products sold to the merchant",
+                    "example": "3858a509b3bf4a74fab1e998e0f05b623a52063dc6db3d7af09fabb17d283450"
+                }
+            }
         },
         "Error": {
             "type": "object",
