@@ -872,12 +872,12 @@
                 }
             }
         },
-        "/public_key": {
+        "/decryption_key": {
             "get": {
                 "tags": [
                     "producer"
                 ],
-                "summary": "As marketplace, I want to know the public_key used by the producer to encrypt products sold to the merchant so I can check whether a merchant is allowed to sell a specific product ",
+                "summary": "As marketplace, I want to know the decryption_key used by the producer to encrypt products sold to the merchant so I can check whether a merchant is allowed to sell a specific product ",
                 "responses": {
                     "200": {
                         "description": "the public key",
@@ -1298,9 +1298,9 @@
                     "description": "the amount of this product (only specified when product is bought)",
                     "example": 5
                 },
-                "hash": {
+                "signature": {
                     "type": "string",
-                    "description": "The encrypted hash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
+                    "description": "The encrypted hsignature ash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
                     "example": "100563ac9965fe07dfd770866bf56d06e583"
                 }
             },
@@ -1342,9 +1342,9 @@
         "PublicKey": {
             "type": "object",
             "properties": {
-                "public_key": {
+                "decryption_key": {
                     "type": "string",
-                    "description": "the public_key used to encrypt the products sold to the merchant",
+                    "description": "the decryption_key used to encrypt the products sold to the merchant",
                     "example": "3858a509b3bf4a74fab1e998e0f05b623a52063dc6db3d7af09fabb17d283450"
                 }
             }
