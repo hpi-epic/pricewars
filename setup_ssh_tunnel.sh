@@ -11,6 +11,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 7046 -j DNAT --to-destination 10.8.
 iptables -t nat -A PREROUTING -p tcp --dport 7047 -j DNAT --to-destination 10.8.0.21:22 #merchant
 iptables -t nat -A PREROUTING -p tcp --dport 7042 -j DNAT --to-destination 10.8.0.23:22 #ui
 iptables -t nat -A PREROUTING -p tcp --dport 7045 -j DNAT --to-destination 10.8.0.22:22 #producer
+iptables -t nat -A PREROUTING -p tcp --dport 7049 -j DNAT --to-destination 10.8.0.26:22 #logger
 #
 iptables-save
 #
