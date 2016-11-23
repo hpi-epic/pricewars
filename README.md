@@ -14,8 +14,8 @@
 
 ### FMC Diagram
 
-![alt tag](/docu/modeling/architecture_fmc.png?raw=true)
+![alt tag](/docs/modeling/architecture_fmc.png?raw=true)
 
 ### Sequence Diagram
 
-![alt tag](/docu/modeling/sequence_diagram_flow.png?raw=true)
+![alt tag](/docs/modeling/sequence_diagram_flow.png?raw=true)

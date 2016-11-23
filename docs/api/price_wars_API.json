@@ -3,7 +3,7 @@
     "info": {
         "title": "Price Wars API",
         "description": "API for Price Wars Master Project",
-        "version": "1.0.0"
+        "version": "1.0.1"
     },
     "host": "api.mp_pricewars.com",
     "schemes": [
@@ -632,146 +632,6 @@
                 }
             }
         },
-        "/buyers": {
-            "get": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "all merchants currently registered at the producer",
-                "responses": {
-                    "200": {
-                        "description": "an array of merchants and their products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/RegisteredMerchant"
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/buyers/register": {
-            "post": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "as a merchant, I want to register at the producer to be able to buy products",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "description": "the merchant_id",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successfully registered and responds with first stock for merchant",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "no merchant_id provided"
-                    },
-                    "406": {
-                        "description": "the merchant_id is not a number"
-                    },
-                    "409": {
-                        "description": "this merchant_id is already registered at the producer"
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/buyers/{merchant_id}": {
-            "get": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "a specific merchant currently registered at the producer",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "description": "merchant id",
-                        "in": "path",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "an array with one specific merchant and their product",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/RegisteredMerchant"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "this merchant_id is not known to the producer"
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "producer"
-                ],
-                "summary": "as a merchant, I want to de-register from the producer",
-                "parameters": [
-                    {
-                        "name": "merchant_id",
-                        "in": "path",
-                        "description": "the ID of the merchant that should be deleted",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "merchant successfully deleted"
-                    },
-                    "400": {
-                        "description": "no merchant_id provided"
-                    },
-                    "409": {
-                        "description": "this merchant_id is not known to the producer"
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
         "/products": {
             "get": {
                 "tags": [
@@ -1310,33 +1170,6 @@
                 "name",
                 "price",
                 "quality"
-            ]
-        },
-        "RegisteredMerchant": {
-            "type": "object",
-            "properties": {
-                "merchant_id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "the merchant_id used to identify the merchant",
-                    "example": "1"
-                },
-                "products": {
-                    "type": "array",
-                    "description": "the list of product_ids of the products this merchant can buy from the producer",
-                    "example": [
-                        "1",
-                        "2",
-                        "412"
-                    ],
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "merchant_id",
-                "products"
             ]
         },
         "PublicKey": {
