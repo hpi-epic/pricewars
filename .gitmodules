@@ -1,0 +1,18 @@
+[submodule "UI"]
+	path = UI
+	url = https://github.com/hpi-epic/pricewars-mgmt-ui
+[submodule "Consumer"]
+	path = Consumer
+	url = https://github.com/hpi-epic/pricewars-consumer
+[submodule "Merchant"]
+	path = Merchant
+	url = https://github.com/hpi-epic/pricewars-merchant
+[submodule "Marketplace"]
+	path = Marketplace
+	url = https://github.com/hpi-epic/pricewars-marketplace
+[submodule "Producer"]
+	path = Producer
+	url = https://github.com/hpi-epic/pricewars-producer
+[submodule "kafka-rest"]
+	path = kafka-rest
+	url = https://github.com/hpi-epic/pricewars-kafka-rest
