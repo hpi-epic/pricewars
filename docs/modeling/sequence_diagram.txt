@@ -1,0 +1,44 @@
+title Setup
+
+Merchant->Marketplace: register
+Marketplace-->Merchant:id
+Consumer->Marketplace: register
+Marketplace-->Consumer:id
+MGMT-UI->Marketplace: GET/merchants
+Marketplace-->MGMT-UI:
+MGMT-UI->Marketplace: GET/consumer
+Marketplace-->MGMT-UI:
+MGMT-UI->Producer: POST/settings
+MGMT-UI->Merchant: GET/settings
+Merchant-->MGMT-UI:
+MGMT-UI->Merchant: POST/settings
+MGMT-UI->Consumer: GET/settings
+Consumer-->MGMT-UI:
+MGMT-UI->Consumer: POST/settings
+note over Merchant,Marketplace,Consumer,MGMT-UI,Producer: Meta-Setup completed
+Merchant->Producer:POST/buyers
+Producer-->Merchant:products
+Merchant->Marketplace:POST/offers
+note over Merchant,Marketplace,Consumer,MGMT-UI,Producer: internal Setup completed & initial products on marketplace
+loop Consumer
+Consumer->Marketplace:GET/offers
+Marketplace->Producer:GET/products
+Producer-->Marketplace:product details
+Marketplace-->Consumer:offers
+opt Buying Decision
+Consumer->Marketplace:POST/offers/{id}/buy
+Marketplace-->Consumer:
+Marketplace->Merchant:POST/sold
+Merchant-->Marketplace:
+Merchant->Producer:GET/products/buy
+Producer-->Merchant:
+Merchant->Marketplace:PATCH/offers/{id}/restock
+end
+end
+loop Merchant adjustprice
+Merchant->Marketplace:GET/offers
+Marketplace-->Merchant:
+loop for each product
+Merchant->Marketplace:PUT/offers/{id}
+end
+end
