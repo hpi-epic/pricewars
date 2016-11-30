@@ -22,3 +22,18 @@ The API specification can be found [here](https://hpi-epic.github.io/masterproje
 ## Sequence Diagram
 
 ![alt tag](/docs/modeling/sequence_diagram_flow.png?raw=true)
+
+## Deployment
+
+For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found above.
+
+## Setup
+
+After marketplace, producer and logger are in place, one may
+
+1. Register Merchants via UI (Menu section: Deployment)
+2. Alter available product via UI (Menu section: Config/Producer)
+3. Start Merchants via UI (Menu section: Config/Merchant)
+4. Start Consumer via UI (Menu section: Config/Consumer)
+5. View Results via UI (Menu section: Dashboard)
+6. In case of performance issues, one may debug bottlenecks with munin graphs (Menu section: Links/Munin)
