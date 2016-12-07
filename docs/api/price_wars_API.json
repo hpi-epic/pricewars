@@ -3,7 +3,7 @@
     "info": {
         "title": "Price Wars API",
         "description": "API for Price Wars Master Project",
-        "version": "1.0.1"
+        "version": "1.0.2"
     },
     "host": "api.mp_pricewars.com",
     "schemes": [
@@ -76,6 +76,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     },
+                    "451": {
+                        "description": "Invalid signature",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "default": {
                         "description": "Unexpected error",
                         "schema": {
@@ -133,7 +139,7 @@
                         "in": "body",
                         "required": false,
                         "schema": {
-                            "$ref": "#/definitions/OfferRequest"
+                            "$ref": "#/definitions/OfferUpdateRequest"
                         }
                     }
                 ],
@@ -261,13 +267,28 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "offer sucessfully restocked"
+                        "description": "offer sucessfully restocked",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "404": {
-                        "description": "offer not found"
+                        "description": "offer not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     },
                     "417": {
-                        "description": "offer could not be updated, because the resulting amount is invalid (e.g. 10 items are left in stock and you requested to remove 15. The remaining amount must be positive)"
+                        "description": "offer could not be updated, because the resulting amount is invalid (e.g. 10 items are left in stock and you requested to remove 15. The remaining amount must be positive)",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "451": {
+                        "description": "Invalid signature",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -759,11 +780,23 @@
         "OfferRequest": {
             "type": "object",
             "properties": {
+                "uid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the uid (unique id for product_id and quality) of this offer"
+                },
                 "product_id": {
                     "type": "integer",
                     "format": "int64",
                     "example": 2,
                     "description": "the product this offer is about"
+                },
+                "quality": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the quality of the product offered"
                 },
                 "merchant_id": {
                     "type": "integer",
@@ -775,7 +808,83 @@
                     "type": "integer",
                     "format": "int32",
                     "example": 5,
-                    "description": "the amount of products offered for this price"
+                    "description": "the amount of products offered for this price  (must be smaller or equal to the one amount recieved from the producer)"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 123.45,
+                    "description": "price of one product (item/piece)"
+                },
+                "shipping_time": {
+                    "type": "object",
+                    "description": "time until consumer receives the products",
+                    "properties": {
+                        "standard": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 10,
+                            "description": "standard shipping"
+                        },
+                        "prime": {
+                            "type": "integer",
+                            "format": "int32",
+                            "example": 3,
+                            "description": "shipping with prime"
+                        }
+                    },
+                    "required": [
+                        "standard"
+                    ]
+                },
+                "prime": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "is true, if offer is available on prime"
+                },
+                "signature": {
+                    "type": "string",
+                    "example": "zJlT3PjI+ocmRKln9PjR1jkEfWkLN7ShJT0NxGPTnjM=",
+                    "description": "the unchanged signature recieved from the producer"
+                }
+            },
+            "required": [
+                "uid",
+                "product_id",
+                "quality",
+                "merchant_id",
+                "amount",
+                "price",
+                "shipping_time",
+                "signature"
+            ]
+        },
+        "OfferUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "uid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the uid (unique id for product_id and quality) of this offer"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2,
+                    "description": "the product this offer is about"
+                },
+                "quality": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the quality of the product offered"
+                },
+                "merchant_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1,
+                    "description": "the merchant selling the product for this price"
                 },
                 "price": {
                     "type": "number",
@@ -811,9 +920,10 @@
                 }
             },
             "required": [
+                "uid",
                 "product_id",
+                "quality",
                 "merchant_id",
-                "amount",
                 "price",
                 "shipping_time"
             ]
@@ -823,15 +933,28 @@
             "properties": {
                 "offer_id": {
                     "type": "integer",
+                    "format": "int64",
                     "example": 1,
                     "description": "unique identifier for an offer",
                     "readOnly": true
+                },
+                "uid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the uid (unique id for product_id and quality) of this offer"
                 },
                 "product_id": {
                     "type": "integer",
                     "format": "int64",
                     "example": 2,
                     "description": "the product this offer is about"
+                },
+                "quality": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the quality of the product offered"
                 },
                 "merchant_id": {
                     "type": "integer",
@@ -843,7 +966,7 @@
                     "type": "integer",
                     "format": "int32",
                     "example": 5,
-                    "description": "the amount of products offered for this price"
+                    "description": "the amount of products offered for this price (must be smaller or equal to the one amount recieved from the producer)"
                 },
                 "price": {
                     "type": "number",
@@ -880,7 +1003,9 @@
             },
             "required": [
                 "offer_id",
+                "uid",
                 "product_id",
+                "quality",
                 "merchant_id",
                 "amount",
                 "price",
@@ -895,10 +1020,16 @@
                     "format": "int32",
                     "example": -5,
                     "description": "specifies the amount to add (positive integer, no sign required) or remove (negative integer) from the stock"
+                },
+                "signature": {
+                    "type": "string",
+                    "example": "zJlT3PjI+ocmRKln9PjR1jkEfWkLN7ShJT0NxGPTnjM=",
+                    "description": "the unchanged signature recieved from the producer"
                 }
             },
             "required": [
-                "amount"
+                "amount",
+                "signature"
             ]
         },
         "MerchantRequest": {
@@ -1025,7 +1156,7 @@
                     "example": 123.45,
                     "description": "specifies the price for the product (to check for changes)"
                 },
-                "quantity": {
+                "amount": {
                     "type": "integer",
                     "format": "int32",
                     "example": 5,
@@ -1044,7 +1175,7 @@
             },
             "required": [
                 "price",
-                "quantity",
+                "amount",
                 "consumer_id",
                 "prime"
             ]
@@ -1129,7 +1260,7 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "A unique identifier for this product. Multiple products with the same UID all have the same product_id AND the same quality.",
-                    "example": 15
+                    "example": 11
                 },
                 "product_id": {
                     "type": "integer",
@@ -1161,7 +1292,7 @@
                 "signature": {
                     "type": "string",
                     "description": "The encrypted hsignature ash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
-                    "example": "100563ac9965fe07dfd770866bf56d06e583"
+                    "example": "M6V4l4Zsvo8J6z/MYm0vdhD9O2ucuqabDibdIlSLgZs="
                 }
             },
             "required": [
@@ -1177,8 +1308,8 @@
             "properties": {
                 "decryption_key": {
                     "type": "string",
-                    "description": "the decryption_key used to encrypt the products sold to the merchant",
-                    "example": "3858a509b3bf4a74fab1e998e0f05b623a52063dc6db3d7af09fabb17d283450"
+                    "description": "the decryption_key used to encrypt the products sold to the merchant (encoded in Base64)",
+                    "example": "S2gmXo+STy5btUZW51nBVQ=="
                 }
             }
         },
