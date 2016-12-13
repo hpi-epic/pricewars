@@ -355,11 +355,13 @@
                     "marketplace"
                 ],
                 "summary": "as a user, I initialize the marketplace to update the current pubkey from the producer",
-                "parameters": [
-                ],
+                "parameters": [],
                 "responses": {
-                    "204": {
-                        "description": "PubKey refetched successfully"
+                    "200": {
+                        "description": "PubKey refetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/PublicKeyUpdated"
+                        }
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -1231,6 +1233,25 @@
             "required": [
                 "offer_id",
                 "amount"
+            ]
+        },
+        "PublicKeyUpdated": {
+            "type": "object",
+            "properties": {
+                "old producer key": {
+                    "type": "string",
+                    "description": "the old producer key prior to the update",
+                    "example": ""
+                },
+                "new producer key": {
+                    "type": "string",
+                    "description": "the old producer key prior to the update",
+                    "example": "voTo/RyIggxrm8/AGCM1HQ=="
+                }
+            },
+            "required": [
+                "old producer key",
+                "new producer key"
             ]
         },
         "Behavior": {
