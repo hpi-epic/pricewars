@@ -349,6 +349,27 @@
                 }
             }
         },
+        "/producer/key": {
+            "put": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "as a user, I initialize the marketplace to update the current pubkey from the producer",
+                "parameters": [
+                ],
+                "responses": {
+                    "204": {
+                        "description": "PubKey refetched successfully"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/merchants": {
             "get": {
                 "tags": [
