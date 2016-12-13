@@ -321,7 +321,7 @@
                 "tags": [
                     "marketplace"
                 ],
-                "summary": "as a cnsumer, register as a consumer at the marketplace",
+                "summary": "as a consumer, register as a consumer at the marketplace",
                 "parameters": [
                     {
                         "name": "body",
