@@ -1,44 +1,49 @@
 title Setup
 
-Merchant->Marketplace: register
-Marketplace-->Merchant:id
-Consumer->Marketplace: register
-Marketplace-->Consumer:id
-MGMT-UI->Marketplace: GET/merchants
-Marketplace-->MGMT-UI:
-MGMT-UI->Marketplace: GET/consumer
-Marketplace-->MGMT-UI:
-MGMT-UI->Producer: POST/settings
-MGMT-UI->Merchant: GET/settings
-Merchant-->MGMT-UI:
-MGMT-UI->Merchant: POST/settings
-MGMT-UI->Consumer: GET/settings
-Consumer-->MGMT-UI:
-MGMT-UI->Consumer: POST/settings
+Marketplace->+Producer: GET/decryption_key
+Producer-->-Marketplace:
+loop Producer add product
+MGMT-UI->+Producer: PUT/product/{id}
+Producer-->-MGMT-UI:
+end
+loop Merchant start
+MGMT-UI->+Merchant: POST/settings/execution {state: "init"}
+Merchant->+Marketplace: POST/merchants
+Marketplace-->-Merchant:
+Merchant-->-MGMT-UI:
+MGMT-UI->+Merchant: POST/settings/execution {state: "start"}
+Merchant-->-MGMT-UI:
+end
+loop Consumer start
+MGMT-UI->+Consumer: POST/setting
+Consumer-->-MGMT-UI:
+end
+
 note over Merchant,Marketplace,Consumer,MGMT-UI,Producer: Meta-Setup completed
-Merchant->Producer:POST/buyers
-Producer-->Merchant:products
-Merchant->Marketplace:POST/offers
+Merchant->+Producer:POST/buyers
+Producer-->-Merchant:products
+Merchant->+Marketplace:POST/offers
+Marketplace-->-Merchant:
+
 note over Merchant,Marketplace,Consumer,MGMT-UI,Producer: internal Setup completed & initial products on marketplace
 loop Consumer
-Consumer->Marketplace:GET/offers
-Marketplace->Producer:GET/products
-Producer-->Marketplace:product details
-Marketplace-->Consumer:offers
+Consumer->+Marketplace:GET/offers
+Marketplace-->-Consumer:offers
 opt Buying Decision
-Consumer->Marketplace:POST/offers/{id}/buy
-Marketplace-->Consumer:
-Marketplace->Merchant:POST/sold
-Merchant-->Marketplace:
-Merchant->Producer:GET/products/buy
-Producer-->Merchant:
-Merchant->Marketplace:PATCH/offers/{id}/restock
+Consumer->+Marketplace:POST/offers/{id}/buy
+Marketplace->>+Merchant:POST/sold
+Marketplace-->-Consumer:
+Merchant->+Producer:GET/products/buy
+Producer-->-Merchant:
+Merchant->>-Marketplace:PATCH/offers/{id}/restock
 end
 end
 loop Merchant adjustprice
-Merchant->Marketplace:GET/offers
-Marketplace-->Merchant:
+Merchant->+Marketplace:GET/offers
+Marketplace-->-Merchant:
 loop for each product
-Merchant->Marketplace:PUT/offers/{id}
+Merchant->+Marketplace:PUT/offers/{id}
+Marketplace-->-Merchant:
 end
 end
+
