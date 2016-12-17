@@ -1,0 +1,3 @@
+[submodule "pricewars-mgmt-ui"]
+	path = pricewars-mgmt-ui
+	url = https://github.com/hpi-epic/pricewars-mgmt-ui.git
