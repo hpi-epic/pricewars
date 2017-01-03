@@ -7,20 +7,27 @@
     },
     "host": "api.mp_pricewars.com",
     "schemes": [
-        "https"
+        "http"
     ],
+    "securityDefinitions": {
+        "Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "basePath": "/api",
     "produces": [
         "application/json"
     ],
     "paths": {
         "/config": {
-          "get": {
-            "tags": [
+            "get": {
+                "tags": [
                     "marketplace"
                 ],
-            "summary": "Get current settings",
-            "parameters": [
+                "summary": "Get current settings",
+                "parameters": [
                     {
                         "name": "body",
                         "description": "current settings",
@@ -30,22 +37,22 @@
                             "$ref": "#/definitions/MarketplaceSetting"
                         }
                     }
-              ],
-              "responses": {
+                ],
+                "responses": {
                     "200": {
                         "description": "The settings were updated",
                         "schema": {
                             "$ref": "#/definitions/MarketplaceSetting"
                         }
                     }
-              }
-          },
-          "put": {
-            "tags": [
+                }
+            },
+            "put": {
+                "tags": [
                     "marketplace"
                 ],
-            "summary": "Update settings",
-            "parameters": [
+                "summary": "Update settings",
+                "parameters": [
                     {
                         "name": "body",
                         "description": "updated settings",
@@ -55,16 +62,16 @@
                             "$ref": "#/definitions/MarketplaceSetting"
                         }
                     }
-            ],
-            "responses": {
-                "200": {
-                    "description": "The settings were updated",
-                    "schema": {
-                        "$ref": "#/definitions/MarketplaceSetting"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The settings were updated",
+                        "schema": {
+                            "$ref": "#/definitions/MarketplaceSetting"
+                        }
                     }
                 }
             }
-          }
         },
         "/offers": {
             "get": {
@@ -100,6 +107,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -180,6 +192,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -223,6 +240,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -243,6 +265,11 @@
         },
         "/offers/{id}/buy": {
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -292,6 +319,11 @@
         },
         "/offers/{id}/restock": {
             "patch": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -468,7 +500,7 @@
                     "201": {
                         "description": "the merchant ID",
                         "schema": {
-                            "$ref": "#/definitions/MerchantResponse"
+                            "$ref": "#/definitions/MerchantRegisterResponse"
                         }
                     },
                     "default": {
@@ -512,6 +544,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -643,7 +680,7 @@
                 "tags": [
                     "consumer"
                 ],
-                "summary": "as a consumer I want to register the consuemr to the marketplace",
+                "summary": "as a consumer I want to register the consumer to the marketplace",
                 "parameters": [
                     {
                         "name": "body",
@@ -1151,9 +1188,8 @@
                     "description": "the name of the algorithm this merchant uses"
                 },
                 "merchant_id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 3,
+                    "type": "string",
+                    "example": "MsganJKAZO/GALJFFPSUG",
                     "description": "unique identifier for a merchant",
                     "readOnly": true
                 }
@@ -1163,6 +1199,27 @@
                 "merchant_name",
                 "merchant_id",
                 "algorithm_name"
+            ]
+        },
+        "MerchantRegisterResponse": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/MerchantResponse"
+                },
+                {
+                    "properties": {
+                        "merchant_token": {
+                            "type": "string",
+                            "example": "MsganJKAZO/GALJFFPSUG",
+                            "description": "token that needs to be provided for every API request",
+                            "readOnly": true
+                        }
+                    },
+                    "required": [
+                        "merchant_token"
+                    ]
+                }
             ]
         },
         "ConsumerRegister": {
