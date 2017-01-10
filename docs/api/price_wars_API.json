@@ -1047,11 +1047,6 @@
                     "example": 11,
                     "description": "the quality of the product offered"
                 },
-                "merchant_id": {
-                    "type": "string",
-                    "example": 1,
-                    "description": "the merchant selling the product for this price"
-                },
                 "amount": {
                     "type": "integer",
                     "format": "int32",
@@ -1100,7 +1095,6 @@
                 "uid",
                 "product_id",
                 "quality",
-                "merchant_id",
                 "amount",
                 "price",
                 "shipping_time",
@@ -1127,12 +1121,6 @@
                     "format": "int64",
                     "example": 11,
                     "description": "the quality of the product offered"
-                },
-                "merchant_id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 1,
-                    "description": "the merchant selling the product for this price"
                 },
                 "price": {
                     "type": "number",
@@ -1171,7 +1159,6 @@
                 "uid",
                 "product_id",
                 "quality",
-                "merchant_id",
                 "price",
                 "shipping_time"
             ]
