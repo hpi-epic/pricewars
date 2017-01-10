@@ -327,7 +327,7 @@
                 "tags": [
                     "marketplace"
                 ],
-                "summary": "as a merchant, add or remove a specified amount from your stock",
+                "summary": "as a merchant, add a specified amount from your stock",
                 "parameters": [
                     {
                         "name": "id",
@@ -351,25 +351,19 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "offer sucessfully restocked",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                        "description": "offer sucessfully restocked"
                     },
                     "404": {
-                        "description": "offer not found",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                        "description": "offer not found"
                     },
                     "417": {
-                        "description": "offer could not be updated, because the resulting amount is invalid (e.g. 10 items are left in stock and you requested to remove 15. The remaining amount must be positive)",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
+                        "description": "offer could not be updated, because the resulting amount is invalid (e.g. 10 items are left in stock and you requested to remove 15. The remaining amount must be positive)"
                     },
                     "451": {
-                        "description": "Invalid signature",
+                        "description": "Invalid signature"
+                    },
+                    "default": {
+                        "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -402,6 +396,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -481,6 +480,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -1253,7 +1257,7 @@
                     "type": "integer",
                     "format": "int32",
                     "example": -5,
-                    "description": "specifies the amount to add (positive integer, no sign required) or remove (negative integer) from the stock"
+                    "description": "specifies the amount to add to the stock. This value must be positive."
                 },
                 "signature": {
                     "type": "string",
