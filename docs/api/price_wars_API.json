@@ -788,9 +788,77 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "Update products with the given array (all of them!)",
+                "parameters": [
+                    {
+                        "name": "products",
+                        "description": "updated products",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "406": {
+                        "description": "products have to be in the form of an array"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "Add products",
+                "parameters": [
+                    {
+                        "name": "products",
+                        "description": "Products to add (does not have to be in the form of an array, can also be a single product-json). The products don't have to provide a UID - the UID will be auto-generated from the product-id and the quality. Each product also has to provide a name and price!",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "406": {
+                        "description": "a product with this UID (ie the provided product_id and quality) already exists"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
             }
         },
-        "/products/{product_id}": {
+        "/products/{product_uid}": {
             "get": {
                 "tags": [
                     "producer"
@@ -798,8 +866,8 @@
                 "summary": "a specific product of the producer",
                 "parameters": [
                     {
-                        "name": "product_id",
-                        "description": "product id",
+                        "name": "product_uid",
+                        "description": "product_uid",
                         "in": "path",
                         "required": true,
                         "type": "integer"
@@ -816,7 +884,80 @@
                         }
                     },
                     "404": {
-                        "description": "this product_id is not known to the producer"
+                        "description": "this product_uid does not exist for this producer"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "Update a specific product",
+                "parameters": [
+                    {
+                        "name": "product_uid",
+                        "description": "product_uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "products",
+                        "description": "updated product (without UID - the UID is auto-generated if necessary)",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "product with this UID does not exist OR a product with this UID (ie the provided product_id and quality) already exists - returned if the changes of the product lead to a change in UID that would create a double UID"
+                    },
+                    "406": {
+                        "description": "product has to be in the form of an array"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "producer"
+                ],
+                "summary": "Delete a specific product",
+                "parameters": [
+                    {
+                        "name": "product_uid",
+                        "description": "product_uid",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "product with this UID does not exist"
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -835,26 +976,22 @@
                 "summary": "as a merchant, I want to buy a random product from the producer",
                 "parameters": [
                     {
-                        "name": "merchant_id",
+                        "name": "merchant_token",
                         "in": "query",
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "the ID of the merchant wanting to buy a product ",
+                        "type": "string",
+                        "description": "the token of the merchant wanting to buy a product",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "a random product of amount 1",
+                        "description": "a random product of amount 1 and with a signature for the marketplace to validate this product when the merchant wants to sell it",
                         "schema": {
                             "$ref": "#/definitions/Product"
                         }
                     },
                     "400": {
-                        "description": "no merchant_id provided"
-                    },
-                    "401": {
-                        "description": "the merchant is not known to the producer"
+                        "description": "no merchant_token provided"
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -911,8 +1048,7 @@
                     "description": "the quality of the product offered"
                 },
                 "merchant_id": {
-                    "type": "integer",
-                    "format": "int64",
+                    "type": "string",
                     "example": 1,
                     "description": "the merchant selling the product for this price"
                 },
@@ -1069,8 +1205,7 @@
                     "description": "the quality of the product offered"
                 },
                 "merchant_id": {
-                    "type": "integer",
-                    "format": "int64",
+                    "type": "string",
                     "example": 1,
                     "description": "the merchant selling the product for this price"
                 },
@@ -1225,12 +1360,12 @@
         "ConsumerRegister": {
             "type": "object",
             "properties": {
-                "consumer_url": {
+                "api_endpoint_url": {
                     "type": "string",
                     "example": "http://pricewar-consumer-vm:8000/",
                     "description": "the url to the consumer's api"
                 },
-                "name": {
+                "consumer_name": {
                     "type": "string",
                     "example": "PriceWar Consumer",
                     "description": "the name of the consumer"
@@ -1242,20 +1377,20 @@
                 }
             },
             "required": [
-                "consumer_url",
-                "name",
+                "api_endpoint_url",
+                "consumer_name",
                 "description"
             ]
         },
         "ConsumerRegisterResponse": {
             "type": "object",
             "properties": {
-                "consumer_url": {
+                "api_endpoint_url": {
                     "type": "string",
                     "example": "http://pricewar-consumer-vm:8000/",
                     "description": "the url to the consumer's api"
                 },
-                "name": {
+                "consumer_name": {
                     "type": "string",
                     "example": "PriceWar Consumer",
                     "description": "the name of the consumer"
@@ -1274,8 +1409,8 @@
                 }
             },
             "required": [
-                "consumer_url",
-                "name",
+                "api_endpoint_url",
+                "consumer_name",
                 "description",
                 "consumer_id"
             ]
@@ -1294,12 +1429,6 @@
                     "example": 5,
                     "description": "specifies the amount of products to buy"
                 },
-                "consumer_id": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 5,
-                    "description": "specifies the amount of products to buy"
-                },
                 "prime": {
                     "type": "boolean",
                     "description": "specifies whether the customer bought the product with prime"
@@ -1308,7 +1437,6 @@
             "required": [
                 "price",
                 "amount",
-                "consumer_id",
                 "prime"
             ]
         },
