@@ -1580,6 +1580,24 @@
                     "type": "string",
                     "description": "The encrypted hsignature ash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
                     "example": "M6V4l4Zsvo8J6z/MYm0vdhD9O2ucuqabDibdIlSLgZs="
+                },
+                "time_to_live": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "duration until products are not good for sale anymore",
+                    "example": -1
+                },
+                "stock": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "how many products are available (perishable goods)",
+                    "example": -1
+                },
+                "start_of_lifetime": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start of lifetime of perishable product",
+                    "example": -1
                 }
             },
             "required": [
