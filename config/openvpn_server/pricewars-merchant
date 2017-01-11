@@ -1,5 +1,0 @@
-# config for client merchant
-ifconfig-push 10.8.0.21 255.255.255.192
-#push "route 10.1.135.0 255.255.255.0 10.1.134.62"
-# push "dhcp-option WINS addr"
-# push "dhcp-option DNS addr"
