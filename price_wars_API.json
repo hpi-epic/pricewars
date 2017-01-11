@@ -134,8 +134,20 @@
                             "$ref": "#/definitions/OfferResponse"
                         }
                     },
+                    "401": {
+                        "description": "Invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "422": {
                         "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "429": {
+                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -225,8 +237,20 @@
                             "$ref": "#/definitions/OfferResponse"
                         }
                     },
+                    "401": {
+                        "description": "Invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "422": {
                         "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "429": {
+                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -254,8 +278,20 @@
                     "204": {
                         "description": "Deleted"
                     },
+                    "401": {
+                        "description": "Invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "422": {
                         "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "429": {
+                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -353,6 +389,12 @@
                     "204": {
                         "description": "offer sucessfully restocked"
                     },
+                    "401": {
+                        "description": "Invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
                     "404": {
                         "description": "offer not found"
                     },
@@ -396,11 +438,6 @@
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "Token": []
-                    }
-                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -480,11 +517,6 @@
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "Token": []
-                    }
-                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -560,6 +592,12 @@
                 "responses": {
                     "204": {
                         "description": "Deleted"
+                    },
+                    "401": {
+                        "description": "Invalid token",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -1603,28 +1641,13 @@
         "Error": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 406,
-                    "readOnly": true,
-                    "description": "currently equivalent to the HTTP status code"
-                },
-                "message": {
+                "error": {
                     "type": "string",
-                    "example": "Not Acceptable",
-                    "readOnly": true,
-                    "description": "a more detailled message about the error"
-                },
-                "fields": {
-                    "type": "string",
-                    "readOnly": true,
-                    "example": "Constraints violated for property <name>.",
-                    "description": "Additional information, optional"
+                    "example": "Not authorized or API request limit reached! Status Code: 429 Too Many Requests"
                 }
             },
             "required": [
-                "message"
+                "error"
             ]
         }
     }
