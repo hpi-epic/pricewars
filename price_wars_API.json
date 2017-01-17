@@ -134,20 +134,8 @@
                             "$ref": "#/definitions/OfferResponse"
                         }
                     },
-                    "401": {
-                        "description": "Invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
                     "422": {
                         "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "429": {
-                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -237,20 +225,8 @@
                             "$ref": "#/definitions/OfferResponse"
                         }
                     },
-                    "401": {
-                        "description": "Invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
                     "422": {
                         "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "429": {
-                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -278,20 +254,8 @@
                     "204": {
                         "description": "Deleted"
                     },
-                    "401": {
-                        "description": "Invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
                     "422": {
                         "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "429": {
-                        "description": "Request limit reached",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -389,12 +353,6 @@
                     "204": {
                         "description": "offer sucessfully restocked"
                     },
-                    "401": {
-                        "description": "Invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
                     "404": {
                         "description": "offer not found"
                     },
@@ -438,6 +396,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -517,6 +480,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "tags": [
                     "marketplace"
                 ],
@@ -592,12 +560,6 @@
                 "responses": {
                     "204": {
                         "description": "Deleted"
-                    },
-                    "401": {
-                        "description": "Invalid token",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
                     }
                 }
             }
@@ -1618,6 +1580,24 @@
                     "type": "string",
                     "description": "The encrypted hsignature ash of the product (this is used by the marketplace to validate that a merchant is allowed to sell this product). When decrypted reads as \"{uid} {amount} {time in ms when product was sent to merchant}\".",
                     "example": "M6V4l4Zsvo8J6z/MYm0vdhD9O2ucuqabDibdIlSLgZs="
+                },
+                "time_to_live": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "duration until products are not good for sale anymore",
+                    "example": -1
+                },
+                "stock": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "how many products are available (perishable goods)",
+                    "example": -1
+                },
+                "start_of_lifetime": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start of lifetime of perishable product",
+                    "example": -1
                 }
             },
             "required": [
@@ -1641,13 +1621,28 @@
         "Error": {
             "type": "object",
             "properties": {
-                "error": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 406,
+                    "readOnly": true,
+                    "description": "currently equivalent to the HTTP status code"
+                },
+                "message": {
                     "type": "string",
-                    "example": "Not authorized or API request limit reached! Status Code: 429 Too Many Requests"
+                    "example": "Not Acceptable",
+                    "readOnly": true,
+                    "description": "a more detailled message about the error"
+                },
+                "fields": {
+                    "type": "string",
+                    "readOnly": true,
+                    "example": "Constraints violated for property <name>.",
+                    "description": "Additional information, optional"
                 }
             },
             "required": [
-                "error"
+                "message"
             ]
         }
     }
