@@ -1437,21 +1437,58 @@
                 "offer_id": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "the offer ID of the sold offer in the marketplace"
+                    "example": 1,
+                    "description": "the offer ID of the sold offer in the marketplace",
+                    "readOnly": true
+                },
+                "uid": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the uid (unique id for product_id and quality) of this offer"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2,
+                    "description": "the product this offer is about"
+                },
+                "quality": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 11,
+                    "description": "the quality of the product offered"
+                },
+                "merchant_id": {
+                    "type": "string",
+                    "example": 1,
+                    "description": "the merchant selling the product for this price"
                 },
                 "amount": {
                     "type": "integer",
                     "format": "int32",
+                    "example": 5,
+                    "description": "the amount of products offered for this price (must be smaller or equal to the one amount recieved from the producer)"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 123.45,
+                    "description": "price of one product (item/piece)"
+                },
+                "amount_sold": {
+                    "type": "integer",
+                    "format": "int32",
                     "description": "how often was the offer sold"
+                },
+                "price_sold": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "the price sent by the customer (might be higher [but not lower] than the current price)"
                 },
                 "consumer_id": {
                     "type": "string",
                     "description": "the ID of the consumer who bought the offer"
-                },
-                "price": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "the price sent by the customer (might be higher [but not lower] than the current price)"
                 },
                 "prime": {
                     "type": "boolean",
@@ -1460,7 +1497,14 @@
             },
             "required": [
                 "offer_id",
-                "amount"
+                "uid",
+                "product_id",
+                "quality",
+                "merchant_id",
+                "amount",
+                "price",
+                "price_sold",
+                "amount_sold"
             ]
         },
         "PublicKeyUpdated": {
