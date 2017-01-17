@@ -1,3 +1,15 @@
-[submodule "pricewars-mgmt-ui"]
-	path = pricewars-mgmt-ui
+[submodule "merchant"]
+	path = merchant
+	url = https://github.com/hpi-epic/pricewars-merchant.git
+[submodule "consumer"]
+	path = consumer
+	url = https://github.com/hpi-epic/pricewars-consumer.git
+[submodule "producer"]
+	path = producer
+	url = https://github.com/hpi-epic/pricewars-producer.git
+[submodule "mgmt-ui"]
+	path = mgmt-ui
 	url = https://github.com/hpi-epic/pricewars-mgmt-ui.git
+[submodule "kafka-reverse-proxy"]
+	path = kafka-reverse-proxy
+	url = https://github.com/hpi-epic/pricewars-kafka-reverse-proxy.git
