@@ -1542,13 +1542,13 @@
         "MarketplaceSetting": {
             "type": "object",
             "properties": {
-                "tick": {
+                "consumer_per_minute": {
                     "type": "number",
-                    "description": "tick represents the time speed; increase in case of fast forward"
+                    "description": "amount of consumer coming in per minute"
                 },
-                "max_req_per_sec": {
+                "max_updates_per_sale": {
                     "type": "number",
-                    "description": "max_req_per_sec represents the max req per sec"
+                    "description": "how often a merchant can update the price between sales"
                 }
             }
         },
