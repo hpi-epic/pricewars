@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Price Wars API
   description: API for Price Wars Master Project
-  version: 1.0.2
+  version: 1.0.3
 host: api.mp_pricewars.com
 schemes:
   - http
@@ -59,6 +59,10 @@ paths:
           description: filter for products
           type: integer
           format: int64
+        - name: include_empty_offer
+          in: query
+          description: includes own offers where amount = 0 when token is sent in header
+          type: boolean
       responses:
         '200':
           description: An array of offers
@@ -1129,10 +1133,16 @@ definitions:
     properties:
       consumer_per_minute:
         type: number
+        format: float
         description: amount of consumer coming in per minute
       max_updates_per_sale:
         type: number
+        format: float
         description: how often a merchant can update the price between sales
+      max_req_per_sec:
+        type: number
+        format: float
+        description: definies the amount of maximum requests per second
   Setting:
     type: object
     properties:
