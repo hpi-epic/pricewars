@@ -564,6 +564,65 @@
                 }
             }
         },
+        "/merchants/token/{token}": {
+            "parameters": [
+                {
+                    "name": "token",
+                    "description": "the token of a merchant",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "put": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "update the merchant settings",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "api-endpoint url",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/MerchantRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "the merchant ID",
+                        "schema": {
+                            "$ref": "#/definitions/MerchantRegisterResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "marketplace"
+                ],
+                "summary": "remove merchant and token form the game (also remove offers)",
+                "responses": {
+                    "200": {
+                        "description": "merchant and token deleted"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/sold": {
             "post": {
                 "tags": [
