@@ -13,3 +13,6 @@
 [submodule "kafka-reverse-proxy"]
 	path = kafka-reverse-proxy
 	url = https://github.com/hpi-epic/pricewars-kafka-reverse-proxy.git
+[submodule "marketplace"]
+	path = marketplace
+	url = https://github.com/hpi-epic/pricewars-marketplace.git
