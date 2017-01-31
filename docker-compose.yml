@@ -1,3 +1,8 @@
+# If running in Docker for macOS, you need to adjust some DNS settings:
+#   - open /etc/hosts as root
+#   - add the following line (and don't forget aditional names if you specify more containers!)
+#     127.0.0.1       db merchant1 merchant2 marketplace consumer producer
+
 version: '2'
 services:
   db:
@@ -10,7 +15,7 @@ services:
       - POSTGRES_DB=marketplace
   
   marketplace:
-    build: ./pricewars-marketplace
+    build: ./marketplace
     image: pricewars/marketplace
     ports:
       - "8080:8080"
@@ -21,7 +26,7 @@ services:
       - producer
 
   producer:
-    build: ./pricewars-producer
+    build: ./producer
     image: pricewars/producer
     ports:
       - "3050:3050"
@@ -29,7 +34,7 @@ services:
     #   - ./pricewars-producer:/producer
 
   merchant1:
-    build: ./pricewars-merchant/simple_competition_logic
+    build: ./merchant/simple_competition_logic
     image: pricewars/merchant
     ports:
       - "5001:5001"
@@ -41,7 +46,7 @@ services:
     command: python MerchantApp.py --port 5001
 
   merchant2:
-    build: ./pricewars-merchant/simple_competition_logic
+    build: ./merchant/simple_competition_logic
     image: pricewars/merchant
     ports:
       - "5002:5002"
@@ -53,7 +58,7 @@ services:
     command: python MerchantApp.py --port 5002
 
   consumer:
-    build: ./pricewars-consumer
+    build: ./consumer
     image: pricewars/consumer
     ports:
        - "3000:3000"
