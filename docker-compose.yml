@@ -1,7 +1,7 @@
 # If running in Docker for macOS, you need to adjust some DNS settings:
 #   - open /etc/hosts as root
 #   - add the following line (and don't forget aditional names if you specify more containers!)
-#     127.0.0.1       db merchant1 merchant2 marketplace consumer producer
+#     127.0.0.1       db redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics marketplace producer merchant1 merchant2 consumer  
 
 version: '2'
 services:
@@ -14,6 +14,11 @@ services:
       - POSTGRES_PASSWORD=1337
       - POSTGRES_DB=marketplace
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:
@@ -24,13 +29,23 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_DELETE_TOPIC_ENABLE=true
     depends_on:
       - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka-reverse-proxy:
+    build: ./kafka-reverse-proxy
+    image: pricewars/kafka-reverse-proxy
+    ports:
+      - "8001:8001"
+    depends_on:
+      - kafka
+    links:
+      - kafka
 
   flink-jobmanager:
     image: melentye/flink:latest
@@ -39,7 +54,7 @@ services:
     expose:
       - "6123"
     environment:
-      - KAFKA_URL: "kafka:9092"
+      - KAFKA_URL=kafka:9092
     command: "bash '/analytics/start-jobmanager.sh'"
     volumes:
       - ./docker-flink-jobs:/analytics
@@ -71,14 +86,23 @@ services:
     image: pricewars/marketplace
     ports:
       - "8080:8080"
+    environment:
+      - POSTGRES_USER=pricewars
+      - POSTGRES_PASSWORD=1337
+      - POSTGRES_URL=jdbc:postgresql://db/marketplace
+      - KAFKA_URL=kafka:9092
+      - REDIS_HOST=redis
+      - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:
     #   - ./pricewars-marketplace:/marketplace
     depends_on:
       - db
+      - redis
       - kafka
       - producer
     links:
       - db
+      - redis
       - kafka
       - producer
 
@@ -124,6 +148,9 @@ services:
     image: pricewars/consumer
     ports:
        - "3000:3000"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:
     #   - ./pricewars-consumer:/consumer
     depends_on:
