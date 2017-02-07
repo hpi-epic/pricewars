@@ -16,3 +16,6 @@
 [submodule "marketplace"]
 	path = marketplace
 	url = https://github.com/hpi-epic/pricewars-marketplace.git
+[submodule "analytics"]
+	path = analytics
+	url = https://github.com/hpi-epic/pricewars-analytics.git

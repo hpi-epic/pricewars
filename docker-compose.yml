@@ -6,14 +6,66 @@
 version: '2'
 services:
   db:
-    image: postgres
+    image: postgres:latest
     volumes:
       - ./docker-db:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=pricewars
       - POSTGRES_PASSWORD=1337
       - POSTGRES_DB=marketplace
-  
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  flink-jobmanager:
+    image: melentye/flink:latest
+    ports:
+      - "8081:8081"
+    expose:
+      - "6123"
+    environment:
+      - KAFKA_URL: "kafka:9092"
+    command: "bash '/analytics/start-jobmanager.sh'"
+    volumes:
+      - ./docker-flink-jobs:/analytics
+    depends_on:
+      - analytics
+      - kafka
+    links:
+      - kafka
+
+  flink-taskmanager:
+    image: melentye/flink:latest
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - flink-jobmanager
+    links:
+      - flink-jobmanager
+    command: taskmanager
+
+  analytics:
+    build: ./analytics
+    command: "bash -c 'cp -Rf /analytics/target/jars/* /export'"
+    volumes:
+      - ./docker-flink-jobs:/export
+
   marketplace:
     build: ./marketplace
     image: pricewars/marketplace
@@ -21,8 +73,13 @@ services:
       - "8080:8080"
     # volumes:
     #   - ./pricewars-marketplace:/marketplace
+    depends_on:
+      - db
+      - kafka
+      - producer
     links:
       - db
+      - kafka
       - producer
 
   producer:
@@ -30,6 +87,8 @@ services:
     image: pricewars/producer
     ports:
       - "3050:3050"
+    depends_on:
+      - kafka
     # volumes:
     #   - ./pricewars-producer:/producer
 
@@ -52,6 +111,9 @@ services:
       - "5002:5002"
     # volumes:
     #   - ./pricewars-merchant/simple_competition_logic:/merchant
+    depends_on:
+      - producer
+      - marketplace
     links:
       - producer
       - marketplace
@@ -64,5 +126,7 @@ services:
        - "3000:3000"
     # volumes:
     #   - ./pricewars-consumer:/consumer
+    depends_on:
+      - marketplace
     links:
       - marketplace
