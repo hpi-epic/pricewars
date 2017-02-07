@@ -10,6 +10,12 @@ cd masterproject-pricewars
 docker-compose up
 ```
 
+If running in Docker for macOS, you need to adjust some DNS settings:
+ - open /etc/hosts as root
+ - add the following line (and don't forget aditional names if you specify more containers!)
+
+`127.0.0.1       db redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics marketplace producer merchant1 merchant2 consumer`
+   
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found below.
 
