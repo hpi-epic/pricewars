@@ -1,14 +1,14 @@
 # If running in Docker for macOS, you need to adjust some DNS settings:
 #   - open /etc/hosts as root
 #   - add the following line (and don't forget aditional names if you specify more containers!)
-#     127.0.0.1       db redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics marketplace producer merchant1 merchant2 consumer  
+#     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics marketplace producer merchant1 merchant2 consumer
 
 version: '2'
 services:
-  db:
+  postgres:
     image: postgres:latest
     volumes:
-      - ./docker-db:/var/lib/postgresql/data
+      - ./docker-mounts/postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=pricewars
       - POSTGRES_PASSWORD=1337
@@ -18,24 +18,30 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    volumes:
+      - ./docker-mounts/redis:/data
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
+    volumes:
+      - ./docker-mounts/zookeeper:/opt/zookeeper-3.4.9/data
 
   kafka:
-    image: wurstmeister/kafka
+    image: wurstmeister/kafka:latest
     ports:
       - "9092:9092"
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_LOG_DIRS=/kafka/kafka-logs
     depends_on:
       - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker-mounts/kafka:/kafka/kafka-logs
 
   kafka-reverse-proxy:
     build: ./kafka-reverse-proxy
@@ -57,7 +63,7 @@ services:
       - KAFKA_URL=kafka:9092
     command: "bash '/analytics/start-jobmanager.sh'"
     volumes:
-      - ./docker-flink-jobs:/analytics
+      - ./docker-mounts/flink-jobs:/analytics
     depends_on:
       - analytics
       - kafka
@@ -69,17 +75,25 @@ services:
     expose:
       - "6121"
       - "6122"
+    environment:
+      - TASK_MANAGER_RPC_PORT=6122
+      - TASK_MANAGER_DATA_PORT=6121
     depends_on:
       - flink-jobmanager
     links:
       - flink-jobmanager
-    command: taskmanager
+    command: "bash '/analytics/start-taskmanager.sh'"
+    volumes:
+      - ./docker-mounts/flink-jobs:/analytics
+    depends_on:
+      - analytics
 
   analytics:
     build: ./analytics
+    image: pricewars/analytics
     command: "bash -c 'cp -Rf /analytics/target/jars/* /export'"
     volumes:
-      - ./docker-flink-jobs:/export
+      - ./docker-mounts/flink-jobs:/export
 
   marketplace:
     build: ./marketplace
@@ -89,19 +103,19 @@ services:
     environment:
       - POSTGRES_USER=pricewars
       - POSTGRES_PASSWORD=1337
-      - POSTGRES_URL=jdbc:postgresql://db/marketplace
+      - POSTGRES_URL=jdbc:postgresql://postgres/marketplace
       - KAFKA_URL=kafka:9092
       - REDIS_HOST=redis
       - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:
     #   - ./pricewars-marketplace:/marketplace
     depends_on:
-      - db
+      - postgres
       - redis
       - kafka
       - producer
     links:
-      - db
+      - postgres
       - redis
       - kafka
       - producer
@@ -117,7 +131,7 @@ services:
     #   - ./pricewars-producer:/producer
 
   merchant1:
-    build: ./merchant/simple_competition_logic
+    build: ./merchant
     image: pricewars/merchant
     ports:
       - "5001:5001"
@@ -126,10 +140,10 @@ services:
     links:
       - producer
       - marketplace
-    command: python MerchantApp.py --port 5001
+    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5001'"
 
   merchant2:
-    build: ./merchant/simple_competition_logic
+    build: ./merchant
     image: pricewars/merchant
     ports:
       - "5002:5002"
@@ -141,7 +155,7 @@ services:
     links:
       - producer
       - marketplace
-    command: python MerchantApp.py --port 5002
+    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5002'"
 
   consumer:
     build: ./consumer
@@ -149,6 +163,7 @@ services:
     ports:
        - "3000:3000"
     environment:
+      - RAILS_ENV=production
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:
