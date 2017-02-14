@@ -3,7 +3,7 @@
 #   - add the following line (and don't forget aditional names if you specify more containers!)
 #     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics marketplace producer merchant1 merchant2 consumer
 
-version: '2'
+version: '3.1'
 services:
   postgres:
     image: postgres:latest
@@ -48,6 +48,8 @@ services:
     image: pricewars/kafka-reverse-proxy
     ports:
       - "8001:8001"
+    environment:
+      - KAFKA_URL=kafka:9092
     depends_on:
       - kafka
     links:
@@ -125,37 +127,12 @@ services:
     image: pricewars/producer
     ports:
       - "3050:3050"
+    environment:
+      - KAFKA_URL=kafka:9092
     depends_on:
       - kafka
     # volumes:
     #   - ./pricewars-producer:/producer
-
-  merchant1:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5001:5001"
-    # volumes:
-    #   - ./pricewars-merchant/simple_competition_logic:/merchant
-    links:
-      - producer
-      - marketplace
-    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5001'"
-
-  merchant2:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5002:5002"
-    # volumes:
-    #   - ./pricewars-merchant/simple_competition_logic:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5002'"
 
   consumer:
     build: ./consumer
@@ -172,3 +149,152 @@ services:
       - marketplace
     links:
       - marketplace
+
+  merchant-simple-competition-logic1:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5001:5001"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/simple_competition_logic:/merchant
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5001'"
+
+  merchant-simple-competition-logic2:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5002:5002"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/simple_competition_logic:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd simple_competition_logic && python MerchantApp.py --port 5002'"
+
+  merchant-sample-cheapest:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5003:5003"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/sample_merchant:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd sample_merchant && python CheapestMerchantApp.py --port 5003'"
+
+  merchant-sample-second-cheapest:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5004:5004"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/sample_merchant:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd sample_merchant && python SecondCheapestMerchantApp.py --port 5004'"
+
+  merchant-sample-random-third:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5005:5005"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/sample_merchant:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd sample_merchant && python RandomThirdMerchantApp.py --port 5005'"
+
+  merchant-sample-two-bound:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5006:5006"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/sample_merchant:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd sample_merchant && python FixPriceMerchantApp.py --port 5006'"
+
+  merchant-sample-fix-price:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5007:5007"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/sample_merchant:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd sample_merchant && python TwoBoundMerchantApp.py --port 5007'"
+
+  merchant-machine-learning:
+    build: ./merchant
+    image: pricewars/merchant
+    ports:
+      - "5008:5008"
+    environment:
+      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+    # volumes:
+    #   - ./pricewars-merchant/machine_learning:/merchant
+    depends_on:
+      - producer
+      - marketplace
+    links:
+      - producer
+      - marketplace
+    command: "bash -c 'cd machine_learning && python MLMerchant.py --port 5008'"
