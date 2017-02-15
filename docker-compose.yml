@@ -283,7 +283,7 @@ services:
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
       - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/FixPriceMerchantApp.py
+      - MERCHANT_FILE=sample_merchant/TwoBoundMerchantApp.py
       - MERCHANT_PORT=5006
       - MERCHANT_TOKEN=EGkdMWbvFuVy9w7ReCExgOiyoxr6RyFfF0JbXuXmp4ly1sRf5fdl4MjsKbylbERq
     # volumes:
@@ -304,7 +304,7 @@ services:
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
       - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/TwoBoundMerchantApp.py
+      - MERCHANT_FILE=sample_merchant/FixPriceMerchantApp.py
       - MERCHANT_PORT=5007
       - MERCHANT_TOKEN=Qi5FFXq4rEXT6xqOqCrET12VSS26DKmd2rsHPjMHxtl4rcRioJwIKyomRpsdAfHD
     # volumes:
