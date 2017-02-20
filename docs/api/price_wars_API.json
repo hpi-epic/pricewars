@@ -1536,6 +1536,10 @@
                 "description": {
                     "type": "string",
                     "description": "describing the logic of this behavior"
+                },
+                "setting":{
+                  "type":"object",
+                  "description":"depending on exact implementation of each behavior logic"
                 }
             }
         },
@@ -1555,25 +1559,61 @@
         "Setting": {
             "type": "object",
             "properties": {
-                "tick": {
+                "min_buying_amount": {
                     "type": "number",
-                    "description": "tick represents the time speed; decrease in case of fast forward"
+                    "description": "minimal amount of items which should be bought by the consumer"
                 },
-                "max_req_per_sec": {
+                "max_buying_amount": {
                     "type": "number",
-                    "description": "max_req_per_sec represents the max req per sec"
+                    "description": "maximal amount of items which should be bought by the consumer"
+                },
+                "min_wait": {
+                    "type": "number",
+                    "description": "minimal waiting time in between buying requests towards the marketplace"
+                },
+                "max_wait": {
+                    "type": "number",
+                    "description": "maximal waiting time in between buying requests towards the marketplace"
+                },
+                "timeout_if_no_offers_available": {
+                    "type": "number",
+                    "description": "timeout time if no offers are available in the marketplace"
+                },
+                "consumer_per_minute": {
+                    "type": "number",
+                    "description": "defines the amount of consumers buying reqests per minute (60 seconds)"
+                },
+                "timeout_if_too_many_requests": {
+                    "type": "number",
+                    "description": "defines the timeout time if too many requests were done by the consumer and rejected by the marketplace"
+                },
+                "amount_of_consumers": {
+                    "type": "number",
+                    "description": "defines the amount of parrallel consumers executing their logic at the same time"
+                },
+                "probability_of_buy": {
+                    "type": "number",
+                    "description": "defines probability of a purchase for each buying iteration"
+                },
+                "max_buying_price": {
+                    "type": "number",
+                    "description": "defines a maximal price for all products to limited consumers buying behavior globally"
+                },
+                "debug": {
+                    "type": "boolean",
+                    "description": "if true, advanced logging is enabled"
+                },
+                "producer_url": {
+                    "type": "string",
+                    "description": "defines api endpoint url for producer; is set via ENV but can be overwritten here"
                 },
                 "marketplace_url": {
                     "type": "string",
-                    "description": "defines api endpoint url of marketplace"
+                    "description": "defines api endpoint url of marketplace; is set via ENV but can be overwritten here"
                 },
-                "amount_of_consumers": {
-                    "type": "integer",
-                    "description": "defines the amount of consumers"
-                },
-                "probability_of_sell": {
-                    "type": "integer",
-                    "description": "defines the probability to sell an item to a consumer"
+                "product_popularity": {
+                    "type": "object",
+                    "description": "key value hash for each available product to define there popularity if needed. By default their popularity is evenly distributed"
                 },
                 "behaviors": {
                     "type": "array",
