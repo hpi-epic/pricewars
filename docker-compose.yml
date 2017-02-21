@@ -48,11 +48,11 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_LOG_DIRS=/kafka/kafka-logs
-    depends_on:
-      - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker-mounts/kafka:/kafka/kafka-logs
+    depends_on:
+      - zookeeper
 
   kafka-reverse-proxy:
     build: ./kafka-reverse-proxy
@@ -61,6 +61,8 @@ services:
       - "8001:8001"
     environment:
       - KAFKA_URL=kafka:9092
+    volumes:
+      - ./docker-mounts/csv-export:/loggerapp/data
     depends_on:
       - kafka
     links:
