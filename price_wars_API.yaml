@@ -504,6 +504,22 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /status:
+    get:
+      tags:
+        - consumer
+      summary: returns current execution status of consumer
+      responses:
+        '200':
+          description: A status object of the consumer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Status'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /setting:
     post:
       tags:
@@ -713,7 +729,7 @@ paths:
       summary: >-
         As marketplace, I want to know the decryption_key used by the producer
         to encrypt products sold to the merchant so I can check whether a
-        merchant is allowed to sell a specific product 
+        merchant is allowed to sell a specific product
       responses:
         '200':
           description: the public key
@@ -724,6 +740,13 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
+  Status:
+    type: object
+    properties:
+      status:
+        type: string
+        example: dead
+        description: the consumer does not buy products
   OfferRequest:
     type: object
     properties:
@@ -1128,6 +1151,9 @@ definitions:
       description:
         type: string
         description: describing the logic of this behavior
+      setting:
+        type: object
+        description: depending on exact implementation of each behavior logic
   MarketplaceSetting:
     type: object
     properties:
@@ -1146,21 +1172,48 @@ definitions:
   Setting:
     type: object
     properties:
-      tick:
+      min_buying_amount:
         type: number
-        description: tick represents the time speed; decrease in case of fast forward
-      max_req_per_sec:
+        description: minimal amount of items which should be bought by the consumer
+      max_buying_amount:
         type: number
-        description: max_req_per_sec represents the max req per sec
-      marketplace_url:
+        description: maximal amount of items which should be bought by the consumer
+      min_wait:
         type: string
-        description: defines api endpoint url of marketplace
+        description: minimal waiting time in between buying requests towards the marketplace
+      max_wait:
+        type: integer
+        description: maximal waiting time in between buying requests towards the marketplace
+      timeout_if_no_offers_available:
+        type: integer
+        description: timeout time if no offers are available in the marketplace
+      consumer_per_minute:
+        type: integer
+        description: defines the amount of consumers buying reqests per minute (60 seconds)
+      timeout_if_too_many_requests:
+        type: integer
+        description: defines the timeout time if too many requests were done by the consumer and rejected by the marketplace
       amount_of_consumers:
         type: integer
-        description: defines the amount of consumers
-      probability_of_sell:
+        description: defines the amount of parrallel consumers executing their logic at the same time
+      probability_of_buy:
         type: integer
-        description: defines the probability to sell an item to a consumer
+        description: defines probability of a purchase for each buying iteration
+      max_buying_price:
+        type: integer
+        description: defines a maximal price for all products to limited consumers buying behavior globally
+      debug:
+        type: boolean
+        description: if true, advanced logging is enabled
+      producer_url:
+        type: string
+        description: defines api endpoint url for producer; is set via ENV but can be overwritten here
+      marketplace_url:
+        type: string
+        description: defines api endpoint url of marketplace; is set via ENV but can be overwritten here
+      product_popularity:
+        type: object
+        description: key value hash for each available product to define there popularity if needed. By default their popularity is evenly distributed
       behaviors:
         type: array
         description: defines the behaviors with their probability of occurrence
