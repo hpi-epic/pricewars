@@ -28,7 +28,19 @@ Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/va
 127.0.0.1       merchant-sample-two-bound merchant-simple-competition-logic1 
 127.0.0.1       merchant-simple-competition-logic2
 ```
-   
+
+#### Updating the Docker setup
+First, stop your existing containers by pressing CTRL + C. In some cases, even though you just pressed CTRL + C once, the containers might not be stopped. Therefore, we ask docker-compose to stop them all first before continuing.
+
+```
+docker-compose stop
+git pull --recurse-submodules
+docker-compose build
+docker ps -a | awk '{ print $1,$2 }' | grep $(echo $(docker images --filter "dangling=true" -q) | sed "s/ /\\\\|/g") | awk '{print $1 }' | xargs -I {} docker rm {}
+docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+docker-compose up
+```
+
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found below.
 
