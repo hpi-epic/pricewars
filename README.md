@@ -42,6 +42,20 @@ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 docker-compose up
 ```
 
+#### Help - My Docker Setup is not working as expected!
+##### Some containers quit unexpectedly:
+First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
+- __Postgres__: Either empty the `docker-mounts/postgres` folder (if running on Unix / Linux) or remove mounting a volume to Postgres completly (required on Windows, optional on Unix / Windows).
+- __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Otherwise, first remove the `docker-mounts/zookeeper` folder and try again. If this doesn't work, remove the folder again and `docker-mounts\kafka` in addition (Warning: This will remove the Kafka history).
+- __Others__: Try to read the logs or read on.
+
+##### The command `docker-compose up` is hanging:
+- Try to remove the `docker-mount` folder and start your containers again.
+- Reset the containers and the network: `docker system prune` (and restart the Docker service)
+- Terminate Docker and ensure, that all docker processes are stopped (especially the network service)
+- Reset Docker to factory defaults (should be your last attempt, as this requires re-building of all images):
+ - macOS: Click on "Preferences" > "Reset" > "Reset to factory defaults"
+
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found below.
 
