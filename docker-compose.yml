@@ -1,7 +1,18 @@
+# Disable Volume Mounting for Postgres on Windows!
+#   Postgres in Docker for Windows has a problem accessing the files when they are mounted from a volume
+#   Just add a hash # in front of the "volumes:" and 
+#     "- ./docker-mounts/postgres:/var/lib/postgresql/data" line
+
 # Adjust DNS settings:
-#   - open /etc/hosts as root
-#   - add the following line (and don't forget aditional names if you specify more containers!)
-#     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics management-ui marketplace producer consumer merchant-machine-learning merchant-sample-cheapest merchant-sample-fix-price merchant-sample-random-third merchant-sample-second-cheapest merchant-sample-two-bound merchant-simple-competition-logic1 merchant-simple-competition-logic2
+#   - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
+#   - add the following lines (and don't forget aditional names if you specify more containers!)
+#     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
+#     127.0.0.1       flink-jobmanager flink-taskmanager analytics management-ui 
+#     127.0.0.1       marketplace producer consumer merchant-machine-learning 
+#     127.0.0.1       merchant-sample-cheapest merchant-sample-fix-price 
+#     127.0.0.1       merchant-sample-random-third merchant-sample-second-cheapest 
+#     127.0.0.1       merchant-sample-two-bound merchant-simple-competition-logic1 
+#     127.0.0.1       merchant-simple-competition-logic2
 
 version: '3.1'
 services:
@@ -162,7 +173,7 @@ services:
     ports:
        - "3000:3000"
     environment:
-      - RAILS_ENV=production
+      - RAILS_ENV=development
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:

@@ -4,17 +4,30 @@
 
 ### Docker
 
+#### Clone the repo including all submodules
 ```
 git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
 cd masterproject-pricewars
 docker-compose up
 ```
 
-Adjust some DNS settings:
- - open /etc/hosts as root
- - add the following line (and don't forget aditional names if you specify more containers!)
+#### Disable Volume Mounting for Postgres on Windows!
+Postgres in Docker for Windows has a problem accessing the files when they are mounted from a volume.
+Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/var/lib/postgresql/data" line
 
-`127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy flink-jobmanager flink-taskmanager analytics management-ui marketplace producer consumer merchant-machine-learning merchant-sample-cheapest merchant-sample-fix-price merchant-sample-random-third merchant-sample-second-cheapest merchant-sample-two-bound merchant-simple-competition-logic1 merchant-simple-competition-logic2`
+#### Adjust some DNS settings:
+ - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
+ - add the following lines (and don't forget aditional names if you specify more containers!)
+
+```
+127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
+127.0.0.1       flink-jobmanager flink-taskmanager analytics management-ui 
+127.0.0.1       marketplace producer consumer merchant-machine-learning 
+127.0.0.1       merchant-sample-cheapest merchant-sample-fix-price 
+127.0.0.1       merchant-sample-random-third merchant-sample-second-cheapest 
+127.0.0.1       merchant-sample-two-bound merchant-simple-competition-logic1 
+127.0.0.1       merchant-simple-competition-logic2
+```
    
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found below.
