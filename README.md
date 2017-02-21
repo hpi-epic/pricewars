@@ -51,8 +51,9 @@ First, the analytics container is expected to be stopped after a short moment - 
 
 ##### The command `docker-compose up` is hanging:
 - Try to remove the `docker-mount` folder and start your containers again.
-- Reset the containers and the network: `docker system prune` (and restart the Docker service)
-- Terminate Docker and ensure, that all docker processes are stopped (especially the network service)
+- Reset the containers and the network: `docker system prune` (and restart the Docker service).
+- Terminate Docker and ensure, that all docker processes are stopped (especially the network service).
+- Restart your computer and wait (even though it might be slow) for about five to ten minutes.
 - Reset Docker to factory defaults (should be your last attempt, as this requires re-building of all images):
  - macOS: Click on "Preferences" > "Reset" > "Reset to factory defaults"
 
