@@ -1,0 +1,124 @@
+% This is "sig-alternate.tex" V2.1 April 2013
+
+\documentclass{sig-alternate-05-2015}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+%
+% please be aware to install sudo apt-get install texlive-science
+%
+%
+\usepackage{makeidx}                    % allows for indexgeneration
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+% \usepackage{hyperref}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{scrextend}
+\usepackage{pdfpages}
+
+\usepackage{enumitem}
+
+\usepackage{subcaption}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{scrextend} %for refnote
+\usepackage{tabu}
+
+\usepackage{eurosym}
+
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
+\def\UrlBreaks{\do\/\do-}
+
+% 
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+%
+\setlength{\parindent}{0pt}
+
+\usepackage[numbers]{natbib}
+
+% custom todo
+%\newcommand{\todo}[1]{}
+%\renewcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+
+\begin{document}
+
+% Copyright
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+
+%----------------------------------------------------------------------------------------
+%	Meta Data
+%----------------------------------------------------------------------------------------
+%
+
+
+\title{Simulating Strategic Interaction on Online Marketplaces}
+\subtitle{[How to Survive Dynamic Pricing Competition]}
+
+
+
+\numberofauthors{4} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\author{Marvin Bornstein, Johanna Latt, Jan Lindemann, Nikolai J. Podlesny, Sebastian Serth, Jan Selke}
+
+    
+
+\maketitle
+
+%
+%----------------------------------------------------------------------------------------
+%	Content
+%----------------------------------------------------------------------------------------
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%     Abstract     %%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+%
+
+\begin{abstract}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\
+\end{abstract}
+
+
+%\keywords{Dynamic Pricing}
+
+\input{content/01-introduction.tex}
+\input{content/02-architecture.tex}
+\input{content/03-choreography.tex}
+\input{content/04-behaviors.tex}
+\input{content/05-ui.tex}
+\input{content/06-conclusion.tex}
+
+%\end{document}  % This is where a 'short' article might terminate
+
+%\newpage
+
+%ACKNOWLEDGMENTS are optional
+\section{Acknowledgments}
+As part of this elaboration, special thanks goes to Dr. Matthias Uflacker, Dr. Rainer Schlosser and Martin Boissier for their continuous support and supervision. Also, we thank all attendant members of the EPIC research group for their fruitful discussions.
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{bibtex/references.bib}  
+
+
+\end{document}

@@ -1,0 +1,10 @@
+ch: 	chapter
+sec: 	section
+subsec: 	subsection
+fig: 	figure
+tab: 	table
+eq: 	equation
+lst: 	code listing
+itm: 	enumerated list item
+alg: 	algorithm
+app: 	appendix subsection

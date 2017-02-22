@@ -1,0 +1,201 @@
+
+Français
+	
+Back
+	
+English
+
+Reference sheet for natbib usage
+(Describing version 7.0b from 2002/02/27)
+
+    For a more detailed description of the natbib package, LATEX the source file natbib.dtx.
+
+Overview
+The natbib package is a reimplementation of the LATEX \cite command, to work with both author-year and numerical citations. It is compatible with the standard bibliographic style files, such as plain.bst, as well as with those for harvard, apalike, chicago, astron, authordate.
+
+Loading
+Load with \usepackage[options]{natbib}. See list of options at the end.
+
+Replacement bibliography styles
+I provide three new .bst files to replace the standard LATEX numerical ones:
+
+    plainnat.bst         abbrvnat.bst         unsrtnat.bst 
+
+Basic commands
+The natbib package has two basic citation commands, \citet and \citep for textual and parenthetical citations, respectively. There also exist the starred versions \citet* and \citep* that print the full author list, and not just the abbreviated one. All of these may take one or two optional arguments to add some text before and after the citation.
+
+    \citet{jon90} 	    -->    	Jones et al. (1990)
+    \citet[chap. 2]{jon90} 	    -->    	Jones et al. (1990, chap. 2)
+    \citep{jon90} 	    -->    	(Jones et al., 1990)
+    \citep[chap. 2]{jon90} 	    -->    	(Jones et al., 1990, chap. 2)
+    \citep[see][]{jon90} 	    -->    	(see Jones et al., 1990)
+    \citep[see][chap. 2]{jon90} 	    -->    	(see Jones et al., 1990, chap. 2)
+    \citet*{jon90} 	    -->    	Jones, Baker, and Williams (1990)
+    \citep*{jon90} 	    -->    	(Jones, Baker, and Williams, 1990)
+
+Multiple citations
+Multiple citations may be made by including more than one citation key in the \cite command argument.
+
+    \citet{jon90,jam91} 	    -->    	Jones et al. (1990); James et al. (1991)
+    \citep{jon90,jam91} 	    -->    	(Jones et al., 1990; James et al. 1991)
+    \citep{jon90,jon91} 	    -->    	(Jones et al., 1990, 1991)
+    \citep{jon90a,jon90b} 	    -->    	(Jones et al., 1990a,b)
+
+Numerical mode
+These examples are for author-year citation mode. In numerical mode, the results are different.
+
+    \citet{jon90} 	    -->    	Jones et al. [21]
+    \citet[chap. 2]{jon90} 	    -->    	Jones et al. [21, chap. 2]
+    \citep{jon90} 	    -->    	[21]
+    \citep[chap. 2]{jon90} 	    -->    	[21, chap. 2]
+    \citep[see][]{jon90} 	    -->    	[see 21]
+    \citep[see][chap. 2]{jon90} 	    -->    	[see 21, chap. 2]
+    \citep{jon90a,jon90b} 	    -->    	[21, 32]
+
+Suppressed parentheses
+As an alternative form of citation, \citealt is the same as \citet but without parentheses. Similarly, \citealp is \citep without parentheses. Multiple references, notes, and the starred variants also exist.
+
+    \citealt{jon90} 	    -->    	Jones et al. 1990
+    \citealt*{jon90} 	    -->    	Jones, Baker, and Williams 1990
+    \citealp{jon90} 	    -->    	Jones et al., 1990
+    \citealp*{jon90} 	    -->    	Jones, Baker, and Williams, 1990
+    \citealp{jon90,jam91} 	    -->    	Jones et al., 1990; James et al., 1991
+    \citealp[pg. 32]{jon90} 	    -->    	Jones et al., 1990, pg. 32
+    \citetext{priv. comm.} 	    -->    	(priv. comm.)
+
+The \citetext command allows arbitrary text to be placed in the current citation parentheses. This may be used in combination with \citealp.
+Partial citations
+In author-year schemes, it is sometimes desirable to be able to refer to the authors without the year, or vice versa. This is provided with the extra commands
+
+    \citeauthor{jon90} 	    -->    	Jones et al.
+    \citeauthor*{jon90} 	    -->    	Jones, Baker, and Williams
+    \citeyear{jon90} 	    -->    	1990
+    \citeyearpar{jon90} 	    -->    	(1990)
+
+Forcing upper cased names
+If the first author's name contains a von part, such as ``della Robbia'', then \citet{dRob98} produces ``della Robbia (1998)'', even at the beginning of a sentence. One can force the first letter to be in upper case with the command \Citet instead. Other upper case commands also exist.
+
+    when 	\citet{dRob98} 	    -->    	della Robbia (1998)
+    then 	\Citet{dRob98} 	    -->    	Della Robbia (1998)
+      	\Citep{dRob98} 	    -->    	(Della Robbia, 1998)
+      	\Citealt{dRob98} 	    -->    	Della Robbia 1998
+      	\Citealp{dRob98} 	    -->    	Della Robbia, 1998
+      	\Citeauthor{dRob98} 	    -->    	Della Robbia
+
+These commands also exist in starred versions for full author names.
+
+Citation aliasing
+Sometimes one wants to refer to a reference with a special designation, rather than by the authors, i.e. as Paper I, Paper II. Such aliases can be defined and used, textual and/or parenthetical with:
+
+    \defcitealias{jon90}{Paper I} 	  	 
+    \citetalias{jon90} 	-> 	Paper I
+    \citepalias{jon90} 	-> 	(Paper I)
+
+These citation commands function much like \citet and \citep: they may take multiple keys in the argument, may contain notes, and are marked as hyperlinks.
+Selecting citation style and punctuation
+Use the command \bibpunct with one optional and 6 mandatory arguments:
+
+    the opening bracket symbol, default = (
+    the closing bracket symbol, default = )
+    the punctuation between multiple citations, default = ;
+    the letter `n' for numerical style, or `s' for numerical superscript style, any other letter for author-year, default = author-year;
+    the punctuation that comes between the author names and the year
+    the punctuation that comes between years or numbers when common author lists are suppressed (default = ,);
+
+The optional argument is the character preceding a post-note, default is a comma plus space. In redefining this character, one must include a space if one is wanted.
+
+Example 1, \bibpunct{[}{]}{,}{a}{}{;} changes the output of
+
+    \citepjon90,jon91,jam92 
+
+into [Jones et al. 1990; 1991, James et al. 1992].
+
+Example 2, \bibpunct[; ]{(}{)}{,}{a}{}{;} changes the output of
+
+    \citep[and references therein]{jon90} 
+
+into (Jones et al. 1990; and references therein).
+
+Other formatting options
+
+    Redefine \bibsection to the desired sectioning command for introducing the list of references. This is normally \section* or \chapter*.
+    Define \bibpreamble to be any text that is to be printed after the heading but before the actual list of references.
+    Define \bibfont to be a font declaration, e.g. to apply to the list of references.
+    Define \citenumfont to be a font declaration or command like \itshape or \textit.
+    Redefine \bibnumfmt as a command with an argument to format the numbers in the list of references. The default definition is [#1].
+    The indentation after the first line of each reference is given by \bibhang; change this with the \setlength command.
+    The vertical spacing between references is set by \bibsep; change this with the \setlength command.
+
+Automatic indexing of citations
+If one wishes to have the citations entered in the .idx indexing file, it is only necessary to issue \citeindextrue at any point in the document. All following \cite commands, of all variations, then insert the corresponding entry to that file. With \citeindexfalse, these entries will no longer be made.
+
+Use with chapterbib package
+
+The natbib package is compatible with the chapterbib package which makes it possible to have several bibliographies in one document.
+
+The package makes use of the \include command, and each \included file has its own bibliography.
+
+The order in which the chapterbib and natbib packages are loaded is unimportant.
+
+The chapterbib package provides an option sectionbib that puts the bibliography in a \section* instead of \chapter*, something that makes sense if there is a bibliography in each chapter. This option will not work when natbib is also loaded; instead, add the option to natbib.
+
+Every \included file must contain its own \bibliography command where the bibliography is to appear. The database files listed as arguments to this command can be different in each file, of course. However, what is not so obvious, is that each file must also contain a \bibliographystyle command, preferably with the same style argument.
+Sorting and compressing citations
+Do not use the \cite package with natbib; rather use one of the options sort or sort&compress.
+
+These also work with author-year citations, making multiple citations appear in their order in the reference list.
+
+Long author list on first citation
+Use option longnamesfirst to have first citation automatically give the full list of authors.
+
+Suppress this for certain citations with \shortcites{key-list}, given before the first citation.
+
+Local configuration
+Any local recoding or definitions can be put in natbib.cfg which is read in after the main package file.
+
+Options that can be added to \usepackage
+
+    round: (default) for round parentheses;
+    square: for square brackets;
+    curly: for curly braces;
+    angle: for angle brackets;
+    colon: (default) to separate multiple citations with colons;
+    comma: to use commas as separaters;
+    authoryear: (default) for author-year citations;
+    numbers: for numerical citations;
+    super: for superscripted numerical citations, as in Nature;
+    sort: orders multiple citations into the sequence in which they appear in the list of references;
+    sort&compress: as sort but in addition multiple numerical citations are compressed if possible (as 3-6, 15);
+    longnamesfirst: makes the first citation of any reference the equivalent of the starred variant (full author list) and subsequent citations normal (abbreviated list);
+    sectionbib: redefines \thebibliography to issue \section* instead of \chapter*; valid only for classes with a \chapter command; to be used with the chapterbib package;
+    nonamebreak: keeps all the authors' names in a citation on one line; causes overfull hboxes but helps with some hyperref problems.
+
+About this document ...
+
+This document was generated using the LaTeX2HTML translator Version 200 2-1 (1.68), © 1993, 1994, 1995, 1996, Nikos Drakos, Computer Based Learning Unit, University of Leeds, © 1997, 1998, 1999, Ross Moore, Mathematics Department, Macquarie University, Sydney.
+
+The command line arguments were: latex2html -split 0 -no_navigation -t 'Natbib reference sheet' natnote s.tex
+
+Original file: natnotes.tex, © 1993-2002 Patrick W Daly, Max-Planck-Institut fr Aeronomie, D-37191 Katlenburg-Lindau
+
+The original LATEX file was modified by S. Merkel, Institute for Solid State Physics, Univ. of Tokyo, on 12/26/2002 to be converted to HTML properly.
+
+The resulting HTML file was modified by S. Merkel as well.
+ 
+Contact details
+Sébastien Merkel
+E: sebastien.merkel@univ-lille1.fr
+T: +33 320 43 65 16
+	
+Postal address
+Unité Matériaux et Transformations, Bât. C6
+Université Lille 1
+59650 Villeneuve d'Ascq
+France
+	Researcher ID: E-5501-2011
+Orcid ID: 0000-0003-2767-581X
+Google Scholar ID: KKQe2RoAAAAJ
+Twitter: @SebastienMerkel
+Research Gate: Sebastien_Merkel
+© Sébastien Merkel, Université Lille 1, France
+Home > Latex > natbib.php
