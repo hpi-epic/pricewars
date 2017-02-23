@@ -5,11 +5,12 @@
 ### Docker
 
 #### Clone the repo including all submodules
-If you are working on Windows, make sure to disable the automatic line ending conversion for this repository in the git settings before cloning:
+If you are working on Windows, make sure to set the following git-settings:
 ```
-git config core.autocrlf false
+git config core.eol lf
+git config core.autocrlf input
 ```
-Otherwise the line endings of all files will be converted to DOS under Windows, causing problems with script-execution within the Docker-containers that expect UNIX-endings.
+The first setting will ensure that files keep their lf-line endings when checking out the repository. Otherwise the line endings of all files will be converted to cr+lf under Windows, causing problems with script-execution within the Docker-containers that expect lf-endings. The second setting ensures that line endings are converted back to what they were on checkout when pushing a change.
 
 ```
 git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
