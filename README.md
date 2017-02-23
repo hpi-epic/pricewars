@@ -7,10 +7,16 @@
 #### Clone the repo including all submodules
 If you are working on Windows, make sure to set the following git-settings:
 ```
-git config core.eol lf
-git config core.autocrlf input
+git config --global core.eol lf
+git config --global core.autocrlf input
 ```
-The first setting will ensure that files keep their lf-line endings when checking out the repository. Otherwise the line endings of all files will be converted to cr+lf under Windows, causing problems with script-execution within the Docker-containers that expect lf-endings. The second setting ensures that line endings are converted back to what they were on checkout when pushing a change.
+The first setting will ensure that files keep their lf-line endings when checking out a repository. 
+Otherwise the line endings of all files will be converted to cr+lf under Windows, causing problems with script-execution within the Docker-containers that expect lf-endings. 
+The second setting ensures that line endings are converted back to what they were on checkout when pushing a change. 
+
+*(These settings are global so they will affect all repositories, make sure to change them again if you do not want this behaviour on other repositories!)*
+
+Then go ahead and clone the repository:
 
 ```
 git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
