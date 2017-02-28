@@ -710,12 +710,8 @@ paths:
       tags:
         - producer
       summary: 'as a merchant, I want to buy a random product from the producer'
-      parameters:
-        - name: merchant_token
-          in: query
-          type: string
-          description: the token of the merchant wanting to buy a product
-          required: true
+      security:
+        - Token: []
       responses:
         '200':
           description: >-
@@ -726,6 +722,8 @@ paths:
             $ref: '#/definitions/Product'
         '400':
           description: no merchant_token provided
+        '410':
+          description: no items left in stock for this merchant
         default:
           description: Unexpected error
           schema:
@@ -1281,11 +1279,16 @@ definitions:
         type: integer
         format: int64
         description: how many products are available (perishable goods)
-        example: -1
+        example: 5
       start_of_lifetime:
         type: integer
         format: int64
         description: start of lifetime of perishable product
+        example: -1
+      left_in_stock:
+        type: integer
+        format: int64
+        description: items left in stock for a particular merchant (only shown if the product is limited, ie stock > 0)
         example: -1
     required:
       - uid
