@@ -5,6 +5,19 @@
 ### Docker
 
 #### Clone the repo including all submodules
+If you are working on Windows, make sure to set the following git-settings:
+```
+git config --global core.eol lf
+git config --global core.autocrlf input
+```
+The first setting will ensure that files keep their lf-line endings when checking out a repository. 
+Otherwise the line endings of all files will be converted to cr+lf under Windows, causing problems with script-execution within the Docker-containers that expect lf-endings. 
+The second setting ensures that line endings are converted back to what they were on checkout when pushing a change. 
+
+*(These settings are global so they will affect all repositories, make sure to change them again if you do not want this behaviour on other repositories!)*
+
+Then go ahead and clone the repository:
+
 ```
 git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
 cd masterproject-pricewars
@@ -17,7 +30,7 @@ Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/va
 
 #### Adjust some DNS settings:
  - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
- - add the following lines (and don't forget aditional names if you specify more containers!)
+ - add the following lines (and don't forget additional names if you specify more containers!)
 
 ```
 127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
@@ -35,11 +48,27 @@ First, stop your existing containers by pressing CTRL + C. In some cases, even t
 ```
 docker-compose stop
 git pull --recurse-submodules
+docker-compose pull --ignore-pull-failures
 docker-compose build
 docker ps -a | awk '{ print $1,$2 }' | grep $(echo $(docker images --filter "dangling=true" -q) | sed "s/ /\\\\|/g") | awk '{print $1 }' | xargs -I {} docker rm {}
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 docker-compose up
 ```
+
+#### Help - My Docker Setup is not working as expected!
+##### Some containers quit unexpectedly:
+First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
+- __Postgres__: Either empty the `docker-mounts/postgres` folder (if running on Unix / Linux) or remove mounting a volume to Postgres completly (required on Windows, optional on Unix / Windows).
+- __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Otherwise, first remove the `docker-mounts/zookeeper` folder and try again. If this doesn't work, remove the folder again and `docker-mounts\kafka` in addition (Warning: This will remove the Kafka history).
+- __Others__: Try to read the logs or read on.
+
+##### The command `docker-compose up` is hanging:
+- Try to remove the `docker-mount` folder and start your containers again.
+- Reset the containers and the network: `docker system prune` (and restart the Docker service).
+- Terminate Docker and ensure, that all docker processes are stopped (especially the network service).
+- Restart your computer and wait (even though it might be slow) for about five to ten minutes.
+- Reset Docker to factory defaults (should be your last attempt, as this requires re-building of all images):
+ - macOS: Click on "Preferences" > "Reset" > "Reset to factory defaults"
 
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found below.
@@ -71,9 +100,9 @@ After marketplace, producer and logger are in place, one may
 
 For more details regarding the API specification, the reader is kindly referred to the separate branch [gh-pages](https://github.com/hpi-epic/masterproject-pricewars/tree/gh-pages) within this repository.
 
-Due to the current github bug, that submodules with dependencies to private repositories cannot be resolved, the github page build process fails enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/masterproject-pricewars/api/#/).
+Due to the current github bug, that submodules with dependencies to private repositories cannot be resolved, the github page build process fails enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/masterproject-pricewars/).
 
-The API specification can be found [here](https://hpi-epic.github.io/masterproject-pricewars/api/#/).
+The API specification can be found [here](https://hpi-epic.github.io/masterproject-pricewars/).
 
 ## FMC Diagram
 

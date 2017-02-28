@@ -5,7 +5,7 @@
 
 # Adjust DNS settings:
 #   - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
-#   - add the following lines (and don't forget aditional names if you specify more containers!)
+#   - add the following lines (and don't forget additional names if you specify more containers!)
 #     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
 #     127.0.0.1       flink-jobmanager flink-taskmanager analytics management-ui 
 #     127.0.0.1       marketplace producer consumer merchant-machine-learning 
@@ -48,11 +48,12 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_LOG_DIRS=/kafka/kafka-logs
-    depends_on:
-      - zookeeper
+      - KAFKA_LOG_RETENTION_HOURS=-1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker-mounts/kafka:/kafka/kafka-logs
+    depends_on:
+      - zookeeper
 
   kafka-reverse-proxy:
     build: ./kafka-reverse-proxy
@@ -61,6 +62,8 @@ services:
       - "8001:8001"
     environment:
       - KAFKA_URL=kafka:9092
+    volumes:
+      - ./docker-mounts/csv-export:/loggerapp/data
     depends_on:
       - kafka
     links:
