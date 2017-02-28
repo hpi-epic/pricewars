@@ -5,7 +5,7 @@
 
 # Adjust DNS settings:
 #   - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
-#   - add the following lines (and don't forget aditional names if you specify more containers!)
+#   - add the following lines (and don't forget additional names if you specify more containers!)
 #     127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
 #     127.0.0.1       flink-jobmanager flink-taskmanager analytics management-ui 
 #     127.0.0.1       marketplace producer consumer merchant-machine-learning 
