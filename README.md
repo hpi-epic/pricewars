@@ -30,7 +30,7 @@ Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/va
 
 #### Adjust some DNS settings:
  - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
- - add the following lines (and don't forget aditional names if you specify more containers!)
+ - add the following lines (and don't forget additional names if you specify more containers!)
 
 ```
 127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy 
