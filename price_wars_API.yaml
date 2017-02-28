@@ -553,6 +553,14 @@ paths:
       responses:
         '200':
           description: OK
+  /settings/products:
+      post:
+        tags:
+          - consumer
+        summary: enforces the consumer to refetch product details from producer if products are updated or added
+        responses:
+          '200':
+            description: ok
   /products:
     get:
       tags:
