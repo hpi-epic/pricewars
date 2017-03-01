@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Price Wars API
   description: API for Price Wars Master Project
-  version: 1.0.3
+  version: 1.0.4
 host: api.mp_pricewars.com
 schemes:
   - http
@@ -254,14 +254,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ConsumerRegisterResponse'
+              $ref: '#/definitions/ConsumerResponse'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     post:
-      security:
-        - Token: []
       tags:
         - marketplace
       summary: 'as a consumer, register as a consumer at the marketplace'
@@ -274,13 +272,47 @@ paths:
             $ref: '#/definitions/ConsumerRegister'
       responses:
         '201':
-          description: the merchant ID
+          description: the consumer ID
           schema:
             $ref: '#/definitions/ConsumerRegisterResponse'
+        '451':
+          description: there are no additional consumers allowed
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  '/consumers/{id}':
+    parameters:
+      - name: id
+        description: the id the consumer is registered with at the marketplace
+        in: path
+        required: true
+        type: integer
+        format: int64
+    get:
+      tags:
+        - marketplace
+      summary: 'returns a specific, registered consumer'
+      responses:
+        '200':
+          description: a registered consumer
+          schema:
+            $ref: '#/definitions/ConsumerResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      security:
+        - Token: []
+      tags:
+        - marketplace
+      summary: 'as a consumer, I want to de-register myself from the marketplace'
+      responses:
+        '204':
+          description: Deleted
   /producer/key:
     put:
       tags:
@@ -347,7 +379,7 @@ paths:
     get:
       tags:
         - marketplace
-      summary: 'returns a specifi, registered merchant'
+      summary: 'returns a specific, registered merchant'
       responses:
         '200':
           description: a registered merchant
@@ -565,12 +597,7 @@ paths:
     get:
       tags:
         - producer
-      summary: all products available from this producer 
-      parameters:
-        - name: showDeleted
-          in: query
-          description: if set to true, deleted products are shown as well (ie products that are no longer sold)
-          type: boolean
+      summary: all products available from this producer
       responses:
         '200':
           description: an array of products (without an amount)
@@ -1028,7 +1055,7 @@ definitions:
       - api_endpoint_url
       - consumer_name
       - description
-  ConsumerRegisterResponse:
+  ConsumerResponse:
     type: object
     properties:
       api_endpoint_url:
@@ -1054,6 +1081,18 @@ definitions:
       - consumer_name
       - description
       - consumer_id
+  ConsumerRegisterResponse:
+    type: object
+    allOf:
+      - $ref: '#/definitions/ConsumerResponse'
+      - properties:
+          consumer_token:
+            type: string
+            example: MsganJKAZO/GALJFFPSUG
+            description: token that needs to be provided for every API request
+            readOnly: true
+        required:
+          - consumer_token
   BuyRequest:
     type: object
     properties:
@@ -1295,9 +1334,6 @@ definitions:
         format: int64
         description: items left in stock for a particular merchant (only shown if the product is limited, ie stock > 0)
         example: -1
-      deleted:
-        type: boolean
-        description: whether the item is deleted, ie not available for purchase
     required:
       - uid
       - product_id
@@ -1334,3 +1370,4 @@ definitions:
         description: 'Additional information, optional'
     required:
       - message
+      
