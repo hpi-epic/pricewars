@@ -565,7 +565,12 @@ paths:
     get:
       tags:
         - producer
-      summary: all products available from this producer
+      summary: all products available from this producer 
+      parameters:
+        - name: showDeleted
+          in: query
+          description: if set to true, deleted products are shown as well (ie products that are no longer sold)
+          type: boolean
       responses:
         '200':
           description: an array of products (without an amount)
@@ -1290,6 +1295,9 @@ definitions:
         format: int64
         description: items left in stock for a particular merchant (only shown if the product is limited, ie stock > 0)
         example: -1
+      deleted:
+        type: boolean
+        description: whether the item is deleted, ie not available for purchase
     required:
       - uid
       - product_id
