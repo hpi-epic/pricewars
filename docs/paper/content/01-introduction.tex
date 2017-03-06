@@ -1,13 +1,13 @@
 \section{Introduction}
 % Owner: 
 % Reviewed: 
+%
+While for the last couple of centuries prices are defined through human-centric tasks, more and more companies base their pricing calculations on technology driven processes. Not only the actual computation of profit and cost is nowadays algorithm driven but also its update and review strategy.
+One of the most competitive and advanced fields is the algorithmic trading or high-frequency trading on stock exchanges. But also each one of us experiences nowadays technology driven price calculation on online marketplace like amazon, which we will hereinafter referrer to as dynamic pricing. 
 
-@TODO:
+Currently, pricing strategy and algorithms exists but handler of those mechanism lack of the possibility to test them appropriately before releases them into the real world where they can create huge loses \citep{uflacker2016ertragsmanagement} \citep{schlosser2016optimal} \citep{schlosser2016stochastic} \citep{schlosser2016survive}. We picked up the challenge to create such an environment imitating different market situations and therefore testing how pricing strategies react and interact based on influences.
 
-\begin{itemize}
-\item Stress motivation of this topic in general
-\item stress motivation of a simulation platform since pricing strategies can be currently only testing in the field
-\item This shall provide a more academic approach to evaluate pricing strategies and their effects and interaction
-\end{itemize}
-
-\citep{uflacker2016ertragsmanagement} \citep{schlosser2016optimal} \citep{schlosser2016stochastic} \citep{schlosser2016survive}.
+\textbf{Contribution:} In this work, we briefly elaborate our progress of building a distributed and scalable platform to imitate market situations and simulate dynamic pricing algorithms and their effects with potential real word settings.
+Therefore, the following chapter \ref{sec:Architecture} contains a short introduction into the underlying architecture of the platform.
+The choreography of different services is described in \ref{sec:Choreography}. Chapter \ref{sec:Behaviors} will provide insights in the already implemented algorithms and their behavior.
+An user facing interface on top of the RESTful API is delineated in \ref{sec:ui} and finally chapter \ref{sec:conclusion} concludes this elaboration.
