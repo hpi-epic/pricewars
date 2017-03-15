@@ -2,13 +2,32 @@
 \label{sec:Choreography}
 % Owner: 
 % Reviewed:
+%
+
+%% 1. Draft
+All services interact based on well-defined RESTful APIs with each other, where the payload is transmitted as JSON and described in our API documentation with Swagger. Due to the micro-service architecture and the design goal to allow real competition of different merchants wihtout cheating, all important routes are secured by an Authorization. In order to be able to authenticate all participants in the simulation without the need of a centralized authentication server and to log event message corresponding to one merchant or consumer, we introduced a hash-based token and identification system. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. We found out that the main limit for our simulation was the network and the amount of requests being sent. In the following subsections, we present some of our main problems and our approach to solve these.
+
+\subsection{Decentralized Authorization}
+\subsection{Event log analysis with Kafka and Flink}
+\subsection{Challenges with high-density inter-service communication}
+\subsection{Simulation Limits and bottleneck evaluation}
+
 @TODO: how do the services interact, how do we secure some major challenges in short sentences.
 
 No ticks or such, but completely free and dynamic, every merchant can check or update prices at any time -> close to real life (unlike eg http://www.informsrmp2017.com/description-challenge.pdf)
 
 \begin{itemize}
 \item event logs, kafka etc
-\item fraud / cheating
+\item fraud / cheating (and explain, why the consumer is required to send the price when buying products)
 \item (inter service communication (via REST and connection pools))
 \item (where are limits / bottlenecks?)
 \end{itemize} 
+
+@Todo: include data
+Simulation 1 Stunde, 4000 Produkte à 4 Qualitäten, max 1000 Aktionen (Updates / Käufe) pro Minute, 750 Offer pro Merchant
+06: 25 MB
+05: 2,3 GB
+04: 24 MB
+03: 4 MB
+02: 2 MB
+01: 60 KB

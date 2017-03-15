@@ -2,8 +2,10 @@
 \label{sec:Architecture}
 % Owner: 
 % Reviewed:
-Confronted with the challenge of creating a high-performance and expandable infrastructure for simulating a marketplace with different merchants and consumers, we created a microservice architecture allowing the user to scale and add single service ad-hoc and on demand. Each service within our architecture implements one business artifact.
+%
+Confronted with the challenge of creating a high-performance and expandable infrastructure for simulating a marketplace with different merchants and consumers, we created a microservice architecture allowing the user to scale and add single service ad-hoc and on demand. Each service within our architecture implements one business artifact. This architecture pattern comes with the cost of a communication overheat and requires farsighted API design.\\
 
+Figure~\ref{fig:fmc} describes the underlying architecture as FMC\footnote{\url{http://www.fmc-modeling.org/}} diagram. Avoiding ..
 
 @TODO:
 
@@ -15,8 +17,8 @@ Confronted with the challenge of creating a high-performance and expandable infr
 %
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/fmc.png}
-    \caption{FMC}
+    \includegraphics[width=0.5\textwidth]{images/architecture_fmc.png}
+    \caption{FMC diagram of the Price Wars architecture}
     \label{fig:fmc}
 \end{figure}
 %
