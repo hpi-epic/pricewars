@@ -466,11 +466,18 @@ paths:
             returns a setting json object with fields defined by the service.
             The Management UI can then generate a form
           schema:
-            type: object
+            $ref: '#/definitions/MerchantSettings'
     put:
       tags:
         - merchant
       summary: updates the settings
+      parameters:
+        - name: body
+          description: specifications of the sold product
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/MerchantSettings'
       responses:
         '200':
           description: ok
@@ -1145,6 +1152,10 @@ definitions:
         type: string
         example: 1
         description: the merchant selling the product for this price
+      merchant_token:
+        type: string
+        example: 1
+        description: the merchant token of corresponding merchants (might be used to validate the sold notification because only the marketplace knows the merchant token)
       amount:
         type: integer
         format: int32
@@ -1209,6 +1220,10 @@ definitions:
       setting:
         type: object
         description: depending on exact implementation of each behavior logic
+      amount:
+        type: integer
+        format: int32
+        description: Percentual value that defines how often this behaviour is used
   MarketplaceSetting:
     type: object
     properties:
@@ -1357,6 +1372,24 @@ definitions:
           the decryption_key used to encrypt the products sold to the merchant
           (encoded in Base64)
         example: S2gmXo+STy5btUZW51nBVQ==
+  MerchantSettings:
+    type: object
+    description: This object contains all settings for the individual merchant and is probably different for all merchants. The keys represented in this objects are injected through the merchant SDK and should be valid for every merchant.
+    properties:
+      debug:
+        type: boolean
+      max_req_per_sec:
+        type: integer
+        format: int64
+      producer_url:
+        type: string
+      marketplace_url:
+        type: string
+      merchant_id:
+        type: string
+      state:
+        type: string
+        
   Error:
     type: object
     properties:
