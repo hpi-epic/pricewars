@@ -1,7 +1,8 @@
 \section{User Interface}
 \label{sec:ui}
-% Owner: 
+% Owner: Jani
 % Reviewed:
 %
+\todo[inline]{Johanna, feel free to add anything which I missed}
+The ``Management User Interface'' enables the user to configure, operate and orchestrate the different microservices all in one place. Therefor, its implementation is based on angularJS consuming the RESTful APIs exposed by each individual service. Additionally, we used the socket.io\footnote{\url{https://github.com/socketio/socket.io}} technology which imitates a websocket connection based on HTTP to realize real time graphs and KPIs for an ongoing simulation. This socket.io interface is provided by the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
 
-TODO: some words regarding the UI, angularJS based. with socket.io for events, orchestrates the service interaction
