@@ -1,11 +1,10 @@
 \section{Service Choreography}
 \label{sec:Choreography}
-% Owner: 
-% Reviewed:
+% Owner: Seb
+% Reviewed: jani
 %
-
-%% 1. Draft
-All services interact based on well-defined RESTful APIs with each other, where the payload is transmitted as JSON and described in our API documentation with Swagger. Due to the micro-service architecture and the design goal to allow real competition of different merchants wihtout cheating, all important routes are secured by an Authorization. In order to be able to authenticate all participants in the simulation without the need of a centralized authentication server and to log event message corresponding to one merchant or consumer, we introduced a hash-based token and identification system. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. We found out that the main limit for our simulation was the network and the amount of requests being sent. In the following subsections, we present some of our main problems and our approach to solve these.
+Like previously discussed, the architecture consists out of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}.  Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced which additionally enables the id based logging of event message corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. Described in the previous section, the gain of flexibility and scalability of services withing a microservice architecture goes along with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the amount of request being sent over the network for streamlining a simulation and its necessary communication. 
+In the following, we will briefly outline some of the main challenges which were solved.
 
 \subsection{Decentralized Authorization}
 \subsection{Event log analysis with Kafka and Flink}
