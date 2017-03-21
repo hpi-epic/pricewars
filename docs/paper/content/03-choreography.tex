@@ -32,17 +32,12 @@ In the following, we will briefly outline some of the main challenges which were
 % Owner: 
 % Reviewed:
 %
+Having the communication overhead of the microservice pattern in mind, we minimized all inter-service communication to the absolut minimum. Therefore, the current simulation limits and bottlenecks can be curtail not on the TCP/IP layer but rather on the data size collected. In particular, ..
 
-@TODO: how do the services interact, how do we secure some major challenges in short sentences.
 
 No ticks or such, but completely free and dynamic, every merchant can check or update prices at any time -> close to real life (unlike eg http://www.informsrmp2017.com/description-challenge.pdf)
 
-\begin{itemize}
-\item event logs, kafka etc
-\item fraud / cheating (and explain, why the consumer is required to send the price when buying products)
-\item (inter service communication (via REST and connection pools))
-\item (where are limits / bottlenecks?)
-\end{itemize} 
+
 
 @Todo: include data
 Simulation 1 Stunde, 4000 Produkte à 4 Qualitäten, max 1000 Aktionen (Updates / Käufe) pro Minute, 750 Offer pro Merchant
