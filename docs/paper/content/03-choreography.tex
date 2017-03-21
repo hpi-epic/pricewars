@@ -2,9 +2,11 @@
 \section{Service Choreography}
 \label{sec:Choreography}
 % Owner: Seb
-% Reviewed: jani
+% Reviewed: jani, johanna
 %
-Like previously discussed, the architecture consists out of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}.  Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced which additionally enables the id based logging of event message corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. Described in the previous section, the gain of flexibility and scalability of services withing a microservice architecture goes along with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the amount of request being sent over the network for streamlining a simulation and its necessary communication. 
+As previously discussed, the architecture consists of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}. This helps to fulfill the design goal of reactivity since each service is totally autonomous and can contact every other service via their exposed RESTful API at any time, without the need to be explicitly pinged or asked for actions. 
+
+Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are furthermore secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced which additionally enables the id-based logging of event messages corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. Described in the previous section, the gain of flexibility and scalability of services within a microservice architecture goes along with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the amount of requests being sent over the network for streamlining a simulation and its necessary communication. 
 In the following, we will briefly outline some of the main challenges which were solved.
 
 %
@@ -22,17 +24,17 @@ In the following, we will briefly outline some of the main challenges which were
 %Besides the socket.io interface, the kafka-reverse-proxy also offers a RESTful API to fetch detailed logs for data-driven pricing algorithms. Based on  to learn their strategies appropriately. To ensure a fair starting point and competition, the single merchants may only access data out of their own scope which is enforced by the authentication token mechanisms. In this way, one merchant is not able to see the sales of another merchant.
 
 %
-\subsection{Challenges with high-density inter-service communication}
+\subsection{Challenges with High-Density Inter-Service Communication}
 % Owner: 
 % Reviewed:
 %
 
 %
-\subsection{Simulation Limits and bottleneck evaluation}
+\subsection{Simulation Limits and Bottleneck Evaluation}
 % Owner: 
 % Reviewed:
 %
-Having the communication overhead of the microservice pattern in mind, we minimized all inter-service communication to the absolut minimum. Therefore, the current simulation limits and bottlenecks can be curtail not on the TCP/IP layer but rather on the data size collected. In particular, ..
+Having the communication overhead of the microservice pattern in mind, we minimized all inter-service communication to the absolute minimum. Therefore, the current simulation limits and bottlenecks can be curtail not on the TCP/IP layer but rather on the data size collected. In particular, ..
 
 
 No ticks or such, but completely free and dynamic, every merchant can check or update prices at any time -> close to real life (unlike eg http://www.informsrmp2017.com/description-challenge.pdf)
@@ -47,3 +49,6 @@ Simulation 1 Stunde, 4000 Produkte à 4 Qualitäten, max 1000 Aktionen (Updates 
 03: 4 MB
 02: 2 MB
 01: 60 KB
+
+
+% TODO: bottleneck UI on higher load, browser crash if too many events need to be handled
