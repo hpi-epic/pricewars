@@ -4,19 +4,20 @@
 % Owner: Seb
 % Reviewed: jani, johanna
 %
-As previously discussed, the architecture consists of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}. This helps to fulfill the design goal of reactivity since each service is totally autonomous and can contact every other service via their exposed RESTful API at any time, without the need to be explicitly pinged or asked for actions. 
+As previously discussed, the architecture consists of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}. This helps to fulfill the design goal of reactivity since each service is totally autonomous and can contact every other service via their exposed RESTful API at any time, without the need of ticks at which they are explicitly pinged or asked for actions. 
 
 Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are furthermore secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced which additionally enables the id-based logging of event messages corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the amount of requests during the simulation. Described in the previous section, the gain of flexibility and scalability of services within a microservice architecture goes along with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the amount of requests being sent over the network for streamlining a simulation and its necessary communication. 
 In the following, we will briefly outline some of the main challenges which were solved.
 
 %
 \subsection{Decentralized Authorization}
+\label{sec:DecentralizedAuthorization}
 % Owner: 
 % Reviewed:
 %
 
 %
-\subsection{Event log analysis with Kafka and Flink}
+\subsection{Event Log Analysis with Kafka and Flink}
 % Owner: 
 % Reviewed:
 %
@@ -29,26 +30,4 @@ In the following, we will briefly outline some of the main challenges which were
 % Reviewed:
 %
 
-%
-\subsection{Simulation Limits and Bottleneck Evaluation}
-% Owner: 
-% Reviewed:
-%
-Having the communication overhead of the microservice pattern in mind, we minimized all inter-service communication to the absolute minimum. Therefore, the current simulation limits and bottlenecks can be curtail not on the TCP/IP layer but rather on the data size collected. In particular, ..
-
-
-No ticks or such, but completely free and dynamic, every merchant can check or update prices at any time -> close to real life (unlike eg http://www.informsrmp2017.com/description-challenge.pdf)
-
-
-
-@Todo: include data
-Simulation 1 Stunde, 4000 Produkte à 4 Qualitäten, max 1000 Aktionen (Updates / Käufe) pro Minute, 750 Offer pro Merchant
-06: 25 MB
-05: 2,3 GB
-04: 24 MB
-03: 4 MB
-02: 2 MB
-01: 60 KB
-
-
-% TODO: bottleneck UI on higher load, browser crash if too many events need to be handled
+%No ticks or such, but completely free and dynamic, every merchant can check or update prices at any time -> close to real life (unlike eg http://www.informsrmp2017.com/description-challenge.pdf) --> siehe weiter oben

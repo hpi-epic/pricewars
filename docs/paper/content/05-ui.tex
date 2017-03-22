@@ -1,8 +1,16 @@
 \section{User Interface}
 \label{sec:ui}
 % Owner: Jani
-% Reviewed:
+% Reviewed: Johanna
 %
-\todo[inline]{Johanna, feel free to add anything which I missed}
-The ``Management User Interface'' enables the user to configure, operate and orchestrate the different microservices all in one place. Therefor, its implementation is based on angularJS consuming the RESTful APIs exposed by each individual service. Additionally, we used the socket.io\footnote{\url{https://github.com/socketio/socket.io}} technology which imitates a websocket connection based on HTTP to realize real time graphs and KPIs for an ongoing simulation. This socket.io interface is provided by the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
+The ``Management User Interface'' (UI) enables the user to configure, operate and orchestrate the different microservices all in one place. 
 
+Its implementation is based on angularJS consuming the RESTful APIs exposed by each individual service. Additionally, we used the socket.io\footnote{\url{https://github.com/socketio/socket.io}} technology which imitates a websocket connection based on HTTP to realize a real-time streaming connection to the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
+
+The UI allows a user of the simulation to start and stop a simulation in the sense that all components having a state can be started, stopped, accessed and configured here, including their state. These components are the merchants and the consumer. Furthermore, all exposed settings for the behavior of each merchant and the consumer can be viewed, edited and updated.
+
+The stateless components of the simulation, such as the producer and the marketplace, cannot be stopped or started, but configured here as well. E.g., products can be added or deleted, or the marketplace can be emptied with the necessary login-credentials for the underlying database.
+
+If a user wants to register a new merchant and send it into the simulation, they can use the UI to register a new endpoint under which the merchant is running, and in return receive a secret token that is used for authorization (rf. Chapter \ref{sec:DecentralizedAuthorization}). 
+
+Furthermore, the UI also offers easy access to visualizations of the real-time pricing interaction of merchants and to key performance indicators of each merchant, simplifying the process of comparing different pricing strategies.

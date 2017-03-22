@@ -1,5 +1,6 @@
 %
 \section{Introduction}
+\label{sec:Introduction}
 % Owner: Jani
 % Reviewed: 
 %
@@ -10,25 +11,38 @@ Currently, pricing strategies and algorithms exist, but handlers of those mechan
 
 \textbf{Contribution:} In this work, we briefly elaborate our process of building a distributed and scalable platform to imitate market situations and simulate dynamic pricing algorithms and their effects with potential real world settings.
 Therefore, the following Chapter \ref{sec:Architecture} contains a short introduction into the underlying architecture of the platform.
-The choreography of different services is described in \ref{sec:Choreography}. Chapter \ref{sec:Behaviors} will provide insights in the already implemented algorithms and their behaviors.
-A user facing interface on top of the RESTful API used for the communication between the services is delineated in \ref{sec:ui} and finally Chapter \ref{sec:conclusion} concludes this elaboration. \\
+The choreography of different services is described in Chapter \ref{sec:Choreography}. Chapter \ref{sec:Behaviors} will provide insights in the already implemented algorithms and their behaviors.
+A user facing interface on top of the RESTful API used for the communication between the services is delineated in Chapter \ref{sec:ui} and finally Chapter \ref{sec:conclusion} concludes this elaboration. \\
 
+%
+% TODO: Do we want to keep this section as standalone? And if so, we need to include it in Contribution overview of the chapters. 
+%
+\section{Design Goals}
+\label{sec:Design_Goals}
 % Owner: Johanna
-\textbf{Design Goals:} While building this platform, we had a set of specific design goals and restrictions in mind, that we wanted to fulfill to make the platform and the resulting simulation as realistic, dynamic and reactive as possible: 
+% Reviewed: 
+%
+While building the simulation platform, we had a set of specific design goals and restrictions in mind, that we wanted to fulfill to make the platform and the resulting simulation as realistic, dynamic and reactive as possible: 
 \begin{itemize}
     \item \textbf{Reactivity:} Allow pricing algorithms to do fully dynamic price updates and look-ups at any time without being refrained by discrete time intervals to enable truly reactive pricing strategies.
     \item \textbf{Security:} Prevent fraud in simulation setups with multiple participants to allow the simulation to be used for competitions or education purposes. Fraud could be the deliberate influence on the expenses or profits of other pricing algorithms or the usage of data (e.g. for learning purposes) that is normally not accessible.
-    \item \textbf{Realism:} Enforce real-life restrictions present in every big real-life marketplaces such as limited requests per time interval to avoid constant polling of the market situation.  
-    \item \textbf{Flexibility:} Offer the greatest possible flexibility in terms of scalability and adaptivity of the system to make the system easily expandable and adaptable to new possible design goals or user needs.
+    \item \textbf{Realism:} Enforce real-life restrictions present in every big real-life marketplaces such as a limited amount of price updates per time interval to avoid advantages by constantly changing prices.
+    \item \textbf{Flexibility:} Offer the greatest possible flexibility in terms of scalability and adaptivity of the system to make the system easily expandable and adaptable to new possible design goals or user needs. 
 \end{itemize}
 
 %Check intro in \url{http://faculty.chicagobooth.edu/workshops/omscience/pdf/Spring%202016/Popescu.pdf}
 
 %
 \section{Related Work}
+\label{sec:Related_Work}
 % Owner: 
 % Reviewed: 
 %
 (only own section if we find enough) \\
+
+\begin{itemize}
+    \item Bertrand (1883) model: Exact same product, two companies -> product will be offered at purchase price by both because costumers only have one differentiating feature: the price. so they buy the cheapest, no room for profit.
+    \item 
+\end{itemize}
 
 Check literature review in \url{http://faculty.chicagobooth.edu/workshops/omscience/pdf/Spring%202016/Popescu.pdf}
