@@ -6,24 +6,36 @@
 %
 As previously discussed, the architecture consists of several services communicating with each other. This communication is done via well-defined RESTful APIs using JSON objects\footnote{\url{https://hpi-epic.github.io/masterproject-pricewars/}}. This helps to fulfill the design goal of reactivity, since each service is totally autonomous and can contact every other service via their exposed RESTful API at any time. There is no need for explicit simulation ticks or action requests.
 
-Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced. It enables the id-based logging of event messages corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the number of requests during the simulation.
+Due to the micro-service architecture and the design goal to allow real competition of different merchants without cheating, all important routes are secured by authorization tokens. For authenticating all participants in the simulation without the need of a centralized authentication server, a hash-based token and identification system was introduced. It enables the ID-based logging of event messages corresponding to one merchant or consumer. One of the causes to implement this decentralized authentication system was to reduce the number of requests during the simulation.
 
-Described in the previous section, the gain of flexibility and scalability of services within a micro-service architecture comes with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the number of requests being sent over the network for streamlining a simulation and its necessary communication. 
+% Described in the previous section, the gain of flexibility and scalability of services within a micro-service architecture comes with the cost of an increased communication overhead. With this knowledge and experiences of a first prototype, the goal was to reduce the number of requests being sent over the network for streamlining a simulation and its necessary communication. 
 
-%In the following, we will briefly outline some of the main challenges which were solved.
+In the following, we will briefly outline some of the main challenges which were solved.
 
 %
-%\subsection{Decentralized Authorization}
-%\label{sec:DecentralizedAuthorization}
+\subsection{Decentralized Authorization}
+\label{sec:DecentralizedAuthorization}
+% Owner: 
+% Reviewed:
+%
+One of the most important aspects of the simulation is the analysis of revenue and thus the performance of the pricing algorithm. In order to generate basic statistics without the merchant (to prevent any manipulation), each relevant transaction requires authentication and is done by another service (see Chapter~\ref{sec:LogAnalysis}). The only service that always has an up to date list of active and registered merchants is the marketplace. Due to the high density of requests being handled by the marketplace during a simulation, the goal was to prevent additional communication for authorization purposes. 
+
+Therefore, all merchants are required to register at the marketplace and to get an authorization token (which is a secret and not shared with any other merchant). This token is enforced when setting a new price or when buying new products from the producer. Each service is capable of transferring a token to an ID by using the following hash function: \texttt{base64(sha256(token))}. The resulting ID only depends on the given token. Due to the nature of the used hash function, there is no fast computational way to get the token to a known ID. Thus, this successfully prevents any merchant to pretend being a competitor because the producer requires the token and calculates the ID before logging the expense and returning a new product.
+
+Similar to the real world, the simulation should also prevent unauthorized transactions by merchants to the marketplace. Merchants should offer their products in the same condition as they bought them from the producer. Therefore, each new item posted to the marketplace must contain a valid signature, which is created by the producer. This signature is encrypted and contains product details such as the quality or amount. In addition, the merchant ID is included by the producer and must match the ID of the merchant, that tries to use the product in an offer. As described in the previous paragraph, the producer calculates the ID based on the given token he also uses to log the purchase. With this technique, no merchant is able to get a product without paying for it and without changing its quality.
+
+%
+\subsection{Event Log Analysis with Kafka and Flink}
+\label{sec:LogAnalysis}
 % Owner: 
 % Reviewed:
 %
 
-%
-%\subsection{Event Log Analysis with Kafka and Flink}
-% Owner: 
-% Reviewed:
-%
+All transactions during the simulation are persisted using a Kafka stream database. The log is sourced by the marketplace and the producer with JSON formatted messages and stored in different, so-called \emph{topics}. Each topic can be consumed independently with the preserved order of events. For example, the Flink jobs read all messages within a predefined time range (such as one minute or one hour). Each Flink job aggregates different events from multiple topics and logs the result in an own Kafka topic. The jobs are executed every ten seconds or every minute, depending on the aggregation.
+
+The aggregated messages contain the calculated market share per merchant per time slice and are used by the management UI to display corresponding statistics. Because Kafka only offers stream-based access, the Kafka reverse proxy is responsible for fetching a preset amount of events on request to serve these via a RESTful API. This additional layer is required because available libraries for the Kafka access use a timeout to wait for new events during read or require a fix amount of messages to fetch. In addition, the reverse proxy also implements socket.io, a web technology to push new events directly to the management UI in browsers for live statistic updates. 
+
+In addition to being the main statistic source for the management UI, the reverse proxy is also responsible for serving the event log to merchants and to export topics to CSV files. These exports are mainly used for data-driven merchants. As described in~\ref{sec:DecentralizedAuthorization}, the messages contain a specific merchant ID and are filtered for that ID when exporting data. Therefore, the corresponding merchant token is required and used to filter out non-related events.
 
 %Besides the socket.io interface, the kafka-reverse-proxy also offers a RESTful API to fetch detailed logs for data-driven pricing algorithms. Based on to learn their strategies appropriately. To ensure a fair starting point and competition, the single merchants may only access data out of their own scope which is enforced by the authentication token mechanisms. In this way, one merchant is not able to see the sales of another merchant.
 

@@ -5,7 +5,9 @@
 %
 The ``Management User Interface'' (UI) enables the user to configure, operate and orchestrate the different microservices all in one place. 
 
-Its implementation is based on angularJS consuming the RESTful APIs exposed by each individual service. Additionally, we used the socket.io\footnote{\url{https://github.com/socketio/socket.io}} technology which imitates a websocket connection based on HTTP to realize a real-time streaming connection to the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
+%Its implementation is based on angularJS consuming the RESTful APIs exposed by each individual service. Additionally, we used the socket.io\footnote{\url{https://github.com/socketio/socket.io}} technology which imitates a websocket connection based on HTTP to realize a real-time streaming connection to the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
+
+Consuming the RESTful APIs exposed by each individual service, we used additionally the websockets to realize a real-time streaming connection to the kafka-reverse-proxy as consumer of the Apache Kafka\footnote{\url{https://kafka.apache.org/}} instances.
 
 The UI allows a user of the simulation to start and stop a simulation in the sense that all components having a state can be started, stopped, accessed and configured here, including their state. These components are the merchants and the consumer. Furthermore, all exposed settings for the behavior of each merchant and the consumer can be viewed, edited and updated.
 
