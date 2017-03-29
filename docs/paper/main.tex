@@ -1,0 +1,145 @@
+% This is "sig-alternate.tex" V2.1 April 2013
+
+\documentclass{sig-alternate-05-2015}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+%
+% please be aware to install sudo apt-get install texlive-science
+%
+%
+\usepackage{makeidx}                    % allows for indexgeneration
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[pdftex,dvipsnames,table]{xcolor}  % Coloured text etc.
+% \usepackage{hyperref}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{scrextend}
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+  
+% takes the merchant letter as first parameter and the percentage of higher profit as second parameter
+\newcommand{\evalresult}[2]{\specialcell{#1\\[-1ex]{\fontsize{7pt}{0pt}\selectfont+#2\%}}}
+
+\usepackage{enumitem}
+\setlist{noitemsep}
+
+\usepackage{subcaption}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{scrextend} %for refnote
+\usepackage{tabu}
+
+\usepackage{eurosym}
+
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref} % cleverref
+\usepackage[capitalise]{cleveref}
+\def\UrlBreaks{\do\/\do-}
+
+% 
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+%
+\setlength{\parindent}{0pt}
+
+\usepackage[numbers]{natbib}
+
+\widowpenalty=10000
+\raggedbottom
+\parfillskip 0pt plus 0.75\textwidth
+
+% custom todo
+%\newcommand{\todo}[1]{}
+%\renewcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+
+%% DEBUG
+%\usepackage{showframe}
+
+\begin{document}
+
+% Copyright
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+
+%----------------------------------------------------------------------------------------
+%	Meta Data
+%----------------------------------------------------------------------------------------
+%
+
+
+\title{Simulating Strategic Interaction on Online Marketplaces}
+\subtitle{[How to Survive Dynamic Pricing Competition]}
+
+
+
+\numberofauthors{9} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\author{Marvin Bornstein, Johanna Latt, Jan Lindemann, Nikolai J. Podlesny, Sebastian Serth, Jan Selke}
+\additionalauthors{Martin Boissier, Rainer Schlosser, Matthias Uflacker}
+    
+
+\maketitle
+
+%
+%----------------------------------------------------------------------------------------
+%	Content
+%----------------------------------------------------------------------------------------
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%     Abstract     %%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+%
+
+\begin{abstract}
+Implementing intelligent and efficient pricing strategies for big online marketplaces to make customers buy your product instead of the competitor's is one of the biggest challenges retailers have nowadays. Especially since pricing algorithms can vary heavily from simply rule-based to complex, data-driven strategies. Currently, retailers lack the possibility to test their algorithms appropriately before releasing them into the real world. Additionally, it is hard for researchers to investigate how pricing strategies react and interact based on influences and against each other. We picked up the challenge to create an environment to imitate different market situations in eCommerce. Therefore, we provide the toolkit to simulate and test pricing strategies in various contexts and with different consumer and merchant behaviors on such a marketplace.
+\end{abstract}
+
+
+%\keywords{Dynamic Pricing}
+
+%\todo[inline]{MB: finde das Paper soweit echt gut. Aufbau ist sinnig, Motivation kommt langsam gut rüber. Ein wenig fehlt mir noch der rote Pfaden (ist aber nicht schlimm, wenn der nicht sitzt, andere Dinge sind wichtiger). Hauptaugenmerk ist in meinen Augen jetzt die Merchant-Vergleiche sauber in das Paper zu bekommen (Sec. 8).}
+
+\input{content/01-introduction.tex}
+\input{content/02-architecture.tex}
+\input{content/03-choreography.tex}
+\input{content/04-behaviors.tex}
+\input{content/05-ui.tex}
+\input{content/06-evaluation.tex}
+\input{content/07-conclusion.tex}
+
+%\end{document}  % This is where a 'short' article might terminate
+
+%\newpage
+
+%ACKNOWLEDGMENTS are optional
+\section*{Acknowledgments}
+As part of this elaboration, special thanks goes to Dr. Matthias Uflacker, Dr. Rainer Schlosser, and Martin Boissier for their continuous support and supervision. Also, we thank all attendant members of the EPIC research group for their fruitful discussions.
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{bibtex/references.bib}  
+
+
+\end{document}

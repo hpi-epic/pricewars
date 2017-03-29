@@ -1,0 +1,12 @@
+A brief summary, for easy lookup:
+
+    i.e. means that is, being the English translation of the latin id est
+    e.g. means for example, being the English translation of the latin exempli gratia
+    cf. means compare with or consult, being short for confer
+    et al. means "and others", being the English translation of the latin et alia or et alii
+    viz. (videlicet) means "namely" or "that is to say"
+
+    q.v. (quod vide) means "which to see" and is written after term or phrase that should be looked up elsewhere in the current document
+    ibid. (ibidem) means "in the same place" and is used in citations to refer to a previously listed work
+    
+Source : https://www.quora.com/What-do-Latin-abbreviations-such-as-i-e-e-g-cf-and-et-al-stand-for-and-what-do-they-mean

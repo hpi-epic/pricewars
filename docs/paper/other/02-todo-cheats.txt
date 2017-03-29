@@ -1,0 +1,14 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%  TODO Cheatbook
+%
+%  \todo[inline]{The original todo note withouth changed colours.\newline Here's another line.}
+%  \unsure{Is this correct?}
+%  \change{Change this!}
+%  \info{This can help me in chapter seven!}
+%  \improvement{This really needs to be improved!\newline\newline What was I thinking?!}
+%  \thiswillnotshow{This is hidden since option `disable' is chosen!}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%

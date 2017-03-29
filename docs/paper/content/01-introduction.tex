@@ -1,0 +1,34 @@
+%
+\section{Introduction}
+\label{sec:Introduction}
+% Owner: Jani
+% Reviewed: 
+%
+The field of \emph{dynamic pricing} is concerned with the creation, analysis and application of highly dynamic pricing strategies that change prices of products in reaction to certain variables such as the competitor's actions, demand estimations or certain consumer behaviors.
+For the last couple of decades those strategies were mainly defined by rule-based actions. Now however, more and more companies start basing their pricing calculations and strategies on technology and data-driven processes. Not only the profit and cost computation is algorithm driven, but also its update and review strategy.
+One of the most competitive and advanced fields is the algorithmic trading or high-frequency trading on stock exchanges. Also, each one of us has already experienced technology driven price calculations on online marketplaces like Amazon where everything is inherently highly dynamic and price updates can happen within nanoseconds.
+
+Pricing strategies and algorithms currently exist, but handlers of those mechanisms lack the possibility to test them appropriately before releasing them into the real world. This can create huge losses~\citep{uflacker2016ertragsmanagement,schlosser2016optimal,schlosser2016stochastic,schlosser2016survive}. We picked up the challenge to create an environment to imitate different market situations and test how pricing strategies react and interact when influencing each other. \\
+
+\textbf{Contribution:} In this work, we briefly elaborate our process of building a distributed and scalable platform to imitate market situations and simulate dynamic pricing algorithms and their effects with potential real world settings.
+After briefly looking at related work in \cref{sec:Related_Work}, the following \cref{sec:Design_Goals} lists the goals we identified as most important for a good simulation platform and which we tried to address in our solution by using an appropriate architecture as outlined in \cref{sec:Architecture}.
+The choreography of different services is described in \cref{sec:Choreography} and \cref{sec:Behaviors} will provide insights in the already implemented algorithms and their behaviors.
+A user facing interface on top of the RESTful API used for the communication between the services is delineated in \cref{sec:ui}. Furthermore, an evaluation of first simulations and the platform's capabilities and restrictions are elaborated in \cref{sec:evaluation} and \cref{sec:FutureWork}. Finally, \cref{sec:conclusion} concludes this work.
+
+
+%
+\section{Related Work}
+\label{sec:Related_Work}
+% Owner: Johanna
+% Reviewed: 
+%
+The topic of pricing competition has been widely researched and discussed in various research areas. The Bertrand-model from 1883~\citep{bertrand1883} is a very basic model looking at the situation of two companies offering one exact same product. The result in this case according to the Bertrand-model will always be that the product will be offered at purchase price by both companies. The only differentiating feature for the customers is the price of the product, thus they will always buy the cheaper product which leads to both companies undercutting each other until they both have no profit margin left. 
+
+However, the situation in markets with multiple products or products with differentiating features offers a much wider variety of possible outcomes and pricing strategies. Many have researched possible pricing strategies and possible scenarios.~\citet{kopalle1996} and~\citet{chintagunta1996} focus on the demand as factor for dynamic pricing models,~\citet{martinez2011} investigate the influence of stochastic demand,~\citet{gallego2008} look at perishable products, i.e. products with a finite sales horizon, and~\citet{levin2009} consider strategic consumer choices and perishable products as well.~\citet{popescu2015} explored models of repricing automation in markets where products have exactly one differentiating attribute such as the seller's reputation. 
+
+With the increasing use of online marketplaces in the last decades, the dynamic pricing topic got more and more important due to the possibility to change virtual prices within seconds, whereas physical prices printed on products in stores were much harder and slower to influence. But also, the consumers' behavior changes in this context as~\citet{kannan2001} researched by comparing the physical value chain with the virtual-information-based value chain. 
+
+This showed that the consumer behavior is just as much of an important factor in dynamic pricing contexts as the pricing behavior is. However, little effort has been made to build simulation platforms that ease the development and evaluation of good pricing algorithms while taking all of these factors into account.~\citet{morris2001} developed such a platform in 2001. However, it is limited in its capabilities, especially since it does not allow huge eCommerce simulations, which is necessary today: The simulation program runs on a single machine, offers a limited set of consumer behaviors, simulates solely finite sales horizons and the pricing updates of the sellers happen only in discrete time intervals that are predefined by the system. Thus, reactions to other sellers are very limited. This does not represent the current situation on online marketplaces very well.
+
+
+
