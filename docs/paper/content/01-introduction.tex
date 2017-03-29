@@ -4,20 +4,16 @@
 % Owner: Jani
 % Reviewed: 
 %
-For the last couple of centuries prices were mainly defined by rule-based actions. More and more companies start basing their pricing calculations and strategies on technology and data-driven processes. Not only the actual computation of profit and cost is algorithm driven, but also its update and review strategy.
-One of the most competitive and advanced fields is the algorithmic trading or high-frequency trading on stock exchanges. But also, each one of us experiences nowadays technology driven price calculation on online marketplace like Amazon, which we will hereinafter refer to as \emph{dynamic pricing}. 
+The field of \emph{dynamic pricing} is concerned with the creation, analysis and application of highly dynamic pricing strategies that change prices of products in reaction to certain variables such as the competitor's actions, demand estimations or certain consumer behaviors.
+For the last couple of decades those strategies were mainly defined by rule-based actions. Now however, more and more companies start basing their pricing calculations and strategies on technology and data-driven processes. Not only the profit and cost computation is algorithm driven, but also its update and review strategy.
+One of the most competitive and advanced fields is the algorithmic trading or high-frequency trading on stock exchanges. Also, each one of us has already experienced technology driven price calculations on online marketplaces like Amazon where everything is inherently highly dynamic and price updates can happen within nanoseconds.
 
-Pricing strategies and algorithms currently exist, but handlers of those mechanism lack the possibility to test them appropriately before releasing them into the real world. This can create huge losses~\citep{uflacker2016ertragsmanagement,schlosser2016optimal,schlosser2016stochastic,schlosser2016survive}. We picked up the challenge to create such an environment, imitating different market situations and therefore testing how pricing strategies react and interact when influencing each other.\\
+Pricing strategies and algorithms currently exist, but handlers of those mechanisms lack the possibility to test them appropriately before releasing them into the real world. This can create huge losses~\citep{uflacker2016ertragsmanagement,schlosser2016optimal,schlosser2016stochastic,schlosser2016survive}. We picked up the challenge to create an environment to imitate different market situations and test how pricing strategies react and interact when influencing each other. \\
 
 \textbf{Contribution:} In this work, we briefly elaborate our process of building a distributed and scalable platform to imitate market situations and simulate dynamic pricing algorithms and their effects with potential real world settings.
-Therefore, the following Chapter \ref{sec:Architecture} contains a short introduction into the underlying architecture of the platform.
-The choreography of different services is described in Chapter \ref{sec:Choreography}. Chapter \ref{sec:Behaviors} will provide insights in the already implemented algorithms and their behaviors.
-A user facing interface on top of the RESTful API used for the communication between the services is delineated in Chapter \ref{sec:ui} and an evaluation of first simulations are elaborated in Chapter \ref{sec:evaluation}. Finally, Chapter \ref{sec:conclusion} concludes this work. \\
-
-%
-% TODO: Do we want to keep the design goal section as standalone? And if so, we need to include it in Contribution overview of the chapters. 
-% TODO: Include related work chapter in here as well if we keep it
-%
+After briefly looking at related work in \cref{sec:Related_Work}, the following \cref{sec:Design_Goals} lists the goals we identified as most important for a good simulation platform and which we tried to address in our solution by using an appropriate architecture as outlined in \cref{sec:Architecture}.
+The choreography of different services is described in \cref{sec:Choreography} and \cref{sec:Behaviors} will provide insights in the already implemented algorithms and their behaviors.
+A user facing interface on top of the RESTful API used for the communication between the services is delineated in \cref{sec:ui}. Furthermore, an evaluation of first simulations and the platform's capabilities and restrictions are elaborated in \cref{sec:evaluation} and \cref{sec:FutureWork}. Finally, \cref{sec:conclusion} concludes this work.
 
 
 %
@@ -26,49 +22,13 @@ A user facing interface on top of the RESTful API used for the communication bet
 % Owner: Johanna
 % Reviewed: 
 %
-The topic of pricing competition has been widely researched and discussed in various research areas. The Bertrand-model from 1883 \citep{bertrand1883} is a very basic model looking at the situation of two companies offering one exact same product. The result in this case according to the Bertrand-model will always be that the product will be offered at purchase price by both companies. The only differentiating feature for the customers is the price of the product, thus they will always buy the cheaper product which leads to both companies undercutting each other until they both have no profit margin left. \\
+The topic of pricing competition has been widely researched and discussed in various research areas. The Bertrand-model from 1883~\citep{bertrand1883} is a very basic model looking at the situation of two companies offering one exact same product. The result in this case according to the Bertrand-model will always be that the product will be offered at purchase price by both companies. The only differentiating feature for the customers is the price of the product, thus they will always buy the cheaper product which leads to both companies undercutting each other until they both have no profit margin left. 
 
-However, the situation in markets with multiple products or products with differentiating features offers a much wider variety of possible outcomes and pricing strategies. Many have researched possible pricing strategies and possible scenarios. \citet{kopalle1996} and \citet{chintagunta1996} focus on the demand as factor for dynamic pricing models, \citet{martinez2011} investigate the influence of stochastic demand, \citet{gallego2008} look at perishable products, i.e. products with a finite sales horizon, and \citet{levin2009} consider strategic consumer choices and perishable products as well. \citet{popescu2015} explored models of repricing automation in markets where products have exactly one differentiating attribute such as the seller's reputation. 
+However, the situation in markets with multiple products or products with differentiating features offers a much wider variety of possible outcomes and pricing strategies. Many have researched possible pricing strategies and possible scenarios.~\citet{kopalle1996} and~\citet{chintagunta1996} focus on the demand as factor for dynamic pricing models,~\citet{martinez2011} investigate the influence of stochastic demand,~\citet{gallego2008} look at perishable products, i.e. products with a finite sales horizon, and~\citet{levin2009} consider strategic consumer choices and perishable products as well.~\citet{popescu2015} explored models of repricing automation in markets where products have exactly one differentiating attribute such as the seller's reputation. 
 
-With the increasing use of online marketplaces in the last decades, the dynamic pricing topic got more and more important due to the possibility to change virtual prices within seconds, whereas physical prices printed on products in stores were much harder and slower to influence. But also, the consumers' behavior changes in this context as \citet{kannan2001} researched by comparing the physical value chain with the virtual-information-based value chain. \\
+With the increasing use of online marketplaces in the last decades, the dynamic pricing topic got more and more important due to the possibility to change virtual prices within seconds, whereas physical prices printed on products in stores were much harder and slower to influence. But also, the consumers' behavior changes in this context as~\citet{kannan2001} researched by comparing the physical value chain with the virtual-information-based value chain. 
 
-This showed that the consumer behavior is just as much of an important factor in dynamic pricing contexts as the pricing behavior is. However, little effort has been made to build simulation platforms that ease the development and evaluation of good pricing algorithms while taking all of these factors into account. \citet{morris2001} developed such a platform in 2001. However, it is limited in its capabilities, especially looking at huge online marketplace situations that were not the primary target context when this simulation was developed. The simulation program runs on a single machine, offers a limited set of consumer behaviors, simulates solely finite sales horizons and the pricing updates of the sellers happen only in discrete time intervals that are predefined by the system. Thus, reactions to other sellers are very limited. This does not represent the current situation on online marketplaces very well.
+This showed that the consumer behavior is just as much of an important factor in dynamic pricing contexts as the pricing behavior is. However, little effort has been made to build simulation platforms that ease the development and evaluation of good pricing algorithms while taking all of these factors into account.~\citet{morris2001} developed such a platform in 2001. However, it is limited in its capabilities, especially since it does not allow huge eCommerce simulations, which is necessary today: The simulation program runs on a single machine, offers a limited set of consumer behaviors, simulates solely finite sales horizons and the pricing updates of the sellers happen only in discrete time intervals that are predefined by the system. Thus, reactions to other sellers are very limited. This does not represent the current situation on online marketplaces very well.
 
-\iffalse
 
-\begin{itemize}
-    \item Bertrand (1883) model: Exact same product, two companies -> product will be offered at purchase price by both because costumers only have one differentiating feature: the price. so they buy the cheapest, no room for profit.
-    
-    \item Kopalle (1996): Asymmetric Reference Price Effects and Dynamic Pricing Policies  (http://pubsonline.informs.org/doi/abs/10.1287/mksc.15.1.60)
-    \item Chintagunta (1996): Pricing Strategies in a Dynamic Duopoly: A Differential Game Model (https://pdfs.semanticscholar.org/d0e4/88bb8a11427853639821c7a1cba5afe57a17.pdf)
-    
-    \item Gallego (2008): Dynamic Pricing of Perishable Assets (https://pdfs.semanticscholar.org/d0e4/88bb8a11427853639821c7a1cba5afe57a17.pdf)
-    
-     \item Martinez-de-Albeniz (2011): Dynamic Price Competition with Fixed Capacities (stochastic demand, http://pubsonline.informs.org/doi/abs/10.1287/mnsc.1110.1337?journalCode=mnsc)
-    
-    \item Levin (2009): Dynamic Pricing in the Presence of Strategic Consumers and Oligopolistic Competition (strategic consumers, perishable products - http://pubsonline.informs.org/doi/abs/10.1287/mnsc.1080.0936)
-    
-   
-    \item Kannan (2001): Dynamic Pricing on the Internet: Importance and
-Implications for Consumer Behavior (http://www.tandfonline.com/doi/pdf/10.1080/10864415.2001.11044211?needAccess=true)
-Under Competition
 
-    \item Morris (2001): A Simulation-based Approach to Dynamic Pricing  (developed simulation, however only locally running program, rather inflexible, given limited set of consumer behaviors, certain restrictions on the products - only finite, price updates only in ticks, not yet targeted at highly dynamic online marketplaces) https://dspace.mit.edu/bitstream/handle/1721.1/29169/49676094-MIT.pdf;sequence=2) 
-\end{itemize}
-
-%Check literature review in \url{http://faculty.chicagobooth.edu/workshops/omscience/pdf/Spring%202016/Popescu.pdf}
-
-\fi
-
-\section{Design Goals}
-\label{sec:Design_Goals}
-% Owner: Johanna
-% Reviewed: 
-%
-Given the current, very limited possibilities to simulate a huge, dynamic online marketplace, we came up with a set of specific design goals and restrictions, that we wanted to fulfill to make the platform and the resulting simulation as realistic, dynamic and reactive as possible: 
-\begin{itemize}
-    \item \textbf{Reactivity:} Allow pricing algorithms to do fully dynamic price updates and look-ups at any time without being refrained by discrete time intervals to enable truly reactive pricing strategies.
-    \item \textbf{Realism:} Enforce real-life restrictions present in every big real-life marketplace such as a limited amount of price updates per time interval to avoid advantages by constantly changing prices.
-    \item \textbf{Flexibility:} Offer the greatest possible flexibility in terms of scalability and adaptivity of the system to make the system easily expandable and adaptable to new possible design goals or user needs.
-    \item \textbf{Security:} Prevent fraud in simulation setups with multiple participants to allow the simulation to be used for competitions or education purposes. Fraud could be the deliberate influence on the expenses or profits of other pricing algorithms or the usage of data (e.g. for learning purposes) that is normally not accessible.
-\end{itemize}
