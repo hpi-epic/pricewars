@@ -85,11 +85,34 @@ docker-compose up
 ```
 
 #### Windows w/o Docker Native support
-For Windows versions that don't have Docker Native support, like Home etc., another solution is to use an Ubuntu virtual machine with Docker installed. We recommend to use Ubuntu Server as the GUI of other Ubuntu versions might consume to much main memory. The main memory should be at least 8GB, since your Windows consumes about 2GB, Ubuntu Server 0.5GB and the simulation about 4GB. Also, your browser will consume a few hundred MB, too. 
+For Windows versions that don't have Docker Native support, like Home etc., another solution is to use an Ubuntu virtual machine with Docker installed. We recommend to use Ubuntu Server as the GUI of other Ubuntu versions might consume to much main memory. The main memory should be at least 8GB, since your Windows consumes about 2GB, Ubuntu Server 0.5GB and the simulation about 4GB. Also, your browser will consume a few hundred MB, too.
 
 On your guest system, you have to adjust your DNS settings like mentioned before. If you want to access your simulation from your host system, i.e. with the managment ui in the browser or with a locally deployed merchant, you also need to adjust the DNS settings of this, too. You could also use the Windows Subsystem for Linux (WSL) to run local merchants. Be aware, that you need to adjust the DNS settings a third time, this time in the hosts file of the WSL. Also, you might need to add an exception to your firewall to allow your merchant to access the virtual machine.
 
 #### Help - My Docker Setup is not working as expected!
+
+##### One of the images can't be built:
+You might see the following in your console after typing `docker-compose up` for the first time (which will initially build the containers):
+
+```
+[warn] 	::::::::::::::::::::::::::::::::::::::::::::::
+[warn] 	::          UNRESOLVED DEPENDENCIES         ::
+[warn] 	::::::::::::::::::::::::::::::::::::::::::::::
+[warn] 	:: pricewars-utils#pricewars-utils_2.11;0.1-SNAPSHOT: not found
+[warn] 	::::::::::::::::::::::::::::::::::::::::::::::
+[warn]
+[warn] 	Note: Unresolved dependencies path:
+[warn] 		pricewars-utils:pricewars-utils_2.11:0.1-SNAPSHOT
+[warn] 		  +- flinkutils:flinkutils_2.11:1.0
+```
+
+Most probably, the utils submodule was not cloned correctly. Check that `analytics\utils` is not empty. Within the `analytics` folder, execute the following command:
+
+```
+git submodule update
+```
+You might need to add an SSH key to your GitHub account in order to clone the repository. Visit the [GitHub Help](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/) for more details.
+
 ##### Some containers quit unexpectedly:
 First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
 - __Postgres__: Either empty the `docker-mounts/postgres` folder (if running on Unix / Linux) or remove mounting a volume to Postgres completly (required on Windows, optional on Unix / Windows).
