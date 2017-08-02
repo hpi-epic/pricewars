@@ -72,7 +72,7 @@ Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/va
 ```
 
 #### Updating the Docker setup
-First, stop your existing containers by pressing CTRL + C. In some cases, even though you just pressed CTRL + C once, the containers might not be stopped. Therefore, we ask docker-compose to stop them all first before continuing.
+First, stop your existing containers. In some cases, even though you just pressed `CTRL + C` once, the containers might not be stopped. Additionally, using `CTRL + C` might leave .PID files in some containers that block the containers during the next start. Consequently, we advise to use `docker-compose stop` to stop them all first before continuing (e.g., in another terminal window).
 
 ```
 docker-compose stop
