@@ -181,6 +181,7 @@ services:
       - PRICEWARS_PRODUCER_URL=producer:3050
     # volumes:
     #   - ./pricewars-consumer:/consumer
+    command: "bash -c 'rm -rf /consumer/tmp/pids/server.pid; bundle exec rails s -b 0.0.0.0'"
     depends_on:
       - marketplace
     links:
