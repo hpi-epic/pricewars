@@ -73,6 +73,15 @@ This allows you to access container by domain name via your local docker ip addr
 172.29.0.1      merchant-simple-competition-logic2
 ```
 
+#### Cleaning up containers and existing state
+Run the following commands to run the platform in a clean state.
+
+```
+docker-compose rm --stop
+sudo rm -rf docker-mounts/*
+docker-compose up
+```
+
 #### Updating the Docker setup
 First, stop your existing containers. In some cases, even though you just pressed `CTRL + C` once, the containers might not be stopped. Additionally, using `CTRL + C` might leave .PID files in some containers that block the containers during the next start. Consequently, we advise to use `docker-compose stop` to stop them all first before continuing (e.g., in another terminal window).
 
