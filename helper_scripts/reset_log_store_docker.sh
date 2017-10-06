@@ -31,3 +31,5 @@ do
     fi
     printf '.'
 done
+
+echo ''
