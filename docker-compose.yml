@@ -105,14 +105,14 @@ services:
       - marketplace
       - producer
       - consumer
-      - merchant-machine-learning
+      #- merchant-machine-learning
       - merchant-sample-cheapest
-      - merchant-sample-fix-price
-      - merchant-sample-random-third
-      - merchant-sample-second-cheapest
-      - merchant-sample-two-bound
-      - merchant-simple-competition-logic1
-      - merchant-simple-competition-logic2
+      #- merchant-sample-fix-price
+      #- merchant-sample-random-third
+      #- merchant-sample-second-cheapest
+      #- merchant-sample-two-bound
+      #- merchant-simple-competition-logic1
+      #- merchant-simple-competition-logic2
 
   marketplace:
     build: ./marketplace
@@ -171,45 +171,6 @@ services:
     links:
       - marketplace
 
-  merchant-simple-competition-logic1:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5001:5001"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=simple_competition_logic/MerchantApp.py
-      - MERCHANT_PORT=5001
-      - MERCHANT_TOKEN=j9Vhr9yfTihurnfIXfiiT9NqvdCsEUkxdGeVPeAsNroFgUYE9HwcQLTMygFEAzBn
-    # volumes:
-    #   - ./pricewars-merchant/simple_competition_logic:/merchant
-    links:
-      - producer
-      - marketplace
-
-  merchant-simple-competition-logic2:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5002:5002"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=simple_competition_logic/MerchantApp.py
-      - MERCHANT_PORT=5002
-      - MERCHANT_TOKEN=mNq3VfVIs5gNES1EB6MsKhiNCL7h32zpPqsvWNDPStmhNnvYtIRE0BbCViuYktOA
-    # volumes:
-    #   - ./pricewars-merchant/simple_competition_logic:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-
   merchant-sample-cheapest:
     build: ./merchant
     image: pricewars/merchant
@@ -219,9 +180,10 @@ services:
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
       - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/CheapestMerchantApp.py
       - MERCHANT_PORT=5003
       - MERCHANT_TOKEN=xJvs838ArhvEiBDsvwBWlE3jsatH3uU0DQsLT1VLiSZSdmKZjV6Wj9GcjAtm5OmI
+    # use 'sh -c' as a work-around to pass environment variables 
+    command: "sh -c 'python3 CheapestMerchantApp.py --port $$MERCHANT_PORT --token $$MERCHANT_TOKEN'"
     # volumes:
     #   - ./pricewars-merchant/sample_merchant:/merchant
     depends_on:
@@ -231,112 +193,112 @@ services:
       - producer
       - marketplace
 
-  merchant-sample-second-cheapest:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5004:5004"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/SecondCheapestMerchantApp.py
-      - MERCHANT_PORT=5004
-      - MERCHANT_TOKEN=Qrlo6DEkG9SXNIjCByXklvpjbkbQC4scveS2rfm8oEfCWPNhOuSAqIsS4UtGYmsU
-    # volumes:
-    #   - ./pricewars-merchant/sample_merchant:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-
-  merchant-sample-random-third:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5005:5005"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/RandomThirdMerchantApp.py
-      - MERCHANT_PORT=5005
-      - MERCHANT_TOKEN=oXbPx3EEZw4vpBb3QmITBIu86PA48oWwN8LKAZYjXcfNoHQF4ihF1cO62YAANg6k
-    # volumes:
-    #   - ./pricewars-merchant/sample_merchant:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-
-  merchant-sample-two-bound:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5006:5006"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/TwoBoundMerchantApp.py
-      - MERCHANT_PORT=5006
-      - MERCHANT_TOKEN=EGkdMWbvFuVy9w7ReCExgOiyoxr6RyFfF0JbXuXmp4ly1sRf5fdl4MjsKbylbERq
-    # volumes:
-    #   - ./pricewars-merchant/sample_merchant:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-
-  merchant-sample-fix-price:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5007:5007"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=sample_merchant/FixPriceMerchantApp.py
-      - MERCHANT_PORT=5007
-      - MERCHANT_TOKEN=Qi5FFXq4rEXT6xqOqCrET12VSS26DKmd2rsHPjMHxtl4rcRioJwIKyomRpsdAfHD
-    # volumes:
-    #   - ./pricewars-merchant/sample_merchant:/merchant
-    depends_on:
-      - producer
-      - marketplace
-    links:
-      - producer
-      - marketplace
-
-  merchant-machine-learning:
-    build: ./merchant
-    image: pricewars/merchant
-    ports:
-      - "5008:5008"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_FILE=machine_learning/MLMerchant.py
-      - MERCHANT_PORT=5008
-      - MERCHANT_TOKEN=WAUwtqErkzuccNLRgIk1HYnhPgMZLdlsnGoh73Zr3UTfro7Y7rZOQN6o3SOP6BHt
-    # volumes:
-    #   - ./pricewars-merchant/machine_learning:/merchant
-    depends_on:
-      - producer
-      - marketplace
-      - kafka-reverse-proxy
-    links:
-      - producer
-      - marketplace
-      - kafka-reverse-proxy
+#  merchant-sample-second-cheapest:
+#    build: ./merchant
+#    image: pricewars/merchant
+#    ports:
+#      - "5004:5004"
+#    environment:
+#      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+#      - PRICEWARS_PRODUCER_URL=producer:3050
+#      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+#      - MERCHANT_FILE=sample_merchant/SecondCheapestMerchantApp.py
+#      - MERCHANT_PORT=5004
+#      - MERCHANT_TOKEN=Qrlo6DEkG9SXNIjCByXklvpjbkbQC4scveS2rfm8oEfCWPNhOuSAqIsS4UtGYmsU
+#    # volumes:
+#    #   - ./pricewars-merchant/sample_merchant:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#    links:
+#      - producer
+#      - marketplace
+#
+#  merchant-sample-random-third:
+#    build: ./merchant
+#    image: pricewars/merchant
+#    ports:
+#      - "5005:5005"
+#    environment:
+#      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+#      - PRICEWARS_PRODUCER_URL=producer:3050
+#      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+#      - MERCHANT_FILE=sample_merchant/RandomThirdMerchantApp.py
+#      - MERCHANT_PORT=5005
+#      - MERCHANT_TOKEN=oXbPx3EEZw4vpBb3QmITBIu86PA48oWwN8LKAZYjXcfNoHQF4ihF1cO62YAANg6k
+#    # volumes:
+#    #   - ./pricewars-merchant/sample_merchant:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#    links:
+#      - producer
+#      - marketplace
+#
+#  merchant-sample-two-bound:
+#    build: ./merchant
+#    image: pricewars/merchant
+#    ports:
+#      - "5006:5006"
+#    environment:
+#      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+#      - PRICEWARS_PRODUCER_URL=producer:3050
+#      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+#      - MERCHANT_FILE=sample_merchant/TwoBoundMerchantApp.py
+#      - MERCHANT_PORT=5006
+#      - MERCHANT_TOKEN=EGkdMWbvFuVy9w7ReCExgOiyoxr6RyFfF0JbXuXmp4ly1sRf5fdl4MjsKbylbERq
+#    # volumes:
+#    #   - ./pricewars-merchant/sample_merchant:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#    links:
+#      - producer
+#      - marketplace
+#
+#  merchant-sample-fix-price:
+#    build: ./merchant
+#    image: pricewars/merchant
+#    ports:
+#      - "5007:5007"
+#    environment:
+#      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+#      - PRICEWARS_PRODUCER_URL=producer:3050
+#      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+#      - MERCHANT_FILE=sample_merchant/FixPriceMerchantApp.py
+#      - MERCHANT_PORT=5007
+#      - MERCHANT_TOKEN=Qi5FFXq4rEXT6xqOqCrET12VSS26DKmd2rsHPjMHxtl4rcRioJwIKyomRpsdAfHD
+#    # volumes:
+#    #   - ./pricewars-merchant/sample_merchant:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#    links:
+#      - producer
+#      - marketplace
+#
+#  merchant-machine-learning:
+#    build: ./merchant
+#    image: pricewars/merchant
+#    ports:
+#      - "5008:5008"
+#    environment:
+#      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
+#      - PRICEWARS_PRODUCER_URL=producer:3050
+#      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
+#      - MERCHANT_FILE=machine_learning/MLMerchant.py
+#      - MERCHANT_PORT=5008
+#      - MERCHANT_TOKEN=WAUwtqErkzuccNLRgIk1HYnhPgMZLdlsnGoh73Zr3UTfro7Y7rZOQN6o3SOP6BHt
+#    # volumes:
+#    #   - ./pricewars-merchant/machine_learning:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#      - kafka-reverse-proxy
+#    links:
+#      - producer
+#      - marketplace
+#      - kafka-reverse-proxy
 
 
 networks:
