@@ -21,6 +21,9 @@ The API specification can be found [here](https://hpi-epic.github.io/masterproje
 | [Merchant](https://github.com/hpi-epic/pricewars-merchant) | master	 | [ ![Codeship Status for hpi-epic/pricewars-merchant](https://app.codeship.com/projects/a7d3be30-88c5-0134-ea9c-5ad89f4798f3/status?branch=master)](https://app.codeship.com/projects/184013) | Stable |
 | [Kafka RESTful API](https://github.com/hpi-epic/pricewars-kafka-rest) | master 	|  [ ![Codeship Status for hpi-epic/pricewars-kafka-rest](https://app.codeship.com/projects/f59aa150-92f0-0134-8718-4a1d78af514c/status?branch=master)](https://app.codeship.com/projects/186252) | Stable |
 
+Please note, that we cannot make the repository for the management UI public (we use a free bootstrap template that we are not allowed to distribute). But you can ask us anytime for access and we will add you to the access list.
+The management UI is not required but eases the first steps on the platform.
+
 ## FMC Diagram
 
 ![alt tag](/docs/modeling/architecture_fmc.png?raw=true)
