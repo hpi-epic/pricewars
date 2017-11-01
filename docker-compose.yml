@@ -177,10 +177,7 @@ services:
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
       - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
-      - MERCHANT_PORT=5003
-    # use 'sh -c' as a work-around to pass environment variables 
-    # Wait 30 seconds until marketplace is running
-    command: "sh -c 'sleep 30 && python3 merchant_cheapest.py --port $$MERCHANT_PORT'"
+    command: python3 merchant_cheapest.py --port 5003
     volumes:
       - ./merchant:/merchant
     depends_on:
