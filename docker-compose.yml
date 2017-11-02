@@ -173,10 +173,6 @@ services:
     image: pricewars/merchant
     ports:
       - "5003:5003"
-    environment:
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
-      - PRICEWARS_KAFKA_REVERSE_PROXY_URL=kafka-reverse-proxy:8001
     command: python3 merchant_cheapest.py --port 5003
     volumes:
       - ./merchant:/merchant
