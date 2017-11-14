@@ -1,14 +1,14 @@
 # Masterproject Pricewars
 
-This is the meta repository of the Pricewars-masterproject that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using our simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
+This is the meta repository of the Pricewars that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using our simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
 
 The simulation is built using a microservice architecture and consists of multiple components representing important players in the simulation. Each component has its own repository and documentation and the links can be found in the following section.
 
-On the master-branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/masterproject-pricewars/tree/gh-pages)-branch one can find the swagger-documentation of the REST-APIs of all components.
+On the master-branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages)-branch one can find the swagger-documentation of the REST-APIs of all components.
 
-Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/masterproject-pricewars/).
+Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/pricewars/).
 
-The API specification can be found [here](https://hpi-epic.github.io/masterproject-pricewars/).
+The API specification can be found [here](https://hpi-epic.github.io/pricewars/).
 
 ## Application Overview
 
@@ -51,8 +51,8 @@ The second setting ensures that line endings are converted back to what they wer
 Then go ahead and clone the repository:
 
 ```
-git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
-cd masterproject-pricewars
+git clone git@github.com:hpi-epic/pricewars.git --recurse-submodules
+cd pricewars
 docker-compose up
 ```
 
