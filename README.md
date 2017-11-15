@@ -1,25 +1,28 @@
 # Masterproject Pricewars
 
-This is the meta repository of the Pricewars-masterproject that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using our simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
+This is the meta repository of the Pricewars that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using our simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
 
 The simulation is built using a microservice architecture and consists of multiple components representing important players in the simulation. Each component has its own repository and documentation and the links can be found in the following section.
 
-On the master-branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/masterproject-pricewars/tree/gh-pages)-branch one can find the swagger-documentation of the REST-APIs of all components.
+On the master-branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages)-branch one can find the swagger-documentation of the REST-APIs of all components.
 
-Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/masterproject-pricewars/).
+Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/pricewars/).
 
-The API specification can be found [here](https://hpi-epic.github.io/masterproject-pricewars/).
+The API specification can be found [here](https://hpi-epic.github.io/pricewars/).
 
 ## Application Overview
 
-| Repo | Branch 	| Deployment to  	| Status | Description |
-|--- |---	|---	|---  |---   |
-| [UI](https://github.com/hpi-epic/pricewars-mgmt-ui) | master  	|  [vm-mpws2016hp1-02.eaalab.hpi.uni-potsdam.de](http://vm-mpws2016hp1-02.eaalab.hpi.uni-potsdam.de) 	| [ ![Codeship Status for hpi-epic/pricewars-mgmt-ui](https://app.codeship.com/projects/d91a8460-88c2-0134-a385-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184009) | Stable |
-| [Consumer](https://github.com/hpi-epic/pricewars-consumer) | master  	|  [vm-mpws2016hp1-01.eaalab.hpi.uni-potsdam.de](http://vm-mpws2016hp1-01.eaalab.hpi.uni-potsdam.de) | [ ![Codeship Status for hpi-epic/pricewars-consumer](https://app.codeship.com/projects/96f32950-7824-0134-c83e-5251019101b9/status?branch=master)](https://app.codeship.com/projects/180119) | Stable |
-| [Producer](https://github.com/hpi-epic/pricewars-producer) | master  	|  [vm-mpws2016hp1-03eaalab.hpi.uni-potsdam.de](http://vm-mpws2016hp1-03.eaalab.hpi.uni-potsdam.de) | [ ![Codeship Status for hpi-epic/pricewars-producer](https://app.codeship.com/projects/0328e450-88c6-0134-e3d6-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184016) | Stable |
-| [Marketplace](https://github.com/hpi-epic/pricewars-marketplace) | master  	|  [vm-mpws2016hp1-04.eaalab.hpi.uni-potsdam.de:8080/marketplace](http://vm-mpws2016hp1-04.eaalab.hpi.uni-potsdam.de:8080/marketplace) 	| [ ![Codeship Status for hpi-epic/pricewars-marketplace](https://app.codeship.com/projects/e9d9b3e0-88c5-0134-6167-4a60797e4d29/status?branch=master)](https://app.codeship.com/projects/184015) | Stable |
-| [Merchant](https://github.com/hpi-epic/pricewars-merchant) | master  	|  [vm-mpws2016hp1-06.eaalab.hpi.uni-potsdam.de/](http://vm-mpws2016hp1-06.eaalab.hpi.uni-potsdam.de/) 	| [ ![Codeship Status for hpi-epic/pricewars-merchant](https://app.codeship.com/projects/a7d3be30-88c5-0134-ea9c-5ad89f4798f3/status?branch=master)](https://app.codeship.com/projects/184013) | Stable |
-| [Kafka RESTful API](https://github.com/hpi-epic/pricewars-kafka-rest) | master  	|  [vm-mpws2016hp1-05.eaalab.hpi.uni-potsdam.de](http://vm-mpws2016hp1-05.eaalab.hpi.uni-potsdam.de) 	|  [ ![Codeship Status for hpi-epic/pricewars-kafka-rest](https://app.codeship.com/projects/f59aa150-92f0-0134-8718-4a1d78af514c/status?branch=master)](https://app.codeship.com/projects/186252) | Stable |
+| Repository | Branch 	| Status | Description |
+|--- |---	|---  |---   |
+| [UI](https://github.com/hpi-epic/pricewars-mgmt-ui) | master 	| [ ![Codeship Status for hpi-epic/pricewars-mgmt-ui](https://app.codeship.com/projects/d91a8460-88c2-0134-a385-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184009) | Stable |
+| [Consumer](https://github.com/hpi-epic/pricewars-consumer) | master 	|  [ ![Codeship Status for hpi-epic/pricewars-consumer](https://app.codeship.com/projects/96f32950-7824-0134-c83e-5251019101b9/status?branch=master)](https://app.codeship.com/projects/180119) | Stable |
+| [Producer](https://github.com/hpi-epic/pricewars-producer) | master  | [ ![Codeship Status for hpi-epic/pricewars-producer](https://app.codeship.com/projects/0328e450-88c6-0134-e3d6-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184016) | Stable |
+| [Marketplace](https://github.com/hpi-epic/pricewars-marketplace) | master 	| [ ![Codeship Status for hpi-epic/pricewars-marketplace](https://app.codeship.com/projects/e9d9b3e0-88c5-0134-6167-4a60797e4d29/status?branch=master)](https://app.codeship.com/projects/184015) | Stable |
+| [Merchant](https://github.com/hpi-epic/pricewars-merchant) | master	 | [ ![Codeship Status for hpi-epic/pricewars-merchant](https://app.codeship.com/projects/a7d3be30-88c5-0134-ea9c-5ad89f4798f3/status?branch=master)](https://app.codeship.com/projects/184013) | Stable |
+| [Kafka RESTful API](https://github.com/hpi-epic/pricewars-kafka-rest) | master 	|  [ ![Codeship Status for hpi-epic/pricewars-kafka-rest](https://app.codeship.com/projects/f59aa150-92f0-0134-8718-4a1d78af514c/status?branch=master)](https://app.codeship.com/projects/186252) | Stable |
+
+Please note, that we cannot make the repository for the management UI public (we use a free bootstrap template that we are not allowed to distribute). But you can ask us anytime for access and we will add you to the access list.
+The management UI is not required but eases the first steps on the platform.
 
 ## FMC Diagram
 
@@ -48,8 +51,8 @@ The second setting ensures that line endings are converted back to what they wer
 Then go ahead and clone the repository:
 
 ```
-git clone git@github.com:hpi-epic/masterproject-pricewars.git --recurse-submodules
-cd masterproject-pricewars
+git clone git@github.com:hpi-epic/pricewars.git --recurse-submodules
+cd pricewars
 docker-compose up
 ```
 
