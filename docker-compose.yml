@@ -61,7 +61,7 @@ services:
       - KAFKA_URL=kafka:9092
     command: "bash '/analytics/start-jobmanager.sh'"
     volumes:
-      - ./docker-mounts/flink-jobs:/analytics
+      - ./analytics:/analytics
     depends_on:
       - analytics
       - kafka
@@ -82,15 +82,15 @@ services:
       - flink-jobmanager
     command: "bash '/analytics/start-taskmanager.sh'"
     volumes:
-      - ./docker-mounts/flink-jobs:/analytics
+      - ./analytics:/analytics
     depends_on:
       - analytics
 
   analytics:
+    # compiles flink jobs at image creation
     build: ./analytics
-    command: "bash -c 'cp -Rf /analytics/target/jars/* /export'"
     volumes:
-      - ./docker-mounts/flink-jobs:/export
+      - ./analytics:/analytics
 
   management-ui:
     build: ./mgmt-ui
