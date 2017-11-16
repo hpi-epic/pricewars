@@ -18,4 +18,4 @@
 	url = git@github.com:hpi-epic/pricewars-marketplace.git
 [submodule "analytics"]
 	path = analytics
-	url = git@github.com:hpi-epic/pricewars-analytics.git
+	url = git@github.com:CarstenWalther/pricewars-analytics.git
