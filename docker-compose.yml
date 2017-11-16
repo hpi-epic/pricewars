@@ -61,7 +61,7 @@ services:
       - KAFKA_URL=kafka:9092
     command: "bash '/analytics/start-jobmanager.sh'"
     volumes:
-      - ./analytics:/analytics
+      - ./analytics:/analytics:ro
     depends_on:
       - analytics
       - kafka
@@ -76,21 +76,22 @@ services:
     environment:
       - TASK_MANAGER_RPC_PORT=6122
       - TASK_MANAGER_DATA_PORT=6121
+    command: "bash '/analytics/start-taskmanager.sh'"
+    volumes:
+      - ./analytics:/analytics:ro
     depends_on:
+      - analytics
       - flink-jobmanager
     links:
       - flink-jobmanager
-    command: "bash '/analytics/start-taskmanager.sh'"
-    volumes:
-      - ./analytics:/analytics
-    depends_on:
-      - analytics
 
   analytics:
-    # compiles flink jobs at image creation
     build: ./analytics
+    # Copies compiled jars to the volume. The volume is used by flink.
+    # This way the jars can be updated without rebuilding the image (development purpose).
+    command: "bash -c 'mkdir -p /export/target/jars/ && cp -n /analytics/target/jars/* /export/target/jars/ && chmod -R 777 /export/target'"
     volumes:
-      - ./analytics:/analytics
+      - ./analytics:/export
 
   management-ui:
     build: ./mgmt-ui
