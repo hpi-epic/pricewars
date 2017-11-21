@@ -61,17 +61,28 @@ Postgres in Docker for Windows has a problem accessing the files when they are m
 Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/var/lib/postgresql/data" line
 
 #### Adjust some DNS settings:
+If you want to use the management-ui add the following lines to your host file.
+This allows you to access container by domain name via your local docker ip address.
  - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
- - add the following lines (and don't forget additional names if you specify more containers!)
+ - and don't forget additional names if you specify more containers!
 
 ```
-127.0.0.1       postgres redis zookeeper kafka kafka-reverse-proxy
-127.0.0.1       flink-jobmanager flink-taskmanager analytics management-ui
-127.0.0.1       marketplace producer consumer merchant-machine-learning
-127.0.0.1       merchant-sample-cheapest merchant-sample-fix-price
-127.0.0.1       merchant-sample-random-third merchant-sample-second-cheapest
-127.0.0.1       merchant-sample-two-bound merchant-simple-competition-logic1
-127.0.0.1       merchant-simple-competition-logic2
+172.29.0.1      postgres redis zookeeper kafka kafka-reverse-proxy
+172.29.0.1      flink-jobmanager flink-taskmanager analytics management-ui
+172.29.0.1      marketplace producer consumer merchant
+```
+
+Warning: There might be routing problems if the docker network (172.29.0.0/24) overlaps with your local network.
+If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
+After that change the addresses in the host file (172.29.0.1) to your new docker host ip address.
+
+#### Cleaning up containers and existing state
+Run the following commands to run the platform in a clean state.
+
+```
+docker-compose rm --stop
+sudo rm -rf docker-mounts/*
+docker-compose up
 ```
 
 #### Updating the Docker setup
