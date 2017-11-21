@@ -69,11 +69,7 @@ This allows you to access container by domain name via your local docker ip addr
 ```
 172.29.0.1      postgres redis zookeeper kafka kafka-reverse-proxy
 172.29.0.1      flink-jobmanager flink-taskmanager analytics management-ui
-172.29.0.1      marketplace producer consumer merchant-machine-learning
-172.29.0.1      merchant-sample-cheapest merchant-sample-fix-price
-172.29.0.1      merchant-sample-random-third merchant-sample-second-cheapest
-172.29.0.1      merchant-sample-two-bound merchant-simple-competition-logic1
-172.29.0.1      merchant-simple-competition-logic2
+172.29.0.1      marketplace producer consumer merchant
 ```
 
 #### Cleaning up containers and existing state
