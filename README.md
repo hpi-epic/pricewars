@@ -69,12 +69,12 @@ This allows you to access container by domain name via your local docker ip addr
 ```
 172.29.0.1      postgres redis zookeeper kafka kafka-reverse-proxy
 172.29.0.1      flink-jobmanager flink-taskmanager analytics management-ui
-172.29.0.1      marketplace producer consumer merchant-machine-learning
-172.29.0.1      merchant-sample-cheapest merchant-sample-fix-price
-172.29.0.1      merchant-sample-random-third merchant-sample-second-cheapest
-172.29.0.1      merchant-sample-two-bound merchant-simple-competition-logic1
-172.29.0.1      merchant-simple-competition-logic2
+172.29.0.1      marketplace producer consumer merchant
 ```
+
+Warning: There might be routing problems if the docker network (172.29.0.0/24) overlaps with your local network.
+If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
+After that change the addresses in the host file (172.29.0.1) to your new docker host ip address.
 
 #### Cleaning up containers and existing state
 Run the following commands to run the platform in a clean state.
