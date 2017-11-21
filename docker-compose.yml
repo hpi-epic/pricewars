@@ -157,11 +157,11 @@ services:
     links:
       - marketplace
 
-  merchant-cheapest:
+  merchant:
     build: ./merchant
     ports:
       - "5003:5003"
-    command: python3 merchant_cheapest.py --port 5003
+    command: python3 merchant.py --port 5003
     volumes:
       - ./merchant:/merchant
     depends_on:
