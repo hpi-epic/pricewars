@@ -72,6 +72,10 @@ This allows you to access container by domain name via your local docker ip addr
 172.29.0.1      marketplace producer consumer merchant
 ```
 
+Warning: There might be routing problems if the docker network (172.29.0.0/24) overlaps with your local network.
+If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
+After that change the addresses in the host file (172.29.0.1) to your new docker host ip address.
+
 #### Cleaning up containers and existing state
 Run the following commands to run the platform in a clean state.
 
