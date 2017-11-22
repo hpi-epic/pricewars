@@ -102,7 +102,6 @@ services:
       - marketplace
       - producer
       - consumer
-      - merchant
 
   marketplace:
     build: ./marketplace
@@ -158,11 +157,25 @@ services:
     links:
       - marketplace
 
-  merchant:
+#  merchant:
+#    build: ./merchant
+#    ports:
+#      - "5003:5003"
+#    command: python3 merchant.py --port 5003
+#    volumes:
+#      - ./merchant:/merchant
+#    depends_on:
+#      - producer
+#      - marketplace
+#    links:
+#      - producer
+#      - marketplace
+
+  merchant_arnold:
     build: ./merchant
     ports:
-      - "5003:5003"
-    command: python3 merchant.py --port 5003
+      - "5004:5004"
+    command: python3 merchant_arnold.py --port 5004
     volumes:
       - ./merchant:/merchant
     depends_on:
@@ -171,7 +184,6 @@ services:
     links:
       - producer
       - marketplace
-
 
 networks:
   default:
