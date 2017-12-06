@@ -15,7 +15,7 @@
 	url = git@github.com:hpi-epic/pricewars-kafka-reverse-proxy.git
 [submodule "marketplace"]
 	path = marketplace
-	url = git@github.com:hpi-epic/pricewars-marketplace.git
+	url = git@github.com:CarstenWalther/pricewars-marketplace.git
 [submodule "analytics"]
 	path = analytics
 	url = git@github.com:CarstenWalther/pricewars-analytics.git
