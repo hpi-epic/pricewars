@@ -87,9 +87,12 @@ services:
 
   analytics:
     build: ./analytics
-    # Copies compiled jars to the volume. The volume is used by flink.
-    # This way the jars can be updated without rebuilding the image (development purpose).
-    command: "bash -c 'mkdir -p /export/target/jars/ && cp -n /analytics/target/jars/* /export/target/jars/ && chmod -R 777 /export/target'"
+    # Flink jobs are compiled when this image is created.
+    # On container start, the Flink jobs are copied to the host filesystem where they
+    # can be found by the flink container.
+    # Newer files in the destination are not overwritten by the copy command.
+    # This way, the jobs can be updated on the host and used in the docker setup without rebuilding the image.
+    command: "bash -c 'mkdir -p /export/target/jars/ && cp -u /analytics/target/jars/* /export/target/jars/ && chmod -R 777 /export/target'"
     volumes:
       - ./analytics:/export
 
