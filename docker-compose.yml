@@ -160,25 +160,11 @@ services:
     links:
       - marketplace
 
-#  merchant:
-#    build: ./merchant
-#    ports:
-#      - "5003:5003"
-#    command: python3 -u merchant.py --port 5003
-#    volumes:
-#      - ./merchant:/merchant
-#    depends_on:
-#      - producer
-#      - marketplace
-#    links:
-#      - producer
-#      - marketplace
-
-  merchant_arnold:
+  merchant:
     build: ./merchant
     ports:
-      - "5004:5004"
-    command: python3 -u merchant_arnold.py --port 5004
+      - "5003:5003"
+    command: python3 -u merchant.py --port 5003
     volumes:
       - ./merchant:/merchant
     depends_on:
