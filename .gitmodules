@@ -12,7 +12,7 @@
 	url = git@github.com:hpi-epic/pricewars-mgmt-ui.git
 [submodule "kafka-reverse-proxy"]
 	path = kafka-reverse-proxy
-	url = git@github.com:hpi-epic/pricewars-kafka-reverse-proxy.git
+	url = git@github.com:CarstenWalther/pricewars-kafka-reverse-proxy.git
 [submodule "marketplace"]
 	path = marketplace
 	url = git@github.com:CarstenWalther/pricewars-marketplace.git
