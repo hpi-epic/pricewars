@@ -61,7 +61,7 @@ services:
       - KAFKA_URL=kafka:9092
     command: "bash '/analytics/start-jobmanager.sh'"
     volumes:
-      - ./docker-mounts/flink-jobs:/analytics
+      - ./analytics:/analytics:ro
     depends_on:
       - analytics
       - kafka
@@ -76,21 +76,25 @@ services:
     environment:
       - TASK_MANAGER_RPC_PORT=6122
       - TASK_MANAGER_DATA_PORT=6121
+    command: "bash '/analytics/start-taskmanager.sh'"
+    volumes:
+      - ./analytics:/analytics:ro
     depends_on:
+      - analytics
       - flink-jobmanager
     links:
       - flink-jobmanager
-    command: "bash '/analytics/start-taskmanager.sh'"
-    volumes:
-      - ./docker-mounts/flink-jobs:/analytics
-    depends_on:
-      - analytics
 
   analytics:
     build: ./analytics
-    command: "bash -c 'cp -Rf /analytics/target/jars/* /export'"
+    # Flink jobs are compiled when this image is created.
+    # On container start, the Flink jobs are copied to the host filesystem where they
+    # can be found by the flink container.
+    # Newer files in the destination are not overwritten by the copy command.
+    # This way, the jobs can be updated on the host and used in the docker setup without rebuilding the image.
+    command: "bash -c 'mkdir -p /export/target/jars/ && cp -u /analytics/target/jars/* /export/target/jars/ && chmod -R 777 /export/target'"
     volumes:
-      - ./docker-mounts/flink-jobs:/export
+      - ./analytics:/export
 
   management-ui:
     build: ./mgmt-ui
@@ -101,7 +105,6 @@ services:
       - marketplace
       - producer
       - consumer
-      - merchant
 
   marketplace:
     build: ./marketplace
@@ -118,7 +121,7 @@ services:
       - PRICEWARS_PRODUCER_URL=producer:3050
     volumes:
       - ./db-seeds:/db-seeds
-    #   - ./pricewars-marketplace:/marketplace
+      - ./marketplace/src:/marketplace/src
     depends_on:
       - postgres
       - redis
@@ -161,7 +164,7 @@ services:
     build: ./merchant
     ports:
       - "5003:5003"
-    command: python3 merchant.py --port 5003
+    command: python3 -u merchant.py --port 5003
     volumes:
       - ./merchant:/merchant
     depends_on:
@@ -170,7 +173,6 @@ services:
     links:
       - producer
       - marketplace
-
 
 networks:
   default:
