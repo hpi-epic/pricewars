@@ -44,16 +44,33 @@ def dump_topic(topic, output_dir):
 def dump_kafka(output_dir):
     kafka_dir = os.path.join(output_dir, 'kafka')
     os.mkdir(kafka_dir)
-    topics = ['buyOffer', 'holding_cost', 'marketSituation', 'producer', 'profit']
+    topics = ['buyOffer', 'holding_cost', 'marketSituation', 'producer']
     for topic in topics:
         dump_topic(topic, kafka_dir)
 
-def profit(output_dir):
-    with open(os.path.join(output_dir, 'kafka', 'profit')) as file:
-        events = json.load(file)
+def profit(output_dir, merchant_id_mapping):
+    # read buyOffer -> amount * price
+    # read holding_cost -> cost
+    # read producer -> billing_amount
     profit = {}
-    for event in events:
-        profit[event['merchant_id']] = event['profit']
+    for merchant_name in merchant_id_mapping.values():
+        profit[merchant_name] = 0
+
+    with open(os.path.join(output_dir, 'kafka', 'buyOffer')) as file:
+        for event in json.load(file):
+            merchant_name = merchant_id_mapping[event['merchant_id']]
+            profit[merchant_name] += event['amount'] * event['price']
+
+    with open(os.path.join(output_dir, 'kafka', 'holding_cost')) as file:
+        for event in json.load(file):
+            merchant_name = merchant_id_mapping[event['merchant_id']]
+            profit[merchant_name] -= event['cost']
+
+    with open(os.path.join(output_dir, 'kafka', 'producer')) as file:
+        for event in json.load(file):
+            merchant_name = merchant_id_mapping[event['merchant_id']]
+            profit[merchant_name] -= event['billing_amount']
+    
     with open(os.path.join(output_dir, 'profit.json'), 'w') as file:
         json.dump(profit, file)
 
@@ -64,12 +81,13 @@ def save_merchant_name_id_mapping(output_dir):
         merchant_mapping[merchant_info['merchant_id']] = merchant_info['merchant_name']
     with open(os.path.join(output_dir, 'merchant_id_mapping.json'), 'w') as file:
         json.dump(merchant_mapping, file)
+    return merchant_mapping
 
 def analyze(output_dir):
     os.mkdir(output_dir)
     dump_kafka(output_dir)
-    save_merchant_name_id_mapping(output_dir)
-    profit(output_dir)
+    merchant_id_mapping = save_merchant_name_id_mapping(output_dir)
+    profit(output_dir, merchant_id_mapping)
     
 
 def clear_container_state(pricewars_dir):
@@ -83,7 +101,7 @@ def clear_container_state(pricewars_dir):
 
 parser = argparse.ArgumentParser(
     description='Runs a simulation on the Pricewars platform',
-    epilog='Usage example: python3 run.py --duration 5')
+    epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results')
 parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
 parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
 args = parser.parse_args()
@@ -96,11 +114,12 @@ if not os.path.isdir(args.output):
 pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
 clear_container_state(pricewars_dir)
 
-# TODO: catch ctrl+c
 with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
     # wait until containers are up and running
     # TODO: find a better way to check if platform is ready
     time.sleep(35)
+
+    # TODO: configure marketplace (holding cost)
 
     # TODO: stop simulation when consumer or merchant crashed
     print('Starting consumer')
@@ -109,7 +128,7 @@ with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
 
     print('Starting merchant')
     # TODO: provide program and arguments via start parameters
-    merchant = subprocess.Popen(['python3', pricewars_dir + '/merchant/merchant_arnold.py', '--port', '5000'])
+    merchant = subprocess.Popen(['python3', pricewars_dir + '/merchant/merchant_dyn_programming.py', '--port', '5000'])
 
     # Run for the given amount of time
     print('Run for', duration_in_minutes, 'minutes')
