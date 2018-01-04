@@ -5,6 +5,7 @@ import subprocess
 import time
 import json
 import datetime
+import shlex
 
 import requests
 from kafka import KafkaConsumer
@@ -49,9 +50,6 @@ def dump_kafka(output_dir):
         dump_topic(topic, kafka_dir)
 
 def profit(output_dir, merchant_id_mapping):
-    # read buyOffer -> amount * price
-    # read holding_cost -> cost
-    # read producer -> billing_amount
     profit = {}
     for merchant_name in merchant_id_mapping.values():
         profit[merchant_name] = 0
@@ -99,19 +97,21 @@ def clear_container_state(pricewars_dir):
     print('Run:', command, directory)
     subprocess.run(command.split() + [directory])
 
+pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
 parser = argparse.ArgumentParser(
     description='Runs a simulation on the Pricewars platform',
-    epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results')
+    epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results --merchants "python3 merchant/merchant.py --port 5000" --consumer "python3 consumer/consumer.py"')
 parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
 parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
+parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True, help='commands to start merchants')
+parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
 args = parser.parse_args()
 duration_in_minutes = args.duration
 output_dir = os.path.join(args.output, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S%z"))
-if not os.path.isdir(args.output):
-    print(args.output, 'is not a directory')
-    exit(1)
 
-pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
+if not os.path.isdir(args.output):
+    raise RuntimeError('Invalid output directory: ' + args.output)
+
 clear_container_state(pricewars_dir)
 
 with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
@@ -121,14 +121,12 @@ with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
 
     # TODO: configure marketplace (holding cost)
 
-    # TODO: stop simulation when consumer or merchant crashed
+    # TODO: detect crashes of consumer or merchant and stop simulation
     print('Starting consumer')
-    # TODO: provide program and arguments via start parameters
-    consumer = subprocess.Popen(['python3', '/home/carsten/masterarbeit/code/customer.py'])
+    consumer = subprocess.Popen(shlex.split(args.consumer))
 
-    print('Starting merchant')
-    # TODO: provide program and arguments via start parameters
-    merchant = subprocess.Popen(['python3', pricewars_dir + '/merchant/merchant_dyn_programming.py', '--port', '5000'])
+    print('Starting merchants')
+    merchants = [subprocess.Popen(shlex.split(command)) for command in args.merchants]
 
     # Run for the given amount of time
     print('Run for', duration_in_minutes, 'minutes')
@@ -138,8 +136,9 @@ with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
     consumer.terminate()
     consumer.wait()
 
-    print('Stopping merchant')
-    merchant.terminate()
-    merchant.wait()
+    print('Stopping merchants')
+    for merchant in merchants:
+        merchant.terminate()
+        merchant.wait()
 
     analyze(output_dir)
