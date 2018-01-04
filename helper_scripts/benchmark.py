@@ -10,12 +10,16 @@ import shlex
 import requests
 from kafka import KafkaConsumer
 
+from analyze import analyze_kafka_dump
+
+
 class PopenWrapper:
     """
     This class is a context manager that wraps subprocess.Popen.
     Popen waits until the created process is finished when exiting the context.
-    This wrapper additionaly sends a terminate signal to the program before waiting for it to finish.
+    This wrapper additionally sends a terminate signal to the program before waiting for it to finish.
     """
+
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -31,16 +35,15 @@ class PopenWrapper:
 
 def dump_topic(topic, output_dir):
     consumer = KafkaConsumer(topic,
-        bootstrap_servers='kafka:9092',
-        value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-        consumer_timeout_ms=100,
-        auto_offset_reset='earliest')
+                             bootstrap_servers='kafka:9092',
+                             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+                             consumer_timeout_ms=100,
+                             auto_offset_reset='earliest')
 
-    events = []
-    for message in consumer:
-        events.append(message.value)
+    events = [message.value for message in consumer]
     with open(os.path.join(output_dir, topic), 'w') as file:
         json.dump(events, file)
+
 
 def dump_kafka(output_dir):
     kafka_dir = os.path.join(output_dir, 'kafka')
@@ -49,96 +52,78 @@ def dump_kafka(output_dir):
     for topic in topics:
         dump_topic(topic, kafka_dir)
 
-def profit(output_dir, merchant_id_mapping):
-    profit = {}
-    for merchant_name in merchant_id_mapping.values():
-        profit[merchant_name] = 0
 
-    with open(os.path.join(output_dir, 'kafka', 'buyOffer')) as file:
-        for event in json.load(file):
-            merchant_name = merchant_id_mapping[event['merchant_id']]
-            profit[merchant_name] += event['amount'] * event['price']
-
-    with open(os.path.join(output_dir, 'kafka', 'holding_cost')) as file:
-        for event in json.load(file):
-            merchant_name = merchant_id_mapping[event['merchant_id']]
-            profit[merchant_name] -= event['cost']
-
-    with open(os.path.join(output_dir, 'kafka', 'producer')) as file:
-        for event in json.load(file):
-            merchant_name = merchant_id_mapping[event['merchant_id']]
-            profit[merchant_name] -= event['billing_amount']
-    
-    with open(os.path.join(output_dir, 'profit.json'), 'w') as file:
-        json.dump(profit, file)
-
-def save_merchant_name_id_mapping(output_dir):
+def save_merchant_id_mapping(output_dir):
     merchants_info = requests.get('http://marketplace:8080/merchants').json()
     merchant_mapping = {}
     for merchant_info in merchants_info:
         merchant_mapping[merchant_info['merchant_id']] = merchant_info['merchant_name']
     with open(os.path.join(output_dir, 'merchant_id_mapping.json'), 'w') as file:
         json.dump(merchant_mapping, file)
-    return merchant_mapping
 
-def analyze(output_dir):
-    os.mkdir(output_dir)
-    dump_kafka(output_dir)
-    merchant_id_mapping = save_merchant_name_id_mapping(output_dir)
-    profit(output_dir, merchant_id_mapping)
-    
 
 def clear_container_state(pricewars_dir):
     # This code works only on Linux and Mac
     # Use shutil.rmtree instead
-    # Problem with rmtree: no permission to delete directory
+    # Problem: We need higher privileges to delete the docker-mounts directory
     command = 'sudo rm -rf'
     directory = os.path.join(pricewars_dir, 'docker-mounts')
     print('Run:', command, directory)
     subprocess.run(command.split() + [directory])
 
-pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
-parser = argparse.ArgumentParser(
-    description='Runs a simulation on the Pricewars platform',
-    epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results --merchants "python3 merchant/merchant.py --port 5000" --consumer "python3 consumer/consumer.py"')
-parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
-parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
-parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True, help='commands to start merchants')
-parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
-args = parser.parse_args()
-duration_in_minutes = args.duration
-output_dir = os.path.join(args.output, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S%z"))
 
-if not os.path.isdir(args.output):
-    raise RuntimeError('Invalid output directory: ' + args.output)
+def main():
+    pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
+    parser = argparse.ArgumentParser(
+        description='Runs a simulation on the Pricewars platform',
+        epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results'
+               '--merchants "python3 merchant/merchant.py --port 5000" --consumer "python3 consumer/consumer.py"')
+    parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
+    parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
+    parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True,
+                        help='commands to start merchants')
+    parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
+    args = parser.parse_args()
+    duration_in_minutes = args.duration
 
-clear_container_state(pricewars_dir)
+    if not os.path.isdir(args.output):
+        raise RuntimeError('Invalid output directory: ' + args.output)
 
-with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir) as docker:
-    # wait until containers are up and running
-    # TODO: find a better way to check if platform is ready
-    time.sleep(35)
+    output_dir = os.path.join(args.output, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S%z"))
+    os.mkdir(output_dir)
+    clear_container_state(pricewars_dir)
 
-    # TODO: configure marketplace (holding cost)
+    with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir):
+        # wait until containers are up and running
+        # TODO: find a better way to check if platform is ready
+        time.sleep(35)
 
-    # TODO: detect crashes of consumer or merchant and stop simulation
-    print('Starting consumer')
-    consumer = subprocess.Popen(shlex.split(args.consumer))
+        # TODO: configure marketplace (holding cost)
 
-    print('Starting merchants')
-    merchants = [subprocess.Popen(shlex.split(command)) for command in args.merchants]
+        print('Starting consumer')
+        consumer = subprocess.Popen(shlex.split(args.consumer))
 
-    # Run for the given amount of time
-    print('Run for', duration_in_minutes, 'minutes')
-    time.sleep(duration_in_minutes * 60)
+        print('Starting merchants')
+        merchants = [subprocess.Popen(shlex.split(command)) for command in args.merchants]
 
-    print('Stopping consumer')
-    consumer.terminate()
-    consumer.wait()
+        # Run for the given amount of time
+        print('Run for', duration_in_minutes, 'minutes')
+        time.sleep(duration_in_minutes * 60)
 
-    print('Stopping merchants')
-    for merchant in merchants:
-        merchant.terminate()
-        merchant.wait()
+        print('Stopping consumer')
+        consumer.terminate()
+        consumer.wait()
 
-    analyze(output_dir)
+        print('Stopping merchants')
+        for merchant in merchants:
+            merchant.terminate()
+            merchant.wait()
+
+        dump_kafka(output_dir)
+        save_merchant_id_mapping(output_dir)
+
+    analyze_kafka_dump(output_dir)
+
+
+if __name__ == '__main__':
+    main()

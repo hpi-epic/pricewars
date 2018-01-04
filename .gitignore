@@ -1,3 +1,6 @@
 .DS_Store
 docker-mounts/
 
+# python directories
+__pycache__
+.idea
