@@ -98,7 +98,8 @@ def main():
         # TODO: find a better way to check if platform is ready
         time.sleep(35)
 
-        # TODO: configure marketplace (holding cost)
+        # configure marketplace
+        requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': 5})
 
         print('Starting consumer')
         consumer = subprocess.Popen(shlex.split(args.consumer))
