@@ -72,6 +72,18 @@ def clear_container_state(pricewars_dir):
     subprocess.run(command.split() + [directory])
 
 
+def wait_for_marketplace():
+    """
+    Send requests to the marketplace until there is a response
+    """
+    while True:
+        try:
+            requests.get('http://marketplace:8080')
+            return
+        except requests.exceptions.ConnectionError:
+            pass
+
+
 def main():
     pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
     parser = argparse.ArgumentParser(
@@ -94,9 +106,8 @@ def main():
     clear_container_state(pricewars_dir)
 
     with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir):
-        # wait until containers are up and running
-        # TODO: find a better way to check if platform is ready
-        time.sleep(35)
+        # assume that the whole platform is ready if the marketplace is ready
+        wait_for_marketplace()
 
         # configure marketplace
         requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': 5})
