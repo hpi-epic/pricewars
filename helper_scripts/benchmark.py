@@ -62,14 +62,8 @@ def save_merchant_id_mapping(output_dir):
         json.dump(merchant_mapping, file)
 
 
-def clear_container_state(pricewars_dir):
-    # This code works only on Linux and Mac
-    # Use shutil.rmtree instead
-    # Problem: We need higher privileges to delete the docker-mounts directory
-    command = 'sudo rm -rf'
-    directory = os.path.join(pricewars_dir, 'docker-mounts')
-    print('Run:', command, directory)
-    subprocess.run(command.split() + [directory])
+def clear_containers(pricewars_dir):
+    subprocess.run(['docker-compose', 'rm', '--stop', '--force'])
 
 
 def wait_for_marketplace():
@@ -103,10 +97,10 @@ def main():
 
     output_dir = os.path.join(args.output, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S%z"))
     os.mkdir(output_dir)
-    clear_container_state(pricewars_dir)
+    clear_containers(pricewars_dir)
 
     with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir):
-        # assume that the whole platform is ready if the marketplace is ready
+        # wait until the marketplace service is up and running
         wait_for_marketplace()
 
         # configure marketplace
