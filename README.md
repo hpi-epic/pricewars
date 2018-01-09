@@ -58,10 +58,6 @@ cd pricewars
 docker-compose up
 ```
 
-#### Disable Volume Mounting for Postgres on Windows!
-Postgres in Docker for Windows has a problem accessing the files when they are mounted from a volume.
-Just add a hash # in front of the "volumes:" and "- ./docker-mounts/postgres:/var/lib/postgresql/data" line
-
 #### Adjust some DNS settings:
 If you want to use the management-ui add the following lines to your host file.
 This allows you to access container by domain name via your local docker ip address.
@@ -83,7 +79,6 @@ Run the following commands to run the platform in a clean state.
 
 ```
 docker-compose rm --stop
-sudo rm -rf docker-mounts/*
 docker-compose up
 ```
 
@@ -109,12 +104,11 @@ On your guest system, you have to adjust your DNS settings like mentioned before
 
 ##### Some containers quit unexpectedly:
 First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
-- __Postgres__: Either empty the `docker-mounts/postgres` folder (if running on Unix / Linux) or remove mounting a volume to Postgres completly (required on Windows, optional on Unix / Windows).
-- __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Otherwise, first remove the `docker-mounts/zookeeper` folder and try again. If this doesn't work, remove the folder again and `docker-mounts\kafka` in addition (Warning: This will remove the Kafka history).
+- __Postgres__: Bring the platform in a clean state with `docker-compose rm --stop` and run it again.
+- __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Bring the platform in a clean state with `docker-compose rm --stop` and run it again.
 - __Others__: Try to read the logs or read on.
 
 ##### The command `docker-compose up` is hanging:
-- Try to remove the `docker-mount` folder and start your containers again.
 - Reset the containers and the network: `docker system prune` (and restart the Docker service).
 - Terminate Docker and ensure, that all docker processes are stopped (especially the network service).
 - Restart your computer and wait (even though it might be slow) for about five to ten minutes.
