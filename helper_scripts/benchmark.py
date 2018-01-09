@@ -63,19 +63,21 @@ def save_merchant_id_mapping(output_dir):
 
 
 def clear_containers(pricewars_dir):
-    subprocess.run(['docker-compose', 'rm', '--stop', '--force'])
+    subprocess.run(['docker-compose', 'rm', '--stop', '--force'], cwd=pricewars_dir)
 
 
-def wait_for_marketplace():
+def wait_for_marketplace(timeout=60):
     """
     Send requests to the marketplace until there is a response
     """
-    while True:
+    start = time.time()
+    while time.time() - start < timeout:
         try:
             requests.get('http://marketplace:8080')
             return
         except requests.exceptions.ConnectionError:
             pass
+    raise RuntimeError('Cannot reach marketplace')
 
 
 def main():
