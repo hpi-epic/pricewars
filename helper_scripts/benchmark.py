@@ -91,6 +91,7 @@ def main():
     parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True,
                         help='commands to start merchants')
     parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
+    parser.add_argument('--holding_cost', type=float, default=0.0)
     args = parser.parse_args()
     duration_in_minutes = args.duration
 
@@ -106,7 +107,7 @@ def main():
         wait_for_marketplace()
 
         # configure marketplace
-        requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': 5})
+        requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': args.holding_cost})
 
         print('Starting consumer')
         consumer = subprocess.Popen(shlex.split(args.consumer))
