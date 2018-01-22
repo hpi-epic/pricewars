@@ -108,9 +108,8 @@ services:
       - POSTGRES_DB=marketplace
       - KAFKA_URL=kafka:9092
       - REDIS_HOST=redis
-      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_PRODUCER_URL=http://producer:3050
     volumes:
-      - ./db-seeds:/db-seeds
       - ./marketplace/src:/marketplace/src
     depends_on:
       - postgres
