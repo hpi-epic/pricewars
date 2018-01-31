@@ -149,4 +149,4 @@ Example command:
 python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command> --consumer <consumer command>
 ```
 This starts the whole platform and two merchants to compete against each other for 30 minutes.
-Run `python3 --help` to see all arguments.
+Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
