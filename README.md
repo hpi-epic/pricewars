@@ -57,6 +57,9 @@ git clone git@github.com:hpi-epic/pricewars.git --recurse-submodules
 cd pricewars
 docker-compose up
 ```
+When running `docker-compose up` for the first time, all docker images must be built.
+This will take 30 minutes to one hour depending on your internet speed.
+
 
 #### Adjust some DNS settings:
 If you want to use the management-ui add the following lines to your host file.
