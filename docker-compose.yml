@@ -94,7 +94,6 @@ services:
       - kafka-reverse-proxy
       - marketplace
       - producer
-      - consumer
 
   marketplace:
     build: ./marketplace
