@@ -57,6 +57,9 @@ git clone git@github.com:hpi-epic/pricewars.git --recurse-submodules
 cd pricewars
 docker-compose up
 ```
+When running `docker-compose up` for the first time, all docker images must be built.
+This will take 30 minutes to one hour depending on your internet speed.
+
 
 #### Adjust some DNS settings:
 If you want to use the management-ui add the following lines to your host file.
@@ -117,7 +120,7 @@ First, the analytics container is expected to be stopped after a short moment - 
 
 ### Continuous Deployment
 
-For the production environment within the HPI cluster, we use [Codeship](http://codeship.com/) for Continuous Integration (CI) & Continuous Deployment (CD). In each repository, there is a _config/deploy/_ folder containing deployment specifications which are executed via [capistrano](https://github.com/capistrano/capistrano).
+For the production environment within the HPI cluster, we use [Codeship](https://codeship.com/) for Continuous Integration (CI) & Continuous Deployment (CD). In each repository, there is a _config/deploy/_ folder containing deployment specifications which are executed via [capistrano](https://github.com/capistrano/capistrano).
 
 "Capistrano is a framework for building automated deployment scripts. Although Capistrano itself is written in Ruby, it can easily be used to deploy projects of any language or framework, be it Rails, Java, or PHP. [..] When you run *cap*, Capistrano dutifully connects to your server(s) via SSH and executes the steps necessary to deploy your project. You can define those steps yourself by writing Rake tasks, or by using pre-built task libraries provided by the Capistrano community." [quote](https://github.com/capistrano/capistrano).
 
@@ -130,13 +133,23 @@ More details regarding this VPN configuration may be found under _config/openvpn
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found above.
 
-## Setup
+## Run Pricewars
 
-After marketplace, producer and logger are in place, one may
+After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://management-ui)
 
-1. Register Merchants via UI (Menu section: Deployment)
-2. Alter available product via UI (Menu section: Config/Producer)
-3. Start Merchants via UI (Menu section: Config/Merchant)
-4. Start Consumer via UI (Menu section: Config/Consumer)
-5. View Results via UI (Menu section: Dashboard)
-6. In case of performance issues, one may debug bottlenecks with munin graphs (Menu section: Links/Munin)
+1. \[Optional] Configure available products in the [Config/Producer section](http://management-ui/index.html#/config/producer)
+2. Start the [Consumer](http://management-ui/index.html#/config/consumer)
+3. Merchants are trading products now. The [Dashboard](http://management-ui/index.html#/dashboard/overview) shows graphs about sales, profits and more.
+
+## Benchmark Tool
+
+You can run a benchmark on the Pricewars platform with the benchmark tool [benchmark.py](helper_scripts/benchmark.py).
+This tool allows to run the platform in a given configuration for a specific time period.
+Afterwards, results of this run are written to the output directory.
+
+Example command:
+```
+python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command> --consumer <consumer command>
+```
+This starts the whole platform and two merchants to compete against each other for 30 minutes.
+Run `python3 helper_scripts/benchmark.py --help` to see all arguments.

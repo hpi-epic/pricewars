@@ -37,7 +37,7 @@ def dump_topic(topic, output_dir):
     consumer = KafkaConsumer(topic,
                              bootstrap_servers='kafka:9092',
                              value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-                             consumer_timeout_ms=100,
+                             consumer_timeout_ms=2000,
                              auto_offset_reset='earliest')
 
     events = [message.value for message in consumer]
@@ -102,7 +102,9 @@ def main():
     os.mkdir(output_dir)
     clear_containers(pricewars_dir)
 
-    with PopenWrapper(['docker-compose', 'up'], cwd=pricewars_dir):
+    core_services = ['producer', 'marketplace', 'management-ui', 'analytics', 'flink-taskmanager', 'flink-jobmanager',
+                     'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres']
+    with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir):
         # wait until the marketplace service is up and running
         wait_for_marketplace()
 
