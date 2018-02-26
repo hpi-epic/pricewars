@@ -13,7 +13,7 @@ services:
       - "6379:6379"
 
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: zookeeper:3.4
     ports:
       - "2181:2181"
 
@@ -27,6 +27,8 @@ services:
       - KAFKA_DELETE_TOPIC_ENABLE=true
       - KAFKA_LOG_DIRS=/kafka/kafka-logs
       - KAFKA_LOG_RETENTION_HOURS=-1
+      - LOG4J_LOGGER_KAFKA=WARN
+      - LOG4J_LOGGER_ORG_APACHE_ZOOKEEPER=WARN
     depends_on:
       - zookeeper
 
@@ -34,8 +36,7 @@ services:
     build: ./kafka-reverse-proxy
     ports:
       - "8001:8001"
-    environment:
-      - KAFKA_URL=kafka:9092
+    command: ["python3", "-u", "LoggerApp.py", "--kafka_url", "kafka:9092"]
     depends_on:
       - kafka
     links:
