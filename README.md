@@ -141,18 +141,6 @@ First, the analytics container is expected to be stopped after a short moment - 
 - Reset Docker to factory defaults (should be your last attempt, as this requires re-building of all images):
  - macOS: Click on "Preferences" > "Reset" > "Reset to factory defaults"
 
-### Continuous Deployment
-
-For the production environment within the HPI cluster, we use [Codeship](https://codeship.com/) for Continuous Integration (CI) & Continuous Deployment (CD). In each repository, there is a _config/deploy/_ folder containing deployment specifications which are executed via [capistrano](https://github.com/capistrano/capistrano).
-
-"Capistrano is a framework for building automated deployment scripts. Although Capistrano itself is written in Ruby, it can easily be used to deploy projects of any language or framework, be it Rails, Java, or PHP. [..] When you run *cap*, Capistrano dutifully connects to your server(s) via SSH and executes the steps necessary to deploy your project. You can define those steps yourself by writing Rake tasks, or by using pre-built task libraries provided by the Capistrano community." [quote](https://github.com/capistrano/capistrano).
-
-In  _config/_, the *deploy.rb* file contains general deployment information like the git repository url, the deployment directory within the target system as well as the deployment tasks executed for each deployment iteration to initiate and setup the environment if necessary.
-For each deployment stage, the files in  _config/deploy/_ define additional specifications and steps. Those are the target system destination and port as well as tokens for the merchants and more details. In terms of the target system destination, we route the SSH session via a reverse-port-forwarding setup which again is established through a secure VPN to tunnel into the HPI cluster boundaries.
-More details regarding this VPN configuration may be found under _config/openvpn_server/_.
-
-
-
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found above.
 
