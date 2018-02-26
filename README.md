@@ -12,16 +12,14 @@ The API specification can be found [here](https://hpi-epic.github.io/pricewars/)
 
 ## Application Overview
 
-| Repository | Branch 	| Status | Description |
-|--- |---	|---  |---   |
-| [UI](https://github.com/hpi-epic/pricewars-mgmt-ui) | master 	| [ ![Codeship Status for hpi-epic/pricewars-mgmt-ui](https://app.codeship.com/projects/d91a8460-88c2-0134-a385-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184009) | Stable |
-| [Consumer](https://github.com/hpi-epic/pricewars-consumer) | master 	|  [ ![Codeship Status for hpi-epic/pricewars-consumer](https://app.codeship.com/projects/96f32950-7824-0134-c83e-5251019101b9/status?branch=master)](https://app.codeship.com/projects/180119) | Stable |
-| [Producer](https://github.com/hpi-epic/pricewars-producer) | master  | [ ![Codeship Status for hpi-epic/pricewars-producer](https://app.codeship.com/projects/0328e450-88c6-0134-e3d6-7213830b2f8c/status?branch=master)](https://app.codeship.com/projects/184016) | Stable |
-| [Marketplace](https://github.com/hpi-epic/pricewars-marketplace) | master 	| [ ![Codeship Status for hpi-epic/pricewars-marketplace](https://app.codeship.com/projects/e9d9b3e0-88c5-0134-6167-4a60797e4d29/status?branch=master)](https://app.codeship.com/projects/184015) | Stable |
-| [Merchant](https://github.com/hpi-epic/pricewars-merchant) | master	 | (CI currently disabled) | Stable |
-| [Kafka RESTful API](https://github.com/hpi-epic/pricewars-kafka-rest) | master 	|  [ ![Codeship Status for hpi-epic/pricewars-kafka-rest](https://app.codeship.com/projects/f59aa150-92f0-0134-8718-4a1d78af514c/status?branch=master)](https://app.codeship.com/projects/186252) | Stable |
-
-<!-- | [Merchant](https://github.com/hpi-epic/pricewars-merchant) | master	 | [ ![Codeship Status for hpi-epic/pricewars-merchant](https://app.codeship.com/projects/a7d3be30-88c5-0134-ea9c-5ad89f4798f3/status?branch=master)](https://app.codeship.com/projects/184013) (CI currently not | Stable | -->
+| Repository |
+|--- |
+| [UI](https://github.com/hpi-epic/pricewars-mgmt-ui) |
+| [Consumer](https://github.com/hpi-epic/pricewars-consumer) |
+| [Producer](https://github.com/hpi-epic/pricewars-producer) |
+| [Marketplace](https://github.com/hpi-epic/pricewars-marketplace) |
+| [Merchant](https://github.com/hpi-epic/pricewars-merchant) |
+| [Kafka RESTful API](https://github.com/hpi-epic/pricewars-kafka-rest) |
 
 Please note, that we cannot make the repository for the management UI public (we use a free bootstrap template that we are not allowed to distribute). But you can ask us anytime for access and we will add you to the access list.
 The management UI is not required but eases the first steps on the platform.
@@ -36,9 +34,7 @@ The management UI is not required but eases the first steps on the platform.
 
 ## Deployment
 
-### Docker
-
-#### Clone the repo including all submodules
+### Setup
 If you are working on Windows, make sure to set the following git-settings:
 ```
 git config --global core.eol lf
@@ -53,13 +49,26 @@ The second setting ensures that line endings are converted back to what they wer
 Then go ahead and clone the repository:
 
 ```
-git clone git@github.com:hpi-epic/pricewars.git --recurse-submodules
+git clone git@github.com:hpi-epic/pricewars.git
 cd pricewars
+git submodule update --init --recursive
+```
+
+Build docker images and containers with the following command.
+Bring a fast internet line and some time.
+This can take up to 30 minutes to finish.
+
+```
+docker-compose create
+```
+
+Once the containers are created, you can start the Pricewars platform:
+
+```
 docker-compose up
 ```
-When running `docker-compose up` for the first time, all docker images must be built.
-This will take 30 minutes to one hour depending on your internet speed.
 
+You can shut down the platform with `CTRL + C` or `docker-compose stop`.
 
 #### Adjust some DNS settings:
 If you want to use the management-ui add the following lines to your host file.
@@ -77,6 +86,15 @@ Warning: There might be routing problems if the docker network (172.29.0.0/24) o
 If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
 After that change the addresses in the host file (172.29.0.1) to your new docker host ip address.
 
+### Run Pricewars
+
+After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://management-ui)
+
+1. \[Optional] Configure available products in the [Config/Producer section](http://management-ui/index.html#/config/producer)
+2. Start the [Consumer](http://management-ui/index.html#/config/consumer)
+3. Merchants are trading products now. The [Dashboard](http://management-ui/index.html#/dashboard/overview) shows graphs about sales, profits and more.
+
+
 #### Cleaning up containers and existing state
 Run the following commands to run the platform in a clean state.
 
@@ -86,16 +104,21 @@ docker-compose up
 ```
 
 #### Updating the Docker setup
-First, stop your existing containers. In some cases, even though you just pressed `CTRL + C` once, the containers might not be stopped. Additionally, using `CTRL + C` might leave .PID files in some containers that block the containers during the next start. Consequently, we advise to use `docker-compose stop` to stop them all first before continuing (e.g., in another terminal window).
+First, stop your running containers.
 
 ```
 docker-compose stop
-git pull --recurse-submodules
-docker-compose pull --ignore-pull-failures
+```
+
+Update repositories.
+```
+git pull
+git submodule update
+```
+
+Rebuild all images that have changed:
+```
 docker-compose build
-docker ps -a | awk '{ print $1,$2 }' | grep $(echo $(docker images --filter "dangling=true" -q) | sed "s/ /\\\\|/g") | awk '{print $1 }' | xargs -I {} docker rm {}
-docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
-docker-compose up
 ```
 
 #### Windows w/o Docker Native support
@@ -118,28 +141,8 @@ First, the analytics container is expected to be stopped after a short moment - 
 - Reset Docker to factory defaults (should be your last attempt, as this requires re-building of all images):
  - macOS: Click on "Preferences" > "Reset" > "Reset to factory defaults"
 
-### Continuous Deployment
-
-For the production environment within the HPI cluster, we use [Codeship](https://codeship.com/) for Continuous Integration (CI) & Continuous Deployment (CD). In each repository, there is a _config/deploy/_ folder containing deployment specifications which are executed via [capistrano](https://github.com/capistrano/capistrano).
-
-"Capistrano is a framework for building automated deployment scripts. Although Capistrano itself is written in Ruby, it can easily be used to deploy projects of any language or framework, be it Rails, Java, or PHP. [..] When you run *cap*, Capistrano dutifully connects to your server(s) via SSH and executes the steps necessary to deploy your project. You can define those steps yourself by writing Rake tasks, or by using pre-built task libraries provided by the Capistrano community." [quote](https://github.com/capistrano/capistrano).
-
-In  _config/_, the *deploy.rb* file contains general deployment information like the git repository url, the deployment directory within the target system as well as the deployment tasks executed for each deployment iteration to initiate and setup the environment if necessary.
-For each deployment stage, the files in  _config/deploy/_ define additional specifications and steps. Those are the target system destination and port as well as tokens for the merchants and more details. In terms of the target system destination, we route the SSH session via a reverse-port-forwarding setup which again is established through a secure VPN to tunnel into the HPI cluster boundaries.
-More details regarding this VPN configuration may be found under _config/openvpn_server/_.
-
-
-
 ### Native
 For details regarding the deployment of the component, we kindly refer to the deployment section of the microservice specific README.md file. The links can be found above.
-
-## Run Pricewars
-
-After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://management-ui)
-
-1. \[Optional] Configure available products in the [Config/Producer section](http://management-ui/index.html#/config/producer)
-2. Start the [Consumer](http://management-ui/index.html#/config/consumer)
-3. Merchants are trading products now. The [Dashboard](http://management-ui/index.html#/dashboard/overview) shows graphs about sales, profits and more.
 
 ## Benchmark Tool
 
