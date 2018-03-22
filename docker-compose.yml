@@ -153,7 +153,7 @@ services:
     build: ./merchant
     ports:
       - "5003:5003"
-    command: python3 -u merchant.py --port 5003
+    command: python3 -u merchant.py --port 5000 --strategy "Two Bound"
     volumes:
       - ./merchant:/merchant
     depends_on:
