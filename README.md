@@ -59,8 +59,11 @@ Bring a fast internet line and some time.
 This can take up to 30 minutes to finish.
 
 ```
-docker-compose create
+docker-compose up --no-start
 ```
+
+This command might not be available if you are on an older docker-compose version.
+Use `docker-compose create` instead.
 
 Once the containers are created, you can start the Pricewars platform:
 
