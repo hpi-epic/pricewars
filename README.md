@@ -1,10 +1,12 @@
-# Masterproject Pricewars
+# Price Wars - A Simulation Platform for Dynamic Pricing Competition
 
-This is the meta repository of the Pricewars that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using our simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
+This is the meta repository of the Price Wars platform that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using the simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
 
 The simulation is built using a microservice architecture and consists of multiple components representing important players in the simulation. Each component has its own repository and documentation and the links can be found in the following section.
 
-On the master-branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages)-branch one can find the swagger-documentation of the REST-APIs of all components.
+For more information about the platform and publications, see the our chair's [project site](https://hpi.de/en/plattner/projects/price-wars-an-interactive-simulation-platform.html) on Dynamic Pricing under Competition.
+
+On the master branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages) branch one can find the swagger-documentation of the REST-APIs of all components.
 
 Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/pricewars/).
 
