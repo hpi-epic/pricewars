@@ -28,11 +28,11 @@ The management UI is not required but eases the first steps on the platform.
 
 ## FMC Diagram
 
-![alt tag](/docs/modeling/architecture_fmc.png?raw=true)
+![FMC Architecture Diagram](/docs/modeling/architecture_fmc.png?raw=true)
 
 ## Sequence Diagram
 
-![alt tag](/docs/modeling/sequence_diagram_flow.png?raw=true)
+![Sequence Diagram](/docs/modeling/sequence_diagram_flow.png?raw=true)
 
 ## Deployment
 
