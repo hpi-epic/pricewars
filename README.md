@@ -14,7 +14,7 @@ The API specification can be found [here](https://hpi-epic.github.io/pricewars/)
 
 ## Application Overview
 
-**Repository**
+**Repositories**
 * Management UI: [https://github.com/hpi-epic/pricewars-mgmt-ui](https://github.com/hpi-epic/pricewars-mgmt-ui)
 * Consumer: [https://github.com/hpi-epic/pricewars-consumer](https://github.com/hpi-epic/pricewars-consumer)
 * Producer: [https://github.com/hpi-epic/pricewars-producer](https://github.com/hpi-epic/pricewars-producer)
