@@ -66,7 +66,7 @@ def clear_containers(pricewars_dir):
     subprocess.run(['docker-compose', 'rm', '--stop', '--force'], cwd=pricewars_dir)
 
 
-def wait_for_marketplace(timeout=60):
+def wait_for_marketplace(timeout=300):
     """
     Send requests to the marketplace until there is a response
     """
@@ -90,7 +90,7 @@ def main():
     parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
     parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True,
                         help='commands to start merchants')
-    parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
+    #parser.add_argument('--consumer', '-c', type=str, required=True, help='command to start consumer')
     parser.add_argument('--holding_cost', type=float, default=0.0)
     args = parser.parse_args()
     duration_in_minutes = args.duration
@@ -103,7 +103,7 @@ def main():
     clear_containers(pricewars_dir)
 
     core_services = ['producer', 'marketplace', 'management-ui', 'analytics', 'flink-taskmanager', 'flink-jobmanager',
-                     'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres']
+                     'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres', 'consumer']
     with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir):
         # wait until the marketplace service is up and running
         wait_for_marketplace()
@@ -112,7 +112,12 @@ def main():
         requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': args.holding_cost})
 
         print('Starting consumer')
-        consumer = subprocess.Popen(shlex.split(args.consumer))
+        consumer_settings = requests.get('http://consumer:3000/setting').json()
+        print(consumer_settings)
+        time.sleep(10)
+        response = requests.post('http://consumer:3000/setting', json=consumer_settings)
+        response.raise_for_status()
+        #consumer = subprocess.Popen(shlex.split(args.consumer))
 
         print('Starting merchants')
         merchants = [subprocess.Popen(shlex.split(command)) for command in args.merchants]
@@ -122,8 +127,9 @@ def main():
         time.sleep(duration_in_minutes * 60)
 
         print('Stopping consumer')
-        consumer.terminate()
-        consumer.wait()
+        requests.delete('http://consumer:3000/setting')
+        #consumer.terminate()
+        #consumer.wait()
 
         print('Stopping merchants')
         for merchant in merchants:
