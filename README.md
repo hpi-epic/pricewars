@@ -76,19 +76,20 @@ You can shut down the platform with `CTRL + C` or `docker-compose stop`.
 
 #### Adjust some DNS settings:
 If you want to use the management-ui add the following lines to your host file.
-This allows you to access container by domain name via your local docker ip address.
+This allows you to access container by domain name via your local docker IP address (or remote address).
  - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
  - and don't forget additional names if you specify more containers!
+ - in case you use the local docker setup, use 127.0.0.1; otherwise use the IP of the remove server
 
 ```
-192.168.47.1      postgres redis zookeeper kafka kafka-reverse-proxy
-192.168.47.1      flink-jobmanager flink-taskmanager analytics management-ui
-192.168.47.1      marketplace producer consumer merchant
+$IP      postgres redis zookeeper kafka kafka-reverse-proxy
+$IP      flink-jobmanager flink-taskmanager analytics management-ui
+$IP      marketplace producer consumer merchant
 ```
 
-Warning: There might be routing problems if the docker network (172.29.0.0/24) overlaps with your local network.
+Warning: There might be routing problems if the docker network overlaps with your local network.
 If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
-After that change the addresses in the host file (172.29.0.1) to your new docker host ip address.
+After that, you might need to change the addresses in the host file to your new docker host ip address.
 
 ### Run Pricewars
 
