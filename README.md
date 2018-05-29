@@ -81,9 +81,9 @@ This allows you to access container by domain name via your local docker ip addr
  - and don't forget additional names if you specify more containers!
 
 ```
-172.29.0.1      postgres redis zookeeper kafka kafka-reverse-proxy
-172.29.0.1      flink-jobmanager flink-taskmanager analytics management-ui
-172.29.0.1      marketplace producer consumer merchant
+192.168.47.1      postgres redis zookeeper kafka kafka-reverse-proxy
+192.168.47.1      flink-jobmanager flink-taskmanager analytics management-ui
+192.168.47.1      marketplace producer consumer merchant
 ```
 
 Warning: There might be routing problems if the docker network (172.29.0.0/24) overlaps with your local network.
