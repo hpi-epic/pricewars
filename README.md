@@ -50,12 +50,10 @@ The second setting ensures that line endings are converted back to what they wer
 Then go ahead and clone the repository:
 
 ```
-git clone git@github.com:hpi-epic/pricewars.git
-cd pricewars
-git submodule update --init --recursive
+git clone --recursive git@github.com:hpi-epic/pricewars.git
 ```
 
-Build docker images and containers with the following command.
+Build docker images and containers with the following command (you might need to run `sudo usermod -aG docker $USER` on some Linux platforms).
 Bring a fast internet line and some time.
 This can take up to 30 minutes to finish.
 
