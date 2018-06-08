@@ -155,7 +155,9 @@ Afterwards, results of this run are written to the output directory.
 
 Example command:
 ```
-python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command> --consumer <consumer command>
+python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command>
 ```
+
 This starts the whole platform and two merchants to compete against each other for 30 minutes.
+As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest -port 5000"`
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
