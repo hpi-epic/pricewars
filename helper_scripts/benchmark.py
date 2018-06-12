@@ -85,7 +85,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Runs a simulation on the Pricewars platform',
         epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results'
-               '--merchants "python3 merchant/merchant.py --port 5000" --consumer "python3 consumer/consumer.py"')
+               '--merchants "python3 merchant/merchant.py --port 5000"')
     parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
     parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
     parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True,
