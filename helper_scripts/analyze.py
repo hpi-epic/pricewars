@@ -11,6 +11,9 @@ import os
 import json
 from collections import defaultdict
 
+import matplotlib
+matplotlib.use('Agg') # required for headless plotting
+
 import matplotlib.pyplot as plt
 
 
