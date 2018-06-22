@@ -33,9 +33,9 @@ class PopenWrapper:
         self.process.__exit__(*args)
 
 
-def dump_topic(topic, output_dir):
+def dump_topic(topic, output_dir, kafka_host):
     consumer = KafkaConsumer(topic,
-                             bootstrap_servers='kafka:9092',
+                             bootstrap_servers=kafka_host,
                              value_deserializer=lambda m: json.loads(m.decode('utf-8')),
                              consumer_timeout_ms=2000,
                              auto_offset_reset='earliest')
@@ -45,16 +45,16 @@ def dump_topic(topic, output_dir):
         json.dump(events, file)
 
 
-def dump_kafka(output_dir):
+def dump_kafka(output_dir, kafka_host):
     kafka_dir = os.path.join(output_dir, 'kafka')
     os.mkdir(kafka_dir)
     topics = ['buyOffer', 'holding_cost', 'marketSituation', 'producer']
     for topic in topics:
-        dump_topic(topic, kafka_dir)
+        dump_topic(topic, kafka_dir, kafka_host)
 
 
-def save_merchant_id_mapping(output_dir):
-    merchants_info = requests.get('http://marketplace:8080/merchants').json()
+def save_merchant_id_mapping(output_dir, marketplace_url):
+    merchants_info = requests.get(marketplace_url + '/merchants').json()
     merchant_mapping = {}
     for merchant_info in merchants_info:
         merchant_mapping[merchant_info['merchant_id']] = merchant_info['merchant_name']
@@ -66,32 +66,37 @@ def clear_containers(pricewars_dir):
     subprocess.run(['docker-compose', 'rm', '--stop', '--force'], cwd=pricewars_dir)
 
 
-def wait_for_marketplace(timeout=300):
+def wait_for_marketplace(marketplace_url, timeout=300):
     """
     Send requests to the marketplace until there is a response
     """
     start = time.time()
     while time.time() - start < timeout:
         try:
-            requests.get('http://marketplace:8080')
+            requests.get(marketplace_url)
             return
         except requests.exceptions.ConnectionError:
             pass
     raise RuntimeError('Cannot reach marketplace')
 
-
-def main():
-    pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
+def parse_arguments():
     parser = argparse.ArgumentParser(
         description='Runs a simulation on the Pricewars platform',
-        epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results'
+        epilog='Usage example: python3 %(prog)s --duration 5 --output ~/results '
                '--merchants "python3 merchant/merchant.py --port 5000"')
     parser.add_argument('--duration', '-d', metavar='MINUTES', type=float, required=True, help='Run that many minutes')
     parser.add_argument('--output', '-o', metavar='DIRECTORY', type=str, required=True)
     parser.add_argument('--merchants', '-m', metavar='MERCHANT', type=str, nargs='+', required=True,
                         help='commands to start merchants')
+    parser.add_argument('--marketplace_url', type=str, default='http://localhost:8080')
+    parser.add_argument('--consumer_url', type=str, default='http://localhost:3000')
+    parser.add_argument('--kafka_host', type=str, default='localhost:9093')
     parser.add_argument('--holding_cost', type=float, default=0.0)
-    args = parser.parse_args()
+    return parser.parse_args()
+
+def main():
+    pricewars_dir = dirname(dirname(os.path.abspath(__file__)))
+    args = parse_arguments()
     duration_in_minutes = args.duration
 
     if not os.path.isdir(args.output):
@@ -106,12 +111,12 @@ def main():
                      'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres', 'consumer']
     with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir):
         # configure marketplace
-        wait_for_marketplace()
-        requests.put('http://marketplace:8080/holding_cost_rate', json={'rate': args.holding_cost})
+        wait_for_marketplace(args.marketplace_url)
+        requests.put(args.marketplace_url + '/holding_cost_rate', json={'rate': args.holding_cost})
 
         print('Starting consumer')
-        consumer_settings = requests.get('http://consumer:3000/setting').json()
-        response = requests.post('http://consumer:3000/setting', json=consumer_settings)
+        consumer_settings = requests.get(args.consumer_url + '/setting').json()
+        response = requests.post(args.consumer_url + '/setting', json=consumer_settings)
         response.raise_for_status()
 
         print('Starting merchants')
@@ -122,15 +127,15 @@ def main():
         time.sleep(duration_in_minutes * 60)
 
         print('Stopping consumer')
-        requests.delete('http://consumer:3000/setting')
+        requests.delete(args.consumer_url + '/setting')
 
         print('Stopping merchants')
         for merchant in merchants:
             merchant.terminate()
             merchant.wait()
 
-        dump_kafka(output_dir)
-        save_merchant_id_mapping(output_dir)
+        dump_kafka(output_dir, args.kafka_host)
+        save_merchant_id_mapping(output_dir, args.marketplace_url)
 
     analyze_kafka_dump(output_dir)
 
