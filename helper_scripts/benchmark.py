@@ -5,6 +5,7 @@ import subprocess
 import time
 import json
 import datetime
+import random
 import shlex
 
 import requests
@@ -66,6 +67,30 @@ def clear_containers(pricewars_dir):
     subprocess.run(['docker-compose', 'rm', '--stop', '--force'], cwd=pricewars_dir)
 
 
+def set_consumer_ratios(resp, **kwargs):
+	behaviors_to_use = {}
+	for k, v in kwargs.items():
+		behavior = [b for b in resp['behaviors'] if b['name'] == k]
+
+		if len(behavior) == 1:
+			behaviors_to_use[k] = v
+		else:
+			print(f"Unable to set consumer behaviour '{k}': not implemented by consumer.")
+
+	b_sum = sum(behaviors_to_use.values())
+	factor = 100 / b_sum
+	for k, v in behaviors_to_use.items():
+		behaviors_to_use[k] = v*factor
+
+	for b in resp['behaviors']:
+		if b['name'] in behaviors_to_use:
+			b['amount'] = int(behaviors_to_use[b['name']])
+			continue
+		b['amount'] = 0
+
+	return resp
+
+
 def wait_for_marketplace(timeout=300):
     """
     Send requests to the marketplace until there is a response
@@ -111,7 +136,10 @@ def main():
 
         print('Starting consumer')
         consumer_settings = requests.get('http://consumer:3000/setting').json()
-        response = requests.post('http://consumer:3000/setting', json=consumer_settings)
+        new_consumer_settings = set_consumer_ratios(consumer_settings,
+                                                    prefer_cheap = random.randint(4, 7),
+                                                    cheapest_best_quality = random.randint(2, 4))
+        response = requests.post('http://consumer:3000/setting', json=new_consumer_settings)
         response.raise_for_status()
 
         print('Starting merchants')
