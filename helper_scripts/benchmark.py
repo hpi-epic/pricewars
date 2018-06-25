@@ -139,7 +139,7 @@ def main():
 
         print('Starting consumer')
         consumer_settings = requests.get(args.consumer_url + '/setting').json()
-	
+
         # for more randomized consumer behaviours use something like:
         #     `prefer_cheap = random.randint(4, 7)` and
         #     `cheapest_best_quality = random.randint(2, 4)`
