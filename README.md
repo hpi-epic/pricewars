@@ -1,6 +1,6 @@
 <img alt="Price Wars" width="50%" src="/docs/pricewars_logo.svg">
 
-**A Simulation Platform for Dynamic Pricing Competition**
+# A Simulation Platform for Dynamic Pricing Competition
 
 
 This is the meta repository of the Price Wars platform that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using the simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
