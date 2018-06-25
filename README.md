@@ -105,7 +105,7 @@ After starting the Pricewars platform with `docker-compose up`, it can be contro
 Run the following commands to run the platform in a clean state.
 
 ```
-docker-compose rm --stop
+docker-compose down
 docker-compose up
 ```
 
