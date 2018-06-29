@@ -6,7 +6,6 @@ Results (e.g. a merchant's profit and revenue) are saved to a CSV file.
 import argparse
 import csv
 import datetime
-import itertools
 import os
 import json
 from collections import defaultdict
@@ -51,52 +50,56 @@ def analyze_kafka_dump(directory):
                              order_cost[merchant_id], profit[merchant_id]])
 
     create_inventory_graph(directory, merchant_id_mapping)
+    create_profit_per_minute_graph(directory, merchant_id_mapping)
+    create_revenue_per_minute_graph(directory, merchant_id_mapping)
 
+def parse_timestamps(events):
+    for event in events:
+        # TODO: ues better conversion; strptime discards timezone
+        try:
+            event['timestamp'] = datetime.datetime.strptime(event['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        except ValueError:
+            # Dates in topic 'inventory_level' have no milliseconds
+            event['timestamp'] = datetime.datetime.strptime(event['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
 
 def create_inventory_graph(directory, merchant_id_mapping):
-    """
-    Calculates inventory levels from orders and sales and generates a graph from it.
-    """
-    sales = json.load(open(os.path.join(directory, 'kafka', 'buyOffer')))
-    orders = json.load(open(os.path.join(directory, 'kafka', 'producer')))
-    sales = [sale for sale in sales if sale['http_code'] == 200]
-    for sale in sales:
-        # TODO: ues better conversion; strptime discards timezone
-        sale['timestamp'] = datetime.datetime.strptime(sale['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    for order in orders:
-        # TODO: ues better conversion; strptime discards timezone
-        order['timestamp'] = datetime.datetime.strptime(order['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    sale_index = 0
-    order_index = 0
-    inventory_progressions = defaultdict(list)
-
-    while sale_index < len(sales) and order_index < len(orders):
-        if sale_index >= len(sales):
-            order = orders[order_index]
-            inventory_progressions[order['merchant_id']].append((order['timestamp'], order['amount']))
-            order_index += 1
-        elif order_index >= len(orders):
-            sale = sales[sale_index]
-            inventory_progressions[sale['merchant_id']].append((sale['timestamp'], -1 * sale['amount']))
-            sale_index += 1
-        elif orders[order_index]['timestamp'] <= sales[sale_index]['timestamp']:
-            order = orders[order_index]
-            inventory_progressions[order['merchant_id']].append((order['timestamp'], order['amount']))
-            order_index += 1
-        else: # orders[order_index]['timestamp'] > sales[sale_index]['timestamp']
-            sale = sales[sale_index]
-            inventory_progressions[sale['merchant_id']].append((sale['timestamp'], -1 * sale['amount']))
-            sale_index += 1
-
+    inventory_events = json.load(open(os.path.join(directory, 'kafka', 'inventory_level')))
+    parse_timestamps(inventory_events)
     fig, ax = plt.subplots()
-    for merchant_id in inventory_progressions:
-        dates, inventory_changes = zip(*inventory_progressions[merchant_id])
-        inventory_levels = list(itertools.accumulate(inventory_changes))
-        ax.plot(dates, inventory_levels, label=merchant_id_mapping[merchant_id])
+    for merchant_id in merchant_id_mapping:
+        dates, inventory_levels = zip(*((event['timestamp'], event['level']) for event
+            in inventory_events if event['merchant_id'] == merchant_id))
+        ax.step(dates, inventory_levels, where='post', label=merchant_id_mapping[merchant_id])
     plt.ylabel('Inventory Level')
     fig.legend()
     fig.autofmt_xdate()
     fig.savefig(os.path.join(directory, 'inventory_levels'))
+
+def create_profit_per_minute_graph(directory, merchant_id_mapping):
+    events = json.load(open(os.path.join(directory, 'kafka', 'profitPerMinute')))
+    parse_timestamps(events)
+    fig, ax = plt.subplots()
+    for merchant_id in merchant_id_mapping:
+        dates, profits = zip(*((event['timestamp'], event['profit']) for event
+            in events if event['merchant_id'] == merchant_id))
+        ax.bar(dates, profits, width=0.00003, label=merchant_id_mapping[merchant_id])
+    plt.ylabel('Profit per Minute')
+    fig.legend()
+    fig.autofmt_xdate()
+    fig.savefig(os.path.join(directory, 'profit_per_minute'))
+
+def create_revenue_per_minute_graph(directory, merchant_id_mapping):
+    events = json.load(open(os.path.join(directory, 'kafka', 'revenuePerMinute')))
+    parse_timestamps(events)
+    fig, ax = plt.subplots()
+    for merchant_id in merchant_id_mapping:
+        dates, revenues = zip(*((event['timestamp'], event['revenue']) for event
+            in events if event['merchant_id'] == merchant_id))
+        ax.bar(dates, revenues, width=0.00003, label=merchant_id_mapping[merchant_id])
+    plt.ylabel('Revenue per Minute')
+    fig.legend()
+    fig.autofmt_xdate()
+    fig.savefig(os.path.join(directory, 'revenue_per_minute'))
 
 
 def main():
