@@ -70,6 +70,7 @@ def create_inventory_graph(directory, merchant_id_mapping):
         dates, inventory_levels = zip(*((event['timestamp'], event['level']) for event
             in inventory_events if event['merchant_id'] == merchant_id))
         ax.step(dates, inventory_levels, where='post', label=merchant_id_mapping[merchant_id])
+    plt.xlabel('Time')
     plt.ylabel('Inventory Level')
     fig.legend()
     fig.autofmt_xdate()
@@ -82,7 +83,8 @@ def create_profit_per_minute_graph(directory, merchant_id_mapping):
     for merchant_id in merchant_id_mapping:
         dates, profits = zip(*((event['timestamp'], event['profit']) for event
             in events if event['merchant_id'] == merchant_id))
-        ax.bar(dates, profits, width=0.00003, label=merchant_id_mapping[merchant_id])
+        ax.plot(dates, profits, label=merchant_id_mapping[merchant_id])
+    plt.xlabel('Time')
     plt.ylabel('Profit per Minute')
     fig.legend()
     fig.autofmt_xdate()
@@ -95,7 +97,8 @@ def create_revenue_per_minute_graph(directory, merchant_id_mapping):
     for merchant_id in merchant_id_mapping:
         dates, revenues = zip(*((event['timestamp'], event['revenue']) for event
             in events if event['merchant_id'] == merchant_id))
-        ax.bar(dates, revenues, width=0.00003, label=merchant_id_mapping[merchant_id])
+        ax.plot(dates, revenues, label=merchant_id_mapping[merchant_id])
+    plt.xlabel('Time')
     plt.ylabel('Revenue per Minute')
     fig.legend()
     fig.autofmt_xdate()
