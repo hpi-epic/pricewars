@@ -55,7 +55,7 @@ def analyze_kafka_dump(directory):
 
 def parse_timestamps(events):
     for event in events:
-        # TODO: ues better conversion; strptime discards timezone
+        # TODO: use better conversion; strptime discards timezone
         try:
             event['timestamp'] = datetime.datetime.strptime(event['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
         except ValueError:
