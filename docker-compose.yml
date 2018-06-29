@@ -154,7 +154,7 @@ services:
 
   merchant:
     build: ./merchant
-    restart: always
+    restart: on-failure:5
     ports:
       - "5003:5003"
     command: python3 -u merchant.py --port 5003 --strategy "Two Bound"
