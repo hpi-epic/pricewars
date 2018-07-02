@@ -49,9 +49,12 @@ def dump_topic(topic, output_dir, kafka_host):
 def dump_kafka(output_dir, kafka_host):
     kafka_dir = os.path.join(output_dir, 'kafka')
     os.mkdir(kafka_dir)
-    topics = ['buyOffer', 'holding_cost', 'marketSituation', 'producer']
+    topics = KafkaConsumer(bootstrap_servers=kafka_host).topics()
     for topic in topics:
-        dump_topic(topic, kafka_dir, kafka_host)
+        try:
+            dump_topic(topic, kafka_dir, kafka_host)
+        except json.decoder.JSONDecodeError:
+            print('Failed to dump kafka topic', topic)
 
 
 def save_merchant_id_mapping(output_dir, marketplace_url):
