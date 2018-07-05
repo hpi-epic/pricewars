@@ -50,8 +50,12 @@ def analyze_kafka_dump(directory):
                              order_cost[merchant_id], profit[merchant_id]])
 
     create_inventory_graph(directory, merchant_id_mapping)
-    create_profit_per_minute_graph(directory, merchant_id_mapping)
-    create_revenue_per_minute_graph(directory, merchant_id_mapping)
+    create_line_chart(directory, merchant_id_mapping,
+        topic='profitPerMinute', value_name='profit', label='Profit per Minute')
+    create_line_chart(directory, merchant_id_mapping,
+        topic='revenuePerMinute', value_name='revenue', label='Revenue per Minute')
+    create_line_chart(directory, merchant_id_mapping,
+        topic='profit', value_name='profit', label='Profit')
 
 def parse_timestamps(events):
     for event in events:
@@ -76,33 +80,19 @@ def create_inventory_graph(directory, merchant_id_mapping):
     fig.autofmt_xdate()
     fig.savefig(os.path.join(directory, 'inventory_levels'))
 
-def create_profit_per_minute_graph(directory, merchant_id_mapping):
-    events = json.load(open(os.path.join(directory, 'kafka', 'profitPerMinute')))
+def create_line_chart(directory, merchant_id_mapping, topic, value_name, label):
+    events = json.load(open(os.path.join(directory, 'kafka', topic)))
     parse_timestamps(events)
     fig, ax = plt.subplots()
     for merchant_id in merchant_id_mapping:
-        dates, profits = zip(*((event['timestamp'], event['profit']) for event
+        dates, profits = zip(*((event['timestamp'], event[value_name]) for event
             in events if event['merchant_id'] == merchant_id))
         ax.plot(dates, profits, label=merchant_id_mapping[merchant_id])
     plt.xlabel('Time')
-    plt.ylabel('Profit per Minute')
+    plt.ylabel(label)
     fig.legend()
     fig.autofmt_xdate()
-    fig.savefig(os.path.join(directory, 'profit_per_minute'))
-
-def create_revenue_per_minute_graph(directory, merchant_id_mapping):
-    events = json.load(open(os.path.join(directory, 'kafka', 'revenuePerMinute')))
-    parse_timestamps(events)
-    fig, ax = plt.subplots()
-    for merchant_id in merchant_id_mapping:
-        dates, revenues = zip(*((event['timestamp'], event['revenue']) for event
-            in events if event['merchant_id'] == merchant_id))
-        ax.plot(dates, revenues, label=merchant_id_mapping[merchant_id])
-    plt.xlabel('Time')
-    plt.ylabel('Revenue per Minute')
-    fig.legend()
-    fig.autofmt_xdate()
-    fig.savefig(os.path.join(directory, 'revenue_per_minute'))
+    fig.savefig(os.path.join(directory, topic))
 
 
 def main():

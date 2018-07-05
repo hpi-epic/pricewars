@@ -166,6 +166,7 @@ def main():
             merchant.terminate()
             merchant.wait()
 
+        print('Saving Kafka data')
         dump_kafka(output_dir, args.kafka_host)
         save_merchant_id_mapping(output_dir, args.marketplace_url)
 
