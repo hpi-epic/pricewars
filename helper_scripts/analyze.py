@@ -55,7 +55,7 @@ def analyze_kafka_dump(directory):
     create_line_chart(directory, merchant_id_mapping,
         topic='revenuePerMinute', value_name='revenue', label='Revenue per Minute')
     create_line_chart(directory, merchant_id_mapping,
-        topic='profit', value_name='profit', label='Profit')
+        topic='profit', value_name='profit', label='Cumulative Profit')
 
 def parse_timestamps(events):
     for event in events:
