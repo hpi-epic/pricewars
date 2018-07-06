@@ -77,9 +77,11 @@ def create_chart(directory, merchant_id_mapping, topic, value_name, label, filen
     parse_timestamps(events)
     fig, ax = plt.subplots()
     for merchant_id in merchant_id_mapping:
-        dates, values = zip(*((event['timestamp'], event[value_name]) for event
-            in events if event['merchant_id'] == merchant_id))
-        ax.plot(dates, values, label=merchant_id_mapping[merchant_id], **options)
+        dates = [event['timestamp'] for event in events if event['merchant_id'] == merchant_id]
+        values = [event[value_name] for event in events if event['merchant_id'] == merchant_id]
+        # Cannot plot if no events belong to that merchant
+        if len(dates) > 0:
+            ax.plot(dates, values, label=merchant_id_mapping[merchant_id], **options)
     plt.xlabel('Time')
     plt.ylabel(label)
     fig.legend()
