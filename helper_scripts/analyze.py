@@ -58,6 +58,8 @@ def analyze_kafka_dump(directory):
         topic='revenuePerMinute', value_name='revenue', label='Revenue per Minute', filename='revenue_per_minute.png')
     create_chart(directory, merchant_id_mapping,
         topic='profit', value_name='profit', label='Cumulative Profit', filename='cumulative_profit.png')
+    create_chart(directory, merchant_id_mapping,
+        topic='cumulativeRevenue', value_name='revenue', label='Cumulative Revenue', filename='cumulative_revenue.png')
 
 
 def parse_timestamps(events):
