@@ -73,7 +73,14 @@ def parse_timestamps(events):
 
 
 def create_chart(directory, merchant_id_mapping, topic, value_name, label, filename, **options):
-    events = json.load(open(os.path.join(directory, 'kafka', topic)))
+    try:
+        input_file = os.path.join(directory, 'kafka', topic)
+        events = json.load(open(input_file))
+    except FileNotFoundError:
+        print('Could not find file', input_file)
+        print('Skip generating graph', filename)
+        return
+
     parse_timestamps(events)
     fig, ax = plt.subplots()
     for merchant_id in merchant_id_mapping:
