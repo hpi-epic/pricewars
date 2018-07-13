@@ -26,7 +26,7 @@ class PopenWrapper:
         self.kwargs = kwargs
 
     def __enter__(self):
-        self.process = subprocess.Popen(*self.args, **self.kwargs)
+        self.process = subprocess.Popen(*self.args, **self.kwargs, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         return self.process
 
     def __exit__(self, *args):
