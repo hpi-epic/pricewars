@@ -140,6 +140,12 @@ def main():
         wait_for_marketplace(args.marketplace_url)
         requests.put(args.marketplace_url + '/holding_cost_rate', json={'rate': args.holding_cost})
 
+        print('Starting merchants')
+        merchants = []
+        for command in random.sample(args.merchants, len(args.merchants)):
+            time.sleep(random.random() * 2)
+            merchants.append(subprocess.Popen(shlex.split(command)))
+
         print('Starting consumer')
         consumer_settings = requests.get(args.consumer_url + '/setting').json()
 
@@ -150,9 +156,6 @@ def main():
 
         response = requests.post(args.consumer_url + '/setting', json=consumer_settings)
         response.raise_for_status()
-
-        print('Starting merchants')
-        merchants = [subprocess.Popen(shlex.split(command)) for command in args.merchants]
 
         # Run for the given amount of time
         print('Run for', duration_in_minutes, 'minutes')
