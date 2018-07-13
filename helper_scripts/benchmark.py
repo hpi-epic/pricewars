@@ -146,7 +146,7 @@ def main():
         # for more randomized consumer behaviours use something like:
         #     `prefer_cheap = random.randint(4, 7)` and
         #     `cheapest_best_quality = random.randint(2, 4)`
-        set_consumer_ratios(consumer_settings, prefer_cheap = 3, cheapest_best_quality = 1)
+        set_consumer_ratios(consumer_settings, prefer_cheap = 1, cheapest_best_quality = 4)
 
         response = requests.post(args.consumer_url + '/setting', json=consumer_settings)
         response.raise_for_status()
