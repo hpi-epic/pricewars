@@ -157,7 +157,7 @@ services:
     restart: on-failure:5
     ports:
       - "5003:5003"
-    command: python3 -u merchant.py --port 5003 --strategy "Two Bound"
+    command: python3 -u merchant.py --port 5003 --strategy "Two Bound" --marketplace http://marketplace:8080 --producer http://producer:3050
     volumes:
       - ./merchant:/merchant
     depends_on:
