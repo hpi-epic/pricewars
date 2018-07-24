@@ -26,7 +26,7 @@ class PopenWrapper:
         self.kwargs = kwargs
 
     def __enter__(self):
-        self.process = subprocess.Popen(*self.args, **self.kwargs, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        self.process = subprocess.Popen(*self.args, **self.kwargs)
         return self.process
 
     def __exit__(self, *args):
@@ -118,6 +118,8 @@ def parse_arguments():
     parser.add_argument('--consumer_url', type=str, default='http://localhost:3000')
     parser.add_argument('--kafka_host', type=str, default='localhost:9093')
     parser.add_argument('--holding_cost', type=float, default=0.0)
+    parser.add_argument('--suppress_debug_output', action="store_true",
+                        help='Show only error messages of the merchants and suppresses all other output')
     return parser.parse_args()
 
 def main():
@@ -135,7 +137,10 @@ def main():
     # Start all services from the docker-compose file except the merchants.
     core_services = ['producer', 'marketplace', 'management-ui', 'analytics', 'flink-taskmanager', 'flink-jobmanager',
                      'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres', 'consumer']
-    with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir):
+    stdout_target = None
+    if args.suppress_debug_output:
+        stdout_target = subprocess.DEVNULL
+    with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir, stdout=stdout_target):
         # configure marketplace
         wait_for_marketplace(args.marketplace_url)
         requests.put(args.marketplace_url + '/holding_cost_rate', json={'rate': args.holding_cost})
@@ -144,7 +149,7 @@ def main():
         merchants = []
         for command in random.sample(args.merchants, len(args.merchants)):
             time.sleep(random.random() * 2)
-            merchants.append(subprocess.Popen(shlex.split(command)))
+            merchants.append(subprocess.Popen(shlex.split(command), stdout=stdout_target))
 
         print('Starting consumer')
         consumer_settings = requests.get(args.consumer_url + '/setting').json()
