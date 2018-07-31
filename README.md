@@ -77,7 +77,6 @@ You can shut down the platform with `CTRL + C` or `docker-compose stop`.
 
 Warning: There might be routing problems if the docker network overlaps with your local network.
 If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
-After that, you might need to change the addresses in the host file to your new docker host ip address.
 
 ### Run Pricewars
 
