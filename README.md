@@ -75,19 +75,6 @@ docker-compose up
 
 You can shut down the platform with `CTRL + C` or `docker-compose stop`.
 
-#### Adjust some DNS settings:
-If you want to use the management-ui add the following lines to your host file.
-This allows you to access container by domain name via your local docker IP address (or remote address).
- - open "/etc/hosts" as root on Linux / Unix or "C:\Windows\System32\drivers\etc\hosts" on Windows as Administrator
- - and don't forget additional names if you specify more containers!
- - in case you use the local docker setup, use 127.0.0.1; otherwise use the IP of the remove server
-
-```
-$IP      postgres redis zookeeper kafka kafka-reverse-proxy
-$IP      flink-jobmanager flink-taskmanager analytics management-ui
-$IP      marketplace producer consumer merchant
-```
-
 Warning: There might be routing problems if the docker network overlaps with your local network.
 If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
 After that, you might need to change the addresses in the host file to your new docker host ip address.
@@ -130,13 +117,11 @@ docker-compose build
 #### Windows w/o Docker Native support
 For Windows versions that don't have Docker Native support, like Home etc., another solution is to use an Ubuntu virtual machine with Docker installed. We recommend to use Ubuntu Server as the GUI of other Ubuntu versions might consume to much main memory. The main memory should be at least 8GB, since your Windows consumes about 2GB, Ubuntu Server 0.5GB and the simulation about 4GB. Also, your browser will consume a few hundred MB, too.
 
-On your guest system, you have to adjust your DNS settings like mentioned before. If you want to access your simulation from your host system, i.e. with the managment ui in the browser or with a locally deployed merchant, you also need to adjust the DNS settings of this, too. You could also use the Windows Subsystem for Linux (WSL) to run local merchants. Be aware, that you need to adjust the DNS settings a third time, this time in the hosts file of the WSL. Also, you might need to add an exception to your firewall to allow your merchant to access the virtual machine.
-
 #### Help - My Docker Setup is not working as expected!
 
 ##### Some containers quit unexpectedly:
 First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
-- __Postgres__: Bring the platform in a clean state with `docker-compose rm --stop` and run it again.
+- __Postgres__: Bring the platform in a clean state with `docker-compose down` and run it again.
 - __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Bring the platform in a clean state with `docker-compose rm --stop` and run it again.
 - __Others__: Try to read the logs or read on.
 
@@ -162,7 +147,7 @@ python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --
 ```
 
 This starts the whole platform and two merchants to compete against each other for 30 minutes.
-As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest -port 5000"`
+As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest --port 5000"`
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
 
 PS: you might need to install several Python libraries (e.g., `matplotlib` via `pip3 install matplotlib`) and Tkinter (e.g., via `sudo apt-get install python3-tk` on Ubuntu).
