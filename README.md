@@ -149,4 +149,7 @@ This starts the whole platform and two merchants to compete against each other f
 As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest --port 5000"`
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
 
-PS: you might need to install several Python libraries (e.g., `matplotlib` via `pip3 install matplotlib`) and Tkinter (e.g., via `sudo apt-get install python3-tk` on Ubuntu).
+You might need to install `matplotlib` and `kafka-python` with:
+```
+python3 -m pip install matplotlib kafka-python
+```
