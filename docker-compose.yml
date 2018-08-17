@@ -112,8 +112,6 @@ services:
       - KAFKA_URL=kafka:9092
       - REDIS_HOST=redis
       - PRICEWARS_PRODUCER_URL=http://producer:3050
-    volumes:
-      - ./marketplace/src:/marketplace/src
     depends_on:
       - postgres
       - redis
@@ -133,8 +131,6 @@ services:
       - KAFKA_URL=kafka:9092
     depends_on:
       - kafka
-    volumes:
-      - ./producer/controllers:/producer/controllers
 
   consumer:
     build: ./consumer
@@ -144,8 +140,6 @@ services:
       - RAILS_ENV=development
       - PRICEWARS_MARKETPLACE_URL=marketplace:8080
       - PRICEWARS_PRODUCER_URL=producer:3050
-    # volumes:
-    #   - ./pricewars-consumer:/consumer
     command: "bash -c 'rm -rf /consumer/tmp/pids/server.pid; bundle exec rails s -b 0.0.0.0'"
     depends_on:
       - marketplace
