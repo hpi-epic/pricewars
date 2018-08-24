@@ -138,8 +138,7 @@ services:
        - "3000:3000"
     environment:
       - RAILS_ENV=development
-      - PRICEWARS_MARKETPLACE_URL=marketplace:8080
-      - PRICEWARS_PRODUCER_URL=producer:3050
+      - PRICEWARS_MARKETPLACE_URL=http://marketplace:8080
     command: "bash -c 'rm -rf /consumer/tmp/pids/server.pid; bundle exec rails s -b 0.0.0.0'"
     depends_on:
       - marketplace
