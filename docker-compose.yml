@@ -71,6 +71,7 @@ services:
       - "6122"
     environment:
       - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+      - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=8
     # disable terminal output of this container
     logging:
       driver: "none"
