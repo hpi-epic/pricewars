@@ -140,4 +140,27 @@ You might need to install `matplotlib` and `kafka-python` with:
 python3 -m pip install matplotlib kafka-python
 ```
 
-###TODO: tips for developing
+## Developement
+There are different ways to develop the containerized marketplace services. These approaches have different trade-offs between setup time and time to run the platform with the new code.
+
+#### Rebuilding the docker image
+This method does not require any extra setup. The workflow is to modify code, then rebuild the docker images. Use the following commands:
+```
+docker-compose down
+docker rmi <name_of_image>
+```
+On the next start of the platform, the new image will be built.
+
+Rebuilding an image takes a few seconds up to over a minute depending on the service.
+
+#### Mounting a volume
+If rebuilding the image to too tedious, an alternative approach is mounting the executable (or source code) onto the docker container. This way, the program can be built locally and is used by the container on the next start.
+
+The directory can be mounted in the `docker-compose.yml` file with the `volumes` option. 
+
+#### Run service natively
+It is possible to run a service natively. This removes the docker abstraction and is the fastest way to restart the service with a new version.
+
+However, the service must be reconfigured to connect to the docker services and vice versa.
+
+Visit the corresponding subrepository on how to run a service natively and how to configure it.
