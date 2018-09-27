@@ -32,6 +32,11 @@ On the master branch, this repository contains the docker-setup that allows runn
 
 ## Deployment
 
+### Requirements
+
+* [Docker](https://www.docker.com/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
+
 ### Setup
 If you are working on Windows, make sure to set the following git-settings:
 ```
@@ -50,7 +55,8 @@ Then go ahead and clone the repository:
 git clone --recursive git@github.com:hpi-epic/pricewars.git
 ```
 
-Build docker images and containers with the following command (you might need to run `sudo usermod -aG docker $USER` on some Linux platforms).
+Build docker images and containers with the following command.
+Read [this](https://docs.docker.com/install/linux/linux-postinstall/) for running docker as non-root user on Linux.
 Bring a fast internet line and some time.
 This can take up to 30 minutes to finish.
 
