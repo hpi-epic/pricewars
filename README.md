@@ -22,9 +22,9 @@ On the master branch, this repository contains the docker-setup that allows runn
 * Kafka RESTful API: [https://github.com/hpi-epic/pricewars-kafka-rest](https://github.com/hpi-epic/pricewars-kafka-rest)
 * Analytics: [https://github.com/hpi-epic/pricewars-analytics](https://github.com/hpi-epic/pricewars-analytics)
 
-## FMC Diagram
+## Architecture
 
-![FMC Architecture Diagram](/docs/modeling/architecture_fmc.png?raw=true)
+![FMC Architecture Diagram](/docs/modeling/pricewars-architecture.png?raw=true)
 
 ## Sequence Diagram
 
