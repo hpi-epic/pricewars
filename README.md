@@ -80,11 +80,11 @@ If this is the case, change the ip address in `docker-compose.yml` under the `ne
 
 ### Run Pricewars
 
-After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://management-ui)
+After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://localhost)
 
-1. \[Optional] Configure available products in the [Config/Producer section](http://management-ui/index.html#/config/producer)
-2. Start the [Consumer](http://management-ui/index.html#/config/consumer)
-3. Merchants are trading products now. The [Dashboard](http://management-ui/index.html#/dashboard/overview) shows graphs about sales, profits and more.
+1. \[Optional] Configure available products in the [Config/Producer section](http://localhost/index.html#/config/producer)
+2. Start the [Consumer](http://localhost/index.html#/config/consumer)
+3. Merchants are trading products now. The [Dashboard](http://localhost/index.html#/dashboard/overview) shows graphs about sales, profits and more.
 
 
 #### Cleaning up containers and existing state
