@@ -9,11 +9,7 @@ The simulation is built using a microservice architecture and consists of multip
 
 For more information about the platform and publications, see the our chair's [project site](https://hpi.de/en/plattner/projects/price-wars-an-interactive-simulation-platform.html) on Dynamic Pricing under Competition.
 
-On the master branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages) branch one can find the swagger-documentation of the REST-APIs of all components.
-
-Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/pricewars/).
-
-The API specification can be found [here](https://hpi-epic.github.io/pricewars/).
+On the master branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages) branch one can find the [API specification](https://hpi-epic.github.io/pricewars/) of all components.
 
 ## Application Overview
 
@@ -24,9 +20,7 @@ The API specification can be found [here](https://hpi-epic.github.io/pricewars/)
 * Marketplace: [https://github.com/hpi-epic/pricewars-marketplace](https://github.com/hpi-epic/pricewars-marketplace)
 * Merchant: [https://github.com/hpi-epic/pricewars-merchant](https://github.com/hpi-epic/pricewars-merchant)
 * Kafka RESTful API: [https://github.com/hpi-epic/pricewars-kafka-rest](https://github.com/hpi-epic/pricewars-kafka-rest)
-
-Please note, that we cannot make the repository for the management UI public (we use a free bootstrap template that we are not allowed to distribute). But you can ask us anytime for access and we will add you to the access list.
-The management UI is not required but eases the first steps on the platform.
+* Analytics: [https://github.com/hpi-epic/pricewars-analytics](https://github.com/hpi-epic/pricewars-analytics)
 
 ## FMC Diagram
 
