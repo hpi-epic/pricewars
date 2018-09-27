@@ -113,9 +113,6 @@ Rebuild all images that have changed:
 docker-compose build
 ```
 
-#### Windows w/o Docker Native support
-For Windows versions that don't have Docker Native support, like Home etc., another solution is to use an Ubuntu virtual machine with Docker installed. We recommend to use Ubuntu Server as the GUI of other Ubuntu versions might consume to much main memory. The main memory should be at least 8GB, since your Windows consumes about 2GB, Ubuntu Server 0.5GB and the simulation about 4GB. Also, your browser will consume a few hundred MB, too.
-
 #### Help - My Docker Setup is not working as expected!
 
 ##### Some containers quit unexpectedly:
