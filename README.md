@@ -126,6 +126,11 @@ You can run a benchmark on the Pricewars platform with the benchmark tool [bench
 This tool allows to run the platform in a given configuration for a specific time period.
 Afterwards, results of this run are written to the output directory.
 
+Firstly, install necessary Python libraries:
+```
+python3 -m pip install -r helper_scripts/requirements.txt
+```
+
 Example command:
 ```
 python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command>
@@ -134,11 +139,6 @@ python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --
 This starts the whole platform and two merchants to compete against each other for 30 minutes.
 As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest --port 5000"`
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
-
-You might need to install `matplotlib` and `kafka-python` with:
-```
-python3 -m pip install matplotlib kafka-python
-```
 
 ## Developement
 There are different ways to develop the containerized marketplace services. These approaches have different trade-offs between setup time and time to run the platform with the new code.
