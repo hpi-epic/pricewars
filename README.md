@@ -35,6 +35,7 @@ On the master branch, this repository contains the docker-setup that allows runn
 ### Requirements
 
 * [Docker](https://www.docker.com/)
+  * If you are on Linux read [this](https://docs.docker.com/install/linux/linux-postinstall/) for running docker as non-root user.
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
 ### Setup
@@ -44,10 +45,9 @@ Clone the repository and its subrepositories:
 git clone --recursive git@github.com:hpi-epic/pricewars.git
 ```
 
+For the next step bring a fast internet line and some time.
+This can take up to 30 minutes at the first-time setup.
 Build docker images and containers with the following command.
-Read [this](https://docs.docker.com/install/linux/linux-postinstall/) for running docker as non-root user on Linux.
-Bring a fast internet line and some time.
-This can take up to 30 minutes to finish.
 
 ```
 docker-compose up --no-start
@@ -56,7 +56,7 @@ docker-compose up --no-start
 This command might not be available if you are on an older docker-compose version.
 Use `docker-compose create` instead.
 
-Once the containers are created, you can start the Pricewars platform:
+Once the containers are created, you can start the Price Wars platform:
 
 ```
 docker-compose up
