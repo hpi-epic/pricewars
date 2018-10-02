@@ -9,11 +9,7 @@ The simulation is built using a microservice architecture and consists of multip
 
 For more information about the platform and publications, see the our chair's [project site](https://hpi.de/en/plattner/projects/price-wars-an-interactive-simulation-platform.html) on Dynamic Pricing under Competition.
 
-On the master branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages) branch one can find the swagger-documentation of the REST-APIs of all components.
-
-Due to the current github bug that submodules with dependencies to private repositories cannot be resolved, the github page build process fails, enforcing us to separate the API specification from the submodules for rendering those via [github.io](https://hpi-epic.github.io/pricewars/).
-
-The API specification can be found [here](https://hpi-epic.github.io/pricewars/).
+On the master branch, this repository contains the docker-setup that allows running the simulation locally. On the [gh-pages](https://github.com/hpi-epic/pricewars/tree/gh-pages) branch one can find the [API specification](https://hpi-epic.github.io/pricewars/) of all components.
 
 ## Application Overview
 
@@ -24,13 +20,11 @@ The API specification can be found [here](https://hpi-epic.github.io/pricewars/)
 * Marketplace: [https://github.com/hpi-epic/pricewars-marketplace](https://github.com/hpi-epic/pricewars-marketplace)
 * Merchant: [https://github.com/hpi-epic/pricewars-merchant](https://github.com/hpi-epic/pricewars-merchant)
 * Kafka RESTful API: [https://github.com/hpi-epic/pricewars-kafka-rest](https://github.com/hpi-epic/pricewars-kafka-rest)
+* Analytics: [https://github.com/hpi-epic/pricewars-analytics](https://github.com/hpi-epic/pricewars-analytics)
 
-Please note, that we cannot make the repository for the management UI public (we use a free bootstrap template that we are not allowed to distribute). But you can ask us anytime for access and we will add you to the access list.
-The management UI is not required but eases the first steps on the platform.
+## Architecture
 
-## FMC Diagram
-
-![FMC Architecture Diagram](/docs/modeling/architecture_fmc.png?raw=true)
+![FMC Architecture Diagram](/docs/modeling/pricewars-architecture.png?raw=true)
 
 ## Sequence Diagram
 
@@ -38,27 +32,22 @@ The management UI is not required but eases the first steps on the platform.
 
 ## Deployment
 
+### Requirements
+
+* [Docker](https://www.docker.com/)
+  * If you are on Linux read [this](https://docs.docker.com/install/linux/linux-postinstall/) for running docker as non-root user.
+* [Docker Compose](https://docs.docker.com/compose/install/)
+
 ### Setup
-If you are working on Windows, make sure to set the following git-settings:
-```
-git config --global core.eol lf
-git config --global core.autocrlf input
-```
-The first setting will ensure that files keep their lf-line endings when checking out a repository.
-Otherwise the line endings of all files will be converted to cr+lf under Windows, causing problems with script-execution within the Docker-containers that expect lf-endings.
-The second setting ensures that line endings are converted back to what they were on checkout when pushing a change.
-
-*(These settings are global so they will affect all repositories, make sure to change them again if you do not want this behaviour on other repositories!)*
-
-Then go ahead and clone the repository:
+Clone the repository and its subrepositories:
 
 ```
 git clone --recursive git@github.com:hpi-epic/pricewars.git
 ```
 
-Build docker images and containers with the following command (you might need to run `sudo usermod -aG docker $USER` on some Linux platforms).
-Bring a fast internet line and some time.
-This can take up to 30 minutes to finish.
+For the next step bring a fast internet line and some time.
+This can take up to 30 minutes at the first-time setup.
+Build docker images and containers with the following command.
 
 ```
 docker-compose up --no-start
@@ -67,7 +56,7 @@ docker-compose up --no-start
 This command might not be available if you are on an older docker-compose version.
 Use `docker-compose create` instead.
 
-Once the containers are created, you can start the Pricewars platform:
+Once the containers are created, you can start the Price Wars platform:
 
 ```
 docker-compose up
@@ -80,11 +69,11 @@ If this is the case, change the ip address in `docker-compose.yml` under the `ne
 
 ### Run Pricewars
 
-After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://management-ui)
+After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://localhost)
 
-1. \[Optional] Configure available products in the [Config/Producer section](http://management-ui/index.html#/config/producer)
-2. Start the [Consumer](http://management-ui/index.html#/config/consumer)
-3. Merchants are trading products now. The [Dashboard](http://management-ui/index.html#/dashboard/overview) shows graphs about sales, profits and more.
+1. \[Optional] Configure available products in the [Config/Producer section](http://localhost/index.html#/config/producer)
+2. Start the [Consumer](http://localhost/index.html#/config/consumer)
+3. Merchants are trading products now. The [Dashboard](http://localhost/index.html#/dashboard/overview) shows graphs about sales, profits and more.
 
 
 #### Cleaning up containers and existing state
@@ -113,9 +102,6 @@ Rebuild all images that have changed:
 docker-compose build
 ```
 
-#### Windows w/o Docker Native support
-For Windows versions that don't have Docker Native support, like Home etc., another solution is to use an Ubuntu virtual machine with Docker installed. We recommend to use Ubuntu Server as the GUI of other Ubuntu versions might consume to much main memory. The main memory should be at least 8GB, since your Windows consumes about 2GB, Ubuntu Server 0.5GB and the simulation about 4GB. Also, your browser will consume a few hundred MB, too.
-
 #### Help - My Docker Setup is not working as expected!
 
 ##### Some containers quit unexpectedly:
@@ -140,6 +126,11 @@ You can run a benchmark on the Pricewars platform with the benchmark tool [bench
 This tool allows to run the platform in a given configuration for a specific time period.
 Afterwards, results of this run are written to the output directory.
 
+Firstly, install necessary Python libraries:
+```
+python3 -m pip install -r helper_scripts/requirements.txt
+```
+
 Example command:
 ```
 python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --merchants <merchant A command> <merchant B command>
@@ -149,7 +140,27 @@ This starts the whole platform and two merchants to compete against each other f
 As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest --port 5000"`
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
 
-You might need to install `matplotlib` and `kafka-python` with:
+## Developement
+There are different ways to develop the containerized marketplace services. These approaches have different trade-offs between setup time and time to run the platform with the new code.
+
+#### Rebuilding the docker image
+This method does not require any extra setup. The workflow is to modify code, then rebuild the docker images. Use the following commands:
 ```
-python3 -m pip install matplotlib kafka-python
+docker-compose down
+docker rmi <name_of_image>
 ```
+On the next start of the platform, the new image will be built.
+
+Rebuilding an image takes a few seconds up to over a minute depending on the service.
+
+#### Mounting a volume
+If rebuilding the image to too tedious, an alternative approach is mounting the executable (or source code) onto the docker container. This way, the program can be built locally and is used by the container on the next start.
+
+The directory can be mounted in the `docker-compose.yml` file with the `volumes` option. 
+
+#### Run service natively
+It is possible to run a service natively. This removes the docker abstraction and is the fastest way to restart the service with a new version.
+
+However, the service must be reconfigured to connect to the docker services and vice versa.
+
+Visit the corresponding subrepository on how to run a service natively and how to configure it.
