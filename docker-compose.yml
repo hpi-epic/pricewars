@@ -46,14 +46,16 @@ services:
       - kafka
 
   flink-jobmanager:
-    image: melentye/flink:latest
+    image: flink:1.6.0
     ports:
       - "8081:8081"
     expose:
       - "6123"
     environment:
       - KAFKA_URL=kafka:9092
-    command: "bash '/analytics/start-jobmanager.sh'"
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    entrypoint: /bin/bash
+    command: /analytics/start-jobmanager.sh
     volumes:
       - ./analytics:/analytics:ro
     depends_on:
@@ -63,21 +65,21 @@ services:
       - kafka
 
   flink-taskmanager:
-    image: melentye/flink:latest
+    image: flink:1.6.0
     expose:
       - "6121"
       - "6122"
     environment:
-      - TASK_MANAGER_RPC_PORT=6122
-      - TASK_MANAGER_DATA_PORT=6121
-    command: "bash '/analytics/start-taskmanager.sh'"
-    volumes:
-      - ./analytics:/analytics:ro
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+      - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=8
+    # disable terminal output of this container
+    logging:
+      driver: "none"
+    command: taskmanager
     depends_on:
-      - analytics
       - flink-jobmanager
     links:
-      - flink-jobmanager
+      - "flink-jobmanager:flink-jobmanager"
 
   analytics:
     build: ./analytics
