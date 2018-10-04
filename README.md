@@ -3,9 +3,11 @@
 # A Simulation Platform for Dynamic Pricing Competition
 
 
-This is the meta repository of the Price Wars platform that allows the simulation of a dynamic marketplace similar to online marketplaces like www.amazon.com. Using the simulation, one can test different pricing strategies and assess their performance compared to other pricing strategies.
+Currently, retailers lack the possibility to test, develop, and evaluate their algorithms appropriately before releasing them into the real world. At the same time, it is challenging for researchers to investigate how pricing strategies interact with each other under heavy competition.
 
-The simulation is built using a microservice architecture and consists of multiple components representing important players in the simulation. Each component has its own repository and documentation and the links can be found in the following section.
+We built an open platform to simulate dynamic pricing competition allowing both practitioners and researchers to study the effects of automated repricing mechanisms competing with each other using market scenarios that mimic real-world marketplaces.
+
+We built the platform in a way that one can participate and deploy own merchants with only a few lines of Python code. It allows merchants to deploy the full width of pricing strategies, from simple rule-based strategies to more sophisticated data-driven strategies using machine learning. For practitioners, the platform further provides a possibility to evaluate their pricing strategies appropriately before releasing them in production.
 
 For more information about the platform and publications, see the our chair's [project site](https://hpi.de/en/plattner/projects/price-wars-an-interactive-simulation-platform.html) on Dynamic Pricing under Competition.
 
@@ -50,24 +52,23 @@ This can take up to 30 minutes at the first-time setup.
 Build docker images and containers with the following command.
 
 ```
-docker-compose up --no-start
+cd pricewars
+docker-compose build
 ```
 
-This command might not be available if you are on an older docker-compose version.
-Use `docker-compose create` instead.
+### Run Price Wars
 
-Once the containers are created, you can start the Price Wars platform:
+The Price Wars platform can be started with:
 
 ```
 docker-compose up
 ```
 
+This will start all services and one example merchant.
 You can shut down the platform with `CTRL + C` or `docker-compose stop`.
 
 Warning: There might be routing problems if the docker network overlaps with your local network.
 If this is the case, change the ip address in `docker-compose.yml` under the `networks` entry.
-
-### Run Pricewars
 
 After starting the Pricewars platform with `docker-compose up`, it can be controlled with the [Management UI](http://localhost)
 
@@ -75,6 +76,7 @@ After starting the Pricewars platform with `docker-compose up`, it can be contro
 2. Start the [Consumer](http://localhost/index.html#/config/consumer)
 3. Merchants are trading products now. The [Dashboard](http://localhost/index.html#/dashboard/overview) shows graphs about sales, profits and more.
 
+In the [Merchant repository](https://github.com/hpi-epic/pricewars-merchant) you can learn how to build your own merchant and run it on the platform.
 
 #### Cleaning up containers and existing state
 Run the following commands to run the platform in a clean state.
@@ -137,7 +139,8 @@ python3 helper_scripts/benchmark.py --duration 30 --output <output directory> --
 ```
 
 This starts the whole platform and two merchants to compete against each other for 30 minutes.
-As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy Cheapest --port 5000"`
+As merchant start command you can use for example: `"python3 merchant/merchant.py --strategy cheapest --port 5000"`.
+The quotes must be included.
 Run `python3 helper_scripts/benchmark.py --help` to see all arguments.
 
 ## Developement
