@@ -45,27 +45,10 @@ services:
     links:
       - kafka
 
-  flink-jobmanager:
-    image: flink:1.6.0
-    ports:
-      - "8081:8081"
-    expose:
-      - "6123"
-    environment:
-      - KAFKA_URL=kafka:9092
-      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-    entrypoint: /bin/bash
-    command: /analytics/start-jobmanager.sh
-    volumes:
-      - ./analytics:/analytics:ro
-    depends_on:
-      - analytics
-      - kafka
-    links:
-      - kafka
-
   flink-taskmanager:
-    image: flink:1.6.0
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile.flink-taskmanager
     expose:
       - "6121"
       - "6122"
@@ -79,18 +62,23 @@ services:
     depends_on:
       - flink-jobmanager
     links:
-      - "flink-jobmanager:flink-jobmanager"
+      - flink-jobmanager
 
-  analytics:
-    build: ./analytics
-    # Flink jobs are compiled when this image is created.
-    # On container start, the Flink jobs are copied to the host filesystem where they
-    # can be found by the flink container.
-    # Newer files in the destination are not overwritten by the copy command.
-    # This way, the jobs can be updated on the host and used in the docker setup without rebuilding the image.
-    command: "bash -c 'mkdir -p /export/target/jars/ && cp -u /analytics/target/jars/* /export/target/jars/ && chmod -R 777 /export/target'"
-    volumes:
-      - ./analytics:/export
+  flink-jobmanager:
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile.flink-jobmanager
+    ports:
+      - "8081:8081"
+    expose:
+      - "6123"
+    environment:
+      - KAFKA_URL=kafka:9092
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    depends_on:
+      - kafka
+    links:
+      - kafka
 
   management-ui:
     build: ./management-ui

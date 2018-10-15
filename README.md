@@ -107,7 +107,8 @@ docker-compose build
 #### Help - My Docker Setup is not working as expected!
 
 ##### Some containers quit unexpectedly:
-First, the analytics container is expected to be stopped after a short moment - it's just used to compile and export the flink jobs. If this is the only container not running, you're fine. In case any other container is not running, analyse the first container (except for analytics) that stopped.
+You can see the status of the containers with `docker-compose ps`.
+In case a container is not running, you can see its last logs with `docker-compose logs <service name>`.
 - __Postgres__: Bring the platform in a clean state with `docker-compose down` and run it again.
 - __Zookeeper / Kafka__: If you just stopped some older containers: Wait! There is a timeout for Zookeeper to notice that Kafka has been stopped (timestamp-based, so it works even if Zookeeper is not running). Bring the platform in a clean state with `docker-compose rm --stop` and run it again.
 - __Others__: Try to read the logs or read on.
@@ -124,7 +125,7 @@ For details regarding the deployment of the component, we kindly refer to the de
 
 ## Benchmark Tool
 
-You can run a benchmark on the Pricewars platform with the benchmark tool [benchmark.py](helper_scripts/benchmark.py).
+You can run a benchmark on the Price Wars platform with the benchmark tool [benchmark.py](helper_scripts/benchmark.py).
 This tool allows to run the platform in a given configuration for a specific time period.
 Afterwards, results of this run are written to the output directory.
 

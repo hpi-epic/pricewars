@@ -135,11 +135,14 @@ def main():
     clear_containers(pricewars_dir)
 
     # Start all services from the docker-compose file except the merchants.
-    core_services = ['producer', 'marketplace', 'management-ui', 'analytics', 'flink-taskmanager', 'flink-jobmanager',
+    core_services = ['producer', 'marketplace', 'management-ui', 'flink-taskmanager', 'flink-jobmanager',
                      'kafka-reverse-proxy', 'kafka', 'zookeeper', 'redis', 'postgres', 'consumer']
-    stdout_target = None
-    if args.suppress_debug_output:
-        stdout_target = subprocess.DEVNULL
+    
+    stdout_target = subprocess.DEVNULL if args.suppress_debug_output else None
+
+    # Build missing containers and wait until it finished
+    subprocess.run(['docker-compose', 'up', '--no-start'], stdout=stdout_target)
+
     with PopenWrapper(['docker-compose', 'up'] + core_services, cwd=pricewars_dir, stdout=stdout_target):
         # configure marketplace
         wait_for_marketplace(args.marketplace_url)
@@ -157,7 +160,7 @@ def main():
         # for more randomized consumer behaviours use something like:
         #     `prefer_cheap = random.randint(4, 7)` and
         #     `cheapest_best_quality = random.randint(2, 4)`
-        set_consumer_ratios(consumer_settings, prefer_cheap = 1, cheapest_best_quality = 4)
+        #set_consumer_ratios(consumer_settings, prefer_cheap = 1, cheapest_best_quality = 4)
 
         response = requests.post(args.consumer_url + '/setting', json=consumer_settings)
         response.raise_for_status()
