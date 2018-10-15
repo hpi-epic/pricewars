@@ -7,7 +7,7 @@
 [submodule "producer"]
 	path = producer
 	url = https://github.com/hpi-epic/pricewars-producer.git
-[submodule "mgmt-ui"]
+[submodule "management-ui"]
 	path = management-ui
 	url = git@github.com:hpi-epic/pricewars-mgmt-ui.git
 [submodule "kafka-reverse-proxy"]
