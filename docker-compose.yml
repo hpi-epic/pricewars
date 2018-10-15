@@ -93,7 +93,7 @@ services:
       - ./analytics:/export
 
   management-ui:
-    build: ./mgmt-ui
+    build: ./management-ui
     ports:
       - "80:80"
     depends_on:
